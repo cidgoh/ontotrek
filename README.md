@@ -3,3 +3,5 @@ OntoTrek is an OBOFoundry.org ontology terminology viewer that takes advantage o
 It is under development at Hsiao Labs which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control.
 
 Contact [Damion Dooley](mailto:damion.dooley@bccdc.ca) for more information on the project.
+
+See it in action at [http://genepio.org/ontotrek](http://genepio.org/ontotrek).
