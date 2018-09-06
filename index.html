@@ -1,11 +1,65 @@
 <head>
-  <style> body { margin: 0; } </style>
+  <style>
+    body { margin: 0; padding:0; background-color:silver; } 
+    #3d-graph {} /*position:fixed;float:left; */
+    #control {
+
+      /* position:fixed;top:0;left:800px; */
+    }
+    .text {
+      padding:3px;font-family:arial;
+      width:90%;margin:5%;
+      font-size:.8rem;
+      background-color: #F8F8F0;
+    }
+    .deprecated {color:red;}
+    .placeholder {color:silver;}
+    .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5);; padding:10px;}
+    .tooltip-id {font-size:.8rem;}
+    #title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
+    #help {background-color:transparent; min-height:0;font-size:.8rem;}
+    #term_id {overflow-y:hidden}
+    #term_id a {text-decoration: none;}
+    #label {}
+    #definition {height:150px; overflow-y:scroll}
+    #ui_definition {height:50px; overflow-y:scroll}
+    #label_search {}
+
+    nav {
+      display: inline-block;
+      vertical-align: top;
+      width:24%;
+      height:100%;
+    }
+
+    .column {
+      display: inline-block;
+      vertical-align: top;
+      width: 74%;
+      height:100%
+    }
+
+  </style>
   <script src="js/bundle.js"></script>
 </head>
 
 <body>
-
-  <div id="3d-graph" width="600" style="width:600px"></div>
+  <div class="column">
+    <div id="3d-graph"></div>
+  </div>
+  <nav id="control" class="nav">
+    <div id="title" class="text">OntoTrek Viewer</div>
+    <div id="help" class="text">Click on a node for details</div>
+    <div id="term_id" class="text"><span class="placeholder">id</span></div>
+    <div id="label" class="text"><span class="placeholder">label</span></div>
+    <div id="definition" class="text"><span class="placeholder">definition</span></div>
+    <div id="synonyms" class="text"><span class="placeholder">synonyms</span></div>
+    <div id="parents" class="text"><span class="placeholder">parents</span></div>
+    <div id="ui_label" class="text"><span class="placeholder">UI label</span></div>
+    <div id="ui_definition" class="text"><span class="placeholder">UI definition</span></div>
+    <hr size="1">
+    <select id="label_search" class="text"><option value="">Select a term to view</option></select>
+  </nav>
 
   <!-- 
     Graph parameters
@@ -29,8 +83,18 @@
 
   -->
   <script>
-    const LABEL_MAX_LINE_LENGTH = 60
+    const LABEL_MAX_LINE_LENGTH = 30  // label text will be cut after first word ending before this character limit.
     const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
+    const GRAPH_BACKGROUND_COLOR = '#302020'
+    const GRAPH_DIMENSIONS = 3
+    // For BFO layout: -2000, .01, .011
+    const GRAPH_CHARGE_STRENGTH = -150 // -2000 for BFO
+    const GRAPH_VELOCITY_DECAY = 0.4 // default 0.4
+    const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
+    const GRAPH_COOLDOWN = 7000 // default 15000
+    const GRAPH_PARTICLES = 2 // animation that shows directionality of links
+    const ONTOLOGY_LOOKUP_URL = 'http://purl.obolibrary.org/obo/'
+    const CAMERA_DISTANCE = 300
 
     function loadData(URL, callback) {
       var xhttp = new XMLHttpRequest();
@@ -44,12 +108,32 @@
       xhttp.send(null);
     };
 
+    function lookup_url(term_id) {
+      return  `<a href="${ONTOLOGY_LOOKUP_URL}${term_id.replace(':','_')}" target="term">${term_id}</a>`
+    }
+
     function doGraph(rawData) {
+
+      // Create color table of prefixes
+      colorLookup = {}
+      if ('@context' in rawData) {
+        //var lut_lookup = lut( "rainbow", 50 );
+        //alert(rawData['@context'].length)
+        //lut.setMax(rawData['@context'].length);
+        counter = 1
+        for (prefix in rawData['@context']){
+          colorLookup[prefix] = colorTable[counter].color
+          counter ++
+        }
+      }
+
+      // Case for GEEM ontofetch.py ontology term specification table:
       if ('specifications' in rawData) {
         var data = {nodes:[], links:[]}
 
         for (var item in rawData.specifications) {
           node = rawData.specifications[item]
+          node.color = colorLookup[ node.id.split(':')[0] ]
           data.nodes.push(node)
         }
 
@@ -65,117 +149,93 @@
         var data = rawData
       }
 
-      var dataLookup = {}
+      data.nodes.sort(function(a,b) {return (a.label === undefined || a.label.localeCompare(b.label))})
+      dataLookup = {}
+      const label_search = document.getElementById("label_search")
       for (var item in data.nodes) {
         dataLookup[data.nodes[item].id] = data.nodes[item]
+
+        var option = document.createElement("option");
+        option.text = data.nodes[item].label;
+        option.value = data.nodes[item].id
+        label_search.add(option);
+
       }
       
+      //function updateGeometries() {
+      //  Graph.nodeRelSize(4); // trigger update of 3d objects in scene
+      //}
+
+
       const elem = document.getElementById("3d-graph");
+
 
       const Graph = ForceGraph3D()
         (document.getElementById('3d-graph'))
-          .width('800')
-          .nodeAutoColorBy('group')
-          .numDimensions(2)
-          .forceEngine('d3') // So we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 },
-          //.d3Force('charge').strength(-150)
-          //.d3AlphaDecay([num]) //Getter/setter for the simulation intensity decay parameter, only applicable if using the d3 simulation engine.  0.0228
-          //.d3VelocityDecay([num])  //Getter/setter for the nodes' velocity decay that simulates the medium resistance, only applicable if using the d3 simulation engine.  0.4
-          //.d3Force('charge', function(test) {return 150})
+          .width(elem.offsetWidth)
+          .warmupTicks(4)
+          .cooldownTime(GRAPH_COOLDOWN)
+          //.cooldownTicks(300)
+          .backgroundColor(GRAPH_BACKGROUND_COLOR)
+          .numDimensions(GRAPH_DIMENSIONS)
+          // Using D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
+          .forceEngine('d3') 
 
           .linkOpacity(1)
-          //.linkDirectionalParticles(1)
-          //.linkDirectionalParticleWidth(2)
-          //.nodeAutoColorBy(d => {return dataLookup[d.source].group} )
-          .linkAutoColorBy(d => {return dataLookup[d.source].group} )
-          .nodeLabel(node => `${node.id}: ${node.label} `) // Text shown on mouseover. //${node.definition}
-          .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
-          .onNodeClick(node => window.open(`http://purl.obolibrary.org%2Fobo%2F${node.id}`, '_term'))
-          .onNodeClick(node => {
-            // Aim at node from outside it
-            const distance = 200;
-            //const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
-            //TEST SWITCH TO 3D
-            //Graph.numDimensions(3)
-            Graph.cameraPosition(
-              { x: node.x, y: node.y, z: node.z + distance}, // new position
-              //{ x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-              node, // lookAt ({ x, y, z })
-              3000  // ms transition duration
-            )
+          .linkDirectionalParticles(GRAPH_PARTICLES)
+          .linkDirectionalParticleWidth(2)
+          .nodeAutoColorBy('color')
+          .onEngineStop(stuff => {
+            // For BFO graph, create a string version of layout so that other
+            // ontologies can be layed out under it.
+            /*
+            var nodes = []
+            for (item in dataLookup) {
+              var node = dataLookup[item];
+              nodes.push({"id":node.id, "x":parseInt(node.x), "y":parseInt(node.y)})
+            }
+            console.log(JSON.stringify(nodes, null, 4))
+            */
           })
+          .linkAutoColorBy(d => {return dataLookup[d.target].color} )
+          
+          .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) // Text shown on mouseover. //${node.definition}
+          //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
+          .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+          .onLinkClick(link => {alert("clicked link"); return link})
+          /*
+          .onLinkHover(link => {
+            // no state change
+            if (highlightLink === link) return;
+            highlightLink = link;
+            highlightNodes = link ? [link.source, link.target] : [];
+            updateGeometries();
+          })
+          */
+          .onNodeClick(node => node_focus(node))
 
           .nodeThreeObject(node => {
-            // displays semi-sphere, then overlays with label text
+            // Displays semi-sphere, then overlays with label text
 
             var nodeRadius = 5;
-            var nodeColor = 0xff2020;
+
             switch (node.id) {
                case 'owl:Thing':
-                nodeRadius = 30;
-                nodeColor = 0xf0A000;
-                node.fx = 0;
-                node.fy = 0;
-                node.fz = 0;
-                break;
-
-              case 'oboInOwl:ObsoleteClass':
-                nodeRadius = 10;
-                nodeColor = 0xf0A000;
-                node.fx = 0;
-                node.fy = 1200;
-                node.fz = -100;
-                break;
-
-              case 'BFO:0000001': //entity
-                nodeRadius = 25;
-                nodeColor = 0xf0A000;
-                node.fx = 0;
-                node.fy = 0;
-                node.fz = -100;
-                break;
-              /*
-
-              case 'BFO:0000015': //process
-                nodeRadius = 25;
-                nodeColor = 0xf0A000;
-                node.fx = 0;
-                node.fy = 0;
-                node.fz = -100;
-                break;
-              case 'BFO:0000002': // continuant
-                nodeRadius = 20;
-                nodeColor = 0xf0A000;
-                node.fx = 1200;
-                node.fy = 0;
-                node.fz = -100;
-                break;
-              case 'BFO:0000004': // continuant
-                nodeRadius = 20;
-                nodeColor = 0xf0A000;
-                node.fx = 1300;
-                node.fy = 0;
-                node.fz = -100;
-                break;
-              case 'BFO:0000031': // generically dependent continuant
-                break;
-
-              case 'BFO:0000003': // occurant
-                nodeRadius = 20;
-                nodeColor = 0xf0A000;
-                node.fx = 1400;
-                node.fy = 0;
-                node.fz = -100;
-                break
-                */
+                nodeRadius = 30; node.fx = 0; node.fy = 0; node.fz = 0; break;
+            }
+            const layout_node = layout[node.id]
+            if (layout_node) {
+              nodeRadius = 20;
+              node.fz = -100;
+              node.fx = layout_node.x;
+              node.fy = layout_node.y;
             }
 
             //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
             var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
-            var material = new THREE.MeshBasicMaterial( { color: nodeColor } );
+            var material = new THREE.MeshBasicMaterial( { color: node.color } );
             var circle = new THREE.Mesh( geometry, material );
             circle.position.set( 0, 0, 0 );
-
 
             if (node.label) {
               // label converted to first few words ...
@@ -190,16 +250,16 @@
             sprite.color = node.color;
             sprite.textHeight = 8;
             sprite.fontSize = 20;
-            sprite.position.set( 0, 0, nodeRadius + 2 );
+            sprite.position.set( 0, -10, nodeRadius + 2 );
 
             var height = sprite._canvas.height
             var width = sprite._canvas.width
 
-            // HACK for background. Sprites always face camera. Need transparent image cropped
+            // HACK for background sized to text; using 2nd sprite as it always faces camera.
             var spriteMap = new THREE.TextureLoader().load( "img/whitebox.png" );
             var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0x808080 , opacity : 0.5} );
             const sprite2 = new THREE.Sprite( spriteMaterial );
-            sprite2.position.set( 0, 0, nodeRadius + 1 );
+            sprite2.position.set( 0, -10, nodeRadius + 1 );
             sprite2.scale.set(width/2, 10 , 1);
 
             var group = new THREE.Group();
@@ -212,12 +272,271 @@
 
           .graphData(data);
 
+      // Selection list of all node labels allows user to zoom in on one
+      document.getElementById("label_search").onchange = function(item){node_focus(dataLookup[this.value])}
+
+
+
+      function get_term_id_urls(other_parents) {
+        parents = []
+        if (other_parents) {
+          for (parent_id in other_parents.split(';')) {
+            parents.push(lookup_url(parent_id.trim()))
+          }
+        }
+        return parents.length ? ' '.join(parents) : null
+      }
+
+      function node_focus(node) {
+        var parents = get_term_id_urls(node.other_parents)
+        document.getElementById("term_id").innerHTML = lookup_url(node.id) + (node.deprecated ? '<span class="deprecated">(deprecated)</span>' : '');
+        document.getElementById("label").innerHTML = node.label || '<span class="placeholder">label</span>';
+        document.getElementById("definition").innerHTML = node.definition || '<span class="placeholder">definition</span>';
+        document.getElementById("ui_label").innerHTML = node.ui_label || '<span class="placeholder">UI label</span>';
+        document.getElementById("ui_definition").innerHTML = node.ui_definition || '<span class="placeholder">UI definition</span>'; 
+        document.getElementById("synonyms").innerHTML = node.synonyms || '<span class="placeholder">synonyms</span>';
+        document.getElementById("parents").innerHTML = parents || '<span class="placeholder">parents</span>';
+
+        // Aim at node from z dimension
+        Graph.cameraPosition(
+          { x: node.x, y: node.y, z: node.z + CAMERA_DISTANCE}, // new position
+          node, // lookAt ({ x, y, z })
+          3000  // 3 second transition duration
+        )
+      }
+
       // Spread nodes a little wider
-      //Graph.d3Force('charge').strength(-150);
+      Graph.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH);
+
+      // Getter/setter for the simulation intensity decay parameter, only 
+      // applicable if using the d3 simulation engine.  
+      //Graph.d3AlphaDecay(GRAPH_ALPHA_DECAY) // default 0.0228
+      
+      // Getter/setter for the nodes' velocity decay that simulates the medium
+      // resistance, only applicable if using the d3 simulation engine.
+      //Graph.d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
+
     }
 
+    // https://www.w3schools.com/colors/colors_w3css.asp
+    var colorTable = [
+      {"name": "w3-text-amber", "color": "#ffc107" },
+      {"name": "w3-text-aqua", "color": "#00ffff" },
+      {"name": "w3-text-blue", "color": "#2196F3" },
+      {"name": "w3-text-light-blue", "color": "#87CEEB" },
+      {"name": "w3-text-brown", "color": "#795548" },
+      {"name": "w3-text-cyan", "color": "#00bcd4" },
+      {"name": "w3-text-blue-grey", "color": "#607d8b" },
+      {"name": "w3-text-green", "color": "#4CAF50" },
+      {"name": "w3-text-light-green", "color": "#8bc34a" },
+      {"name": "w3-text-indigo", "color": "#3f51b5" },
+      {"name": "w3-text-khaki", "color": "#b4aa50" },
+      {"name": "w3-text-lime", "color": "#cddc39" },
+      {"name": "w3-text-orange", "color": "#ff9800" },
+      {"name": "w3-text-deep-orange", "color": "#ff5722" },
+      {"name": "w3-text-pink", "color": "#e91e63" },
+      {"name": "w3-text-purple", "color": "#9c27b0" },
+      {"name": "w3-text-deep-purple", "color": "#673ab7" },
+      {"name": "w3-text-red", "color": "#f44336" },
+      {"name": "w3-text-sand", "color": "#fdf5e6" },
+      {"name": "w3-text-teal", "color": "#009688" },
+      {"name": "w3-text-yellow", "color": "#d2be0e" },
+      {"name": "w3-text-white", "color": "#fff" },
+      {"name": "w3-text-black", "color": "#000" },
+      {"name": "w3-text-grey", "color": "#757575" },
+      {"name": "w3-text-light-grey", "color": "#f1f1f1" },
+      {"name": "w3-text-dark-grey", "color": "#3a3a3a" },
+      //RECYCLE:
+      {"name": "w3-text-amber", "color": "#ffc107" },
+      {"name": "w3-text-aqua", "color": "#00ffff" },
+      {"name": "w3-text-blue", "color": "#2196F3" },
+      {"name": "w3-text-light-blue", "color": "#87CEEB" },
+      {"name": "w3-text-brown", "color": "#795548" },
+      {"name": "w3-text-cyan", "color": "#00bcd4" },
+      {"name": "w3-text-blue-grey", "color": "#607d8b" },
+      {"name": "w3-text-green", "color": "#4CAF50" },
+      {"name": "w3-text-light-green", "color": "#8bc34a" },
+    ]
+
+    layout = [
+    {
+        "id": "BFO:0000002",
+        "x": -95,
+        "y": -224
+    },
+    {
+        "id": "BFO:0000140",
+        "x": 833,
+        "y": 265
+    },
+    {
+        "id": "BFO:0000016",
+        "x": 177,
+        "y": -1402
+    },
+    {
+        "id": "BFO:0000024",
+        "x": 34,
+        "y": 571
+    },
+    {
+        "id": "BFO:0000034",
+        "x": 201,
+        "y": -1518
+    },
+    {
+        "id": "BFO:0000031",
+        "x": -93,
+        "y": -305
+    },
+    {
+        "id": "BFO:0000182",
+        "x": -1098,
+        "y": 274
+    },
+    {
+        "id": "BFO:0000141",
+        "x": 553,
+        "y": 362
+    },
+    {
+        "id": "BFO:0000004",
+        "x": 146,
+        "y": 193
+    },
+    {
+        "id": "BFO:0000040",
+        "x": -3,
+        "y": 475
+    },
+    {
+        "id": "BFO:0000030",
+        "x": -102,
+        "y": 515
+    },
+    {
+        "id": "BFO:0000027",
+        "x": -55,
+        "y": 600
+    },
+    {
+        "id": "BFO:0000003",
+        "x": -841,
+        "y": 22
+    },
+    {
+        "id": "BFO:0000142",
+        "x": 932,
+        "y": 196
+    },
+    {
+        "id": "BFO:0000026",
+        "x": 857,
+        "y": 806
+    },
+    {
+        "id": "BFO:0000038",
+        "x": -1245,
+        "y": -165
+    },
+    {
+        "id": "BFO:0000015",
+        "x": -995,
+        "y": 220
+    },
+    {
+        "id": "BFO:0000035",
+        "x": -918,
+        "y": -10
+    },
+    {
+        "id": "BFO:0000144",
+        "x": -1006,
+        "y": 327
+    },
+    {
+        "id": "BFO:0000019",
+        "x": 268,
+        "y": -845
+    },
+    {
+        "id": "BFO:0000017",
+        "x": 135,
+        "y": -1156
+    },
+    {
+        "id": "BFO:0000145",
+        "x": 373,
+        "y": -896
+    },
+    {
+        "id": "BFO:0000023",
+        "x": 166,
+        "y": -1238
+    },
+    {
+        "id": "BFO:0000029",
+        "x": 537,
+        "y": 435
+    },
+    {
+        "id": "BFO:0000006",
+        "x": 755,
+        "y": 724
+    },
+    {
+        "id": "BFO:0000011",
+        "x": -817,
+        "y": -60
+    },
+    {
+        "id": "BFO:0000020",
+        "x": 96,
+        "y": -747
+    },
+    {
+        "id": "BFO:0000008",
+        "x": -1153,
+        "y": -89
+    },
+    {
+        "id": "BFO:0000028",
+        "x": 858,
+        "y": 716
+    },
+    {
+        "id": "BFO:0000146",
+        "x": 937,
+        "y": 295
+    },
+    {
+        "id": "BFO:0000009",
+        "x": 782,
+        "y": 853
+    },
+    {
+        "id": "BFO:0000147",
+        "x": 833,
+        "y": 169
+    },
+    {
+        "id": "BFO:0000001",
+        "x": -486,
+        "y": -116
+    },
+    {
+        "id": "BFO:0000018",
+        "x": 700,
+        "y": 812
+    },
+    {
+        "id": "BFO:0000148",
+        "x": -1269,
+        "y": -64
+    }
+]
     //loadData('../datasets/miserables.json', doGraph)
-    loadData('data/bfo.json', doGraph)
+    loadData('data/obi.json', doGraph)
   </script>
 
 
