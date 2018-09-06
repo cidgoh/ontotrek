@@ -299,7 +299,16 @@
       }
 
       // Selection list of all node labels allows user to zoom in on one
-      document.getElementById("label_search").onchange = function(item){node_focus(dataLookup[this.value])}
+      document.getElementById("label_search").onchange = function(item){
+        if (this.value != '')
+          node_focus(dataLookup[this.value])
+      }
+
+      // Selection list of all node labels allows user to zoom in on one
+      document.getElementById("ontology").onchange = function(item){
+        loadData(this.value, doGraph)
+      }
+
 
       function get_term_id_urls(other_parents) {
         parents = []
@@ -574,12 +583,6 @@
         "y": -64
     }
   }
-
-
-      // Selection list of all node labels allows user to zoom in on one
-      document.getElementById("ontology").onchange = function(item){
-        loadData(this.value, doGraph)
-      }
 
 
     //loadData('../datasets/miserables.json', doGraph)
