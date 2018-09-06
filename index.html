@@ -88,11 +88,11 @@
     const GRAPH_BACKGROUND_COLOR = '#302020'
     const GRAPH_DIMENSIONS = 3
     // For BFO layout: -2000, .01, .011
-    const GRAPH_CHARGE_STRENGTH = -150 // -2000 for BFO
+    const GRAPH_CHARGE_STRENGTH = -600 // -2000 for BFO
     const GRAPH_VELOCITY_DECAY = 0.4 // default 0.4
     const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
-    const GRAPH_COOLDOWN = 7000 // default 15000
-    const GRAPH_PARTICLES = 2 // animation that shows directionality of links
+    const GRAPH_COOLDOWN = 20000 // default 15000
+    const GRAPH_PARTICLES = 1 // animation that shows directionality of links
     const ONTOLOGY_LOOKUP_URL = 'http://purl.obolibrary.org/obo/'
     const CAMERA_DISTANCE = 300
 
@@ -221,12 +221,12 @@
 
             switch (node.id) {
                case 'owl:Thing':
-                nodeRadius = 30; node.fx = 0; node.fy = 0; node.fz = 0; break;
+                nodeRadius = 30; node.fx = 0; node.fy = 0; node.fz = 1100; break;
             }
             const layout_node = layout[node.id]
             if (layout_node) {
               nodeRadius = 20;
-              node.fz = -100;
+              node.fz = 1000;
               node.fx = layout_node.x;
               node.fy = layout_node.y;
             }
@@ -358,183 +358,148 @@
       {"name": "w3-text-light-green", "color": "#8bc34a" },
     ]
 
-    layout = [
-    {
-        "id": "BFO:0000002",
+    layout = {
+    "BFO:0000002": {
         "x": -95,
         "y": -224
     },
-    {
-        "id": "BFO:0000140",
+    "BFO:0000140": {
         "x": 833,
         "y": 265
     },
-    {
-        "id": "BFO:0000016",
+    "BFO:0000016": {
         "x": 177,
         "y": -1402
     },
-    {
-        "id": "BFO:0000024",
+    "BFO:0000024": {
         "x": 34,
         "y": 571
     },
-    {
-        "id": "BFO:0000034",
+    "BFO:0000034": {
         "x": 201,
         "y": -1518
     },
-    {
-        "id": "BFO:0000031",
+    "BFO:0000031": {
         "x": -93,
         "y": -305
     },
-    {
-        "id": "BFO:0000182",
+    "BFO:0000182": {
         "x": -1098,
         "y": 274
     },
-    {
-        "id": "BFO:0000141",
+    "BFO:0000141": {
         "x": 553,
         "y": 362
     },
-    {
-        "id": "BFO:0000004",
+    "BFO:0000004": {
         "x": 146,
         "y": 193
     },
-    {
-        "id": "BFO:0000040",
+    "BFO:0000040": {
         "x": -3,
         "y": 475
     },
-    {
-        "id": "BFO:0000030",
+    "BFO:0000030": {
         "x": -102,
         "y": 515
     },
-    {
-        "id": "BFO:0000027",
+    "BFO:0000027": {
         "x": -55,
         "y": 600
     },
-    {
-        "id": "BFO:0000003",
+    "BFO:0000003": {
         "x": -841,
         "y": 22
     },
-    {
-        "id": "BFO:0000142",
+    "BFO:0000142": {
         "x": 932,
         "y": 196
     },
-    {
-        "id": "BFO:0000026",
+    "BFO:0000026": {
         "x": 857,
         "y": 806
     },
-    {
-        "id": "BFO:0000038",
+    "BFO:0000038": {
         "x": -1245,
         "y": -165
     },
-    {
-        "id": "BFO:0000015",
+    "BFO:0000015": {
         "x": -995,
         "y": 220
     },
-    {
-        "id": "BFO:0000035",
+    "BFO:0000035": {
         "x": -918,
         "y": -10
     },
-    {
-        "id": "BFO:0000144",
+    "BFO:0000144": {
         "x": -1006,
         "y": 327
     },
-    {
-        "id": "BFO:0000019",
+    "BFO:0000019": {
         "x": 268,
         "y": -845
     },
-    {
-        "id": "BFO:0000017",
+    "BFO:0000017": {
         "x": 135,
         "y": -1156
     },
-    {
-        "id": "BFO:0000145",
+    "BFO:0000145": {
         "x": 373,
         "y": -896
     },
-    {
-        "id": "BFO:0000023",
+    "BFO:0000023": {
         "x": 166,
         "y": -1238
     },
-    {
-        "id": "BFO:0000029",
+    "BFO:0000029": {
         "x": 537,
         "y": 435
     },
-    {
-        "id": "BFO:0000006",
+    "BFO:0000006": {
         "x": 755,
         "y": 724
     },
-    {
-        "id": "BFO:0000011",
+    "BFO:0000011": {
         "x": -817,
         "y": -60
     },
-    {
-        "id": "BFO:0000020",
+    "BFO:0000020": {
         "x": 96,
         "y": -747
     },
-    {
-        "id": "BFO:0000008",
+    "BFO:0000008": {
         "x": -1153,
         "y": -89
     },
-    {
-        "id": "BFO:0000028",
+    "BFO:0000028": {
         "x": 858,
         "y": 716
     },
-    {
-        "id": "BFO:0000146",
+    "BFO:0000146": {
         "x": 937,
         "y": 295
     },
-    {
-        "id": "BFO:0000009",
+    "BFO:0000009": {
         "x": 782,
         "y": 853
     },
-    {
-        "id": "BFO:0000147",
+    "BFO:0000147": {
         "x": 833,
         "y": 169
     },
-    {
-        "id": "BFO:0000001",
+    "BFO:0000001": {
         "x": -486,
         "y": -116
     },
-    {
-        "id": "BFO:0000018",
+    "BFO:0000018": {
         "x": 700,
         "y": 812
     },
-    {
-        "id": "BFO:0000148",
+    "BFO:0000148": {
         "x": -1269,
         "y": -64
     }
-]
+  }
     //loadData('../datasets/miserables.json', doGraph)
     loadData('data/obi.json', doGraph)
   </script>
