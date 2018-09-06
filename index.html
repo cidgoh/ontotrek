@@ -17,7 +17,8 @@
     .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
     .tooltip-id {font-size:.8rem;}
     #title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
-    #help {background-color:transparent; min-height:0;font-size:.8rem;}
+    #ontology {margin-top:0;margin-bottom:0;}
+    #help {background-color:transparent; min-height:0;font-size:.8rem;margin-top:0;}
     #term_id {overflow-y:hidden}
     #term_id a {text-decoration: none;}
     #label {}
@@ -49,7 +50,15 @@
   </div>
   <nav id="control" class="nav">
     <div id="title" class="text">OntoTrek Viewer</div>
-    <div id="help" class="text">Click on a node for details</div>
+
+    <select id="ontology" class="text">
+        <option value="">Select an ontology to view</option>
+        <option value="data/bfo.json">Basic Formal Ontology</option>
+        <option value="data/ido.json">Infectious Disease Ontology</option>
+        <option value="data/obi.json">Ontology for Biomedical Investigations (big)</option>
+    </select>
+
+    <div id="help" class="text">... then click on a node for its details</div>
     <div id="term_id" class="text"><span class="placeholder">id</span></div>
     <div id="label" class="text"><span class="placeholder">label</span></div>
     <div id="definition" class="text"><span class="placeholder">definition</span></div>
@@ -131,7 +140,7 @@
 
       dataLookup = {}
 
-      alert(colorLookup['OBI'])
+      //alert(colorLookup['OBI'])
 
       // Case for GEEM ontofetch.py ontology term specification table:
       if ('specifications' in rawData) {
@@ -191,19 +200,7 @@
           .linkOpacity(1)
           .linkDirectionalParticles(GRAPH_PARTICLES)
           .linkDirectionalParticleWidth(2)
-          .nodeAutoColorBy('color')
-          .onEngineStop(stuff => {
-            // For BFO graph, create a string version of layout so that other
-            // ontologies can be layed out under it.
-            /*
-            var nodes = []
-            for (item in dataLookup) {
-              var node = dataLookup[item];
-              nodes.push({"id":node.id, "x":parseInt(node.x), "y":parseInt(node.y)})
-            }
-            console.log(JSON.stringify(nodes, null, 4))
-            */
-          })
+          //.nodeAutoColorBy('color')
           // Why does link color not always correspond to d.target?
           /*.linkAutoColorBy(d => some bug})*/
           
@@ -277,13 +274,32 @@
 
             return group;
           })
+          .onEngineStop(stuff => {
+
+            // For BFO graph, create a string version of layout so that other
+            // ontologies can be layed out under it.
+            /*
+            var nodes = []
+            for (item in dataLookup) {
+              var node = dataLookup[item];
+              nodes.push({"id":node.id, "x":parseInt(node.x), "y":parseInt(node.y)})
+            }
+            console.log(JSON.stringify(nodes, null, 4))
+            */
+          })
 
           .graphData(data);
 
+      // End Graph setup ***********
+
+      if('BFO:0000001' in dataLookup) {
+        //Slight delay to enable engine to create reference points.  Ideally event for this.
+        setTimeout(function(){node_focus(dataLookup['BFO:0000001']) }, 2000)
+
+      }
+
       // Selection list of all node labels allows user to zoom in on one
       document.getElementById("label_search").onchange = function(item){node_focus(dataLookup[this.value])}
-
-
 
       function get_term_id_urls(other_parents) {
         parents = []
@@ -558,8 +574,16 @@
         "y": -64
     }
   }
+
+
+      // Selection list of all node labels allows user to zoom in on one
+      document.getElementById("ontology").onchange = function(item){
+        loadData(this.value, doGraph)
+      }
+
+
     //loadData('../datasets/miserables.json', doGraph)
-    loadData('data/ido.json', doGraph)
+    //loadData('data/ido.json', doGraph)
     //loadData('data/obi.json', doGraph)
   </script>
 
