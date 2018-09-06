@@ -1,0 +1,44 @@
+
+body { margin: 0; padding:0; background-color:white; } 
+
+#3d-graph {}
+#control {}
+#title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
+#ontology {}
+#help {background-color:transparent; min-height:0;font-size:.8rem;margin-top:0;}
+#term_id {overflow-y:hidden}
+#term_id a {text-decoration: none;}
+#label {}
+#definition {height:150px; overflow-y:scroll}
+#ui_definition {height:50px; overflow-y:scroll}
+#label_search {}
+
+select {margin-top:0;margin-bottom:0;}
+
+nav {
+  display: inline-block;
+  vertical-align: top;
+  border-left:1px solid silver;
+  width:24%;
+  height:100%;
+}
+
+.column {
+  font-size:.9rem;
+  font-family:arial;
+  display: inline-block;
+  vertical-align: top;
+  width: 74%;
+  height:100%
+}
+
+.text {
+  padding:3px;font-family:arial;
+  width:90%;margin:5%;
+  font-size:.8rem;
+  background-color: #F8F8F0;
+}
+.deprecated {color:red;}
+.placeholder {color:silver;}
+.scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
+.tooltip-id {font-size:.8rem;}
