@@ -14,7 +14,7 @@
     }
     .deprecated {color:red;}
     .placeholder {color:silver;}
-    .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5);; padding:10px;}
+    .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
     .tooltip-id {font-size:.8rem;}
     #title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
     #help {background-color:transparent; min-height:0;font-size:.8rem;}
@@ -85,7 +85,7 @@
   <script>
     const LABEL_MAX_LINE_LENGTH = 30  // label text will be cut after first word ending before this character limit.
     const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
-    const GRAPH_BACKGROUND_COLOR = '#302020'
+    const GRAPH_BACKGROUND_COLOR = 0x302020
     const GRAPH_DIMENSIONS = 3
     // For BFO layout: -2000, .01, .011
     const GRAPH_CHARGE_STRENGTH = -600 // -2000 for BFO
@@ -114,18 +114,24 @@
 
     function doGraph(rawData) {
 
-      // Create color table of prefixes
+      // Create color table lookup on prefixes
+      colorTable.sort(function(a,b) {return (a.color > b.color)}) // Color table too organized.
       colorLookup = {}
+
       if ('@context' in rawData) {
         //var lut_lookup = lut( "rainbow", 50 );
         //alert(rawData['@context'].length)
         //lut.setMax(rawData['@context'].length);
         counter = 1
         for (prefix in rawData['@context']){
-          colorLookup[prefix] = colorTable[counter].color
+          colorLookup[prefix] = colorTable[counter].code
           counter ++
         }
       }
+
+      dataLookup = {}
+
+      alert(colorLookup['OBI'])
 
       // Case for GEEM ontofetch.py ontology term specification table:
       if ('specifications' in rawData) {
@@ -133,7 +139,8 @@
 
         for (var item in rawData.specifications) {
           node = rawData.specifications[item]
-          node.color = colorLookup[ node.id.split(':')[0] ]
+          prefix = node.id.split(':')[0]
+          node.color = colorLookup[prefix]
           data.nodes.push(node)
         }
 
@@ -141,7 +148,7 @@
           node = rawData.specifications[item]
           parent_id = node.parent_id
           if (parent_id in rawData.specifications) {
-            data.links.push({source:parent_id, target: node.id})
+            data.links.push({source:parent_id, target: node.id, color: node.color})
           }
         }
       }
@@ -197,7 +204,8 @@
             console.log(JSON.stringify(nodes, null, 4))
             */
           })
-          .linkAutoColorBy(d => {return dataLookup[d.target].color} )
+          // Why does link color not always correspond to d.target?
+          /*.linkAutoColorBy(d => some bug})*/
           
           .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) // Text shown on mouseover. //${node.definition}
           //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
@@ -319,43 +327,93 @@
     }
 
     // https://www.w3schools.com/colors/colors_w3css.asp
+    // https://en.wikipedia.org/wiki/Web_colors#HTML_color_names
     var colorTable = [
-      {"name": "w3-text-amber", "color": "#ffc107" },
-      {"name": "w3-text-aqua", "color": "#00ffff" },
-      {"name": "w3-text-blue", "color": "#2196F3" },
-      {"name": "w3-text-light-blue", "color": "#87CEEB" },
-      {"name": "w3-text-brown", "color": "#795548" },
-      {"name": "w3-text-cyan", "color": "#00bcd4" },
-      {"name": "w3-text-blue-grey", "color": "#607d8b" },
-      {"name": "w3-text-green", "color": "#4CAF50" },
-      {"name": "w3-text-light-green", "color": "#8bc34a" },
-      {"name": "w3-text-indigo", "color": "#3f51b5" },
-      {"name": "w3-text-khaki", "color": "#b4aa50" },
-      {"name": "w3-text-lime", "color": "#cddc39" },
-      {"name": "w3-text-orange", "color": "#ff9800" },
-      {"name": "w3-text-deep-orange", "color": "#ff5722" },
-      {"name": "w3-text-pink", "color": "#e91e63" },
-      {"name": "w3-text-purple", "color": "#9c27b0" },
-      {"name": "w3-text-deep-purple", "color": "#673ab7" },
-      {"name": "w3-text-red", "color": "#f44336" },
-      {"name": "w3-text-sand", "color": "#fdf5e6" },
-      {"name": "w3-text-teal", "color": "#009688" },
-      {"name": "w3-text-yellow", "color": "#d2be0e" },
-      {"name": "w3-text-white", "color": "#fff" },
-      {"name": "w3-text-black", "color": "#000" },
-      {"name": "w3-text-grey", "color": "#757575" },
-      {"name": "w3-text-light-grey", "color": "#f1f1f1" },
-      {"name": "w3-text-dark-grey", "color": "#3a3a3a" },
-      //RECYCLE:
-      {"name": "w3-text-amber", "color": "#ffc107" },
-      {"name": "w3-text-aqua", "color": "#00ffff" },
-      {"name": "w3-text-blue", "color": "#2196F3" },
-      {"name": "w3-text-light-blue", "color": "#87CEEB" },
-      {"name": "w3-text-brown", "color": "#795548" },
-      {"name": "w3-text-cyan", "color": "#00bcd4" },
-      {"name": "w3-text-blue-grey", "color": "#607d8b" },
-      {"name": "w3-text-green", "color": "#4CAF50" },
-      {"name": "w3-text-light-green", "color": "#8bc34a" },
+    
+//{"color":"LightPink", "code":"#FFB6C1"},
+{"color":"Pink",  "code":"#FFC0CB"},
+{"color":"Crimson", "code":"#DC143C"},
+{"color":"PaleVioletRed", "code":"#DB7093"},
+{"color":"HotPink", "code":"#FF69B4"},
+//{"color":"DeepPink",  "code":"#FF1493"},
+{"color":"Orchid",  "code":"#DA70D6"},
+{"color":"Violet",  "code":"#EE82EE"},
+{"color":"Magenta", "code":"#FF00FF"},
+{"color":"Purple",  "code":"#800080"},
+//{"color":"DarkOrchid",  "code":"#9932CC"},
+{"color":"BlueViolet",  "code":"#8A2BE2"},
+{"color":"MediumPurple",  "code":"#9370DB"},
+{"color":"MediumSlateBlue", "code":"#7B68EE"},
+{"color":"Lavender",  "code":"#E6E6FA"},
+{"color":"RoyalBlue", "code":"#4169E1"},
+{"color":"LightSteelBlue",  "code":"#B0C4DE"},
+{"color":"DodgerBlue",  "code":"#1E90FF"},
+{"color":"SteelBlue", "code":"#4682B4"},
+{"color":"SkyBlue", "code":"#87CEEB"},
+{"color":"DeepSkyBlue", "code":"#00BFFF"},
+{"color":"PowderBlue",  "code":"#B0E0E6"},
+{"color":"LightCyan", "code":"#E0FFFF"},
+{"color":"PaleTurquoise", "code":"#AFEEEE"},
+{"color":"Cyan",  "code":"#00FFFF"},
+{"color":"DarkTurquoise", "code":"#00CED1"},
+{"color":"Teal",  "code":"#008080"},
+{"color":"MediumTurquoise", "code":"#48D1CC"},
+{"color":"LightSeaGreen", "code":"#20B2AA"},
+{"color":"Turquoise", "code":"#40E0D0"},
+{"color":"Aquamarine",  "code":"#7FFFD4"},
+{"color":"MediumAquamarine",  "code":"#66CDAA"},
+{"color":"MediumSpringGreen", "code":"#00FA9A"},
+{"color":"SpringGreen", "code":"#00FF7F"},
+{"color":"MediumSeaGreen",  "code":"#3CB371"},
+{"color":"SeaGreen",  "code":"#2E8B57"},
+{"color":"LightGreen",  "code":"#90EE90"},
+{"color":"PaleGreen", "code":"#98FB98"},
+{"color":"DarkSeaGreen",  "code":"#8FBC8F"},
+{"color":"LimeGreen", "code":"#32CD32"},
+{"color":"Lime",  "code":"#00FF00"},
+{"color":"Green", "code":"#008000"},
+{"color":"Chartreuse",  "code":"#7FFF00"},
+{"color":"LawnGreen", "code":"#7CFC00"},
+{"color":"GreenYellow", "code":"#ADFF2F"},
+{"color":"DarkOliveGreen",  "code":"#556B2F"},
+{"color":"YellowGreen", "code":"#9ACD32"},
+{"color":"OliveDrab", "code":"#6B8E23"},
+{"color":"LightGoldenrodYellow",  "code":"#FAFAD2"},
+{"color":"Ivory", "code":"#FFFFF0"},
+{"color":"Yellow",  "code":"#FFFF00"},
+{"color":"Olive", "code":"#808000"},
+{"color":"DarkKhaki", "code":"#BDB76B"},
+{"color":"LemonChiffon",  "code":"#FFFACD"},
+{"color":"PaleGoldenrod", "code":"#EEE8AA"},
+{"color":"Khaki", "code":"#F0E68C"},
+{"color":"Gold",  "code":"#FFD700"},
+{"color":"Goldenrod", "code":"#DAA520"},
+{"color":"DarkGoldenrod", "code":"#B8860B"},
+{"color":"Wheat", "code":"#F5DEB3"},
+{"color":"Orange",  "code":"#FFA500"},
+{"color":"NavajoWhite", "code":"#FFDEAD"},
+{"color":"AntiqueWhite",  "code":"#FAEBD7"},
+{"color":"Tan", "code":"#D2B48C"},
+{"color":"DarkOrange",  "code":"#FF8C00"},
+{"color":"Peru",  "code":"#CD853F"},
+{"color":"PeachPuff", "code":"#FFDAB9"},
+{"color":"SandyBrown",  "code":"#F4A460"},
+{"color":"Chocolate", "code":"#D2691E"},
+{"color":"Sienna",  "code":"#A0522D"},
+{"color":"LightSalmon", "code":"#FFA07A"},
+{"color":"Coral", "code":"#FF7F50"},
+{"color":"OrangeRed", "code":"#FF4500"},
+{"color":"Tomato",  "code":"#FF6347"},
+{"color":"Salmon",  "code":"#FA8072"},
+{"color":"RosyBrown", "code":"#BC8F8F"},
+{"color":"IndianRed", "code":"#CD5C5C"},
+{"color":"Red", "code":"#FF0000"},
+{"color":"Brown", "code":"#A52A2A"},
+{"color":"FireBrick", "code":"#B22222"},
+{"color":"DarkRed", "code":"#8B0000"},
+{"color":"Maroon",  "code":"#800000"},
+{"color":"Silver",  "code":"#C0C0C0"},
+{"color":"DarkGray",  "code":"#A9A9A9"}
     ]
 
     layout = {
@@ -501,7 +559,8 @@
     }
   }
     //loadData('../datasets/miserables.json', doGraph)
-    loadData('data/obi.json', doGraph)
+    loadData('data/ido.json', doGraph)
+    //loadData('data/obi.json', doGraph)
   </script>
 
 
