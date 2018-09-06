@@ -1,0 +1,224 @@
+<head>
+  <style> body { margin: 0; } </style>
+  <script src="js/bundle.js"></script>
+</head>
+
+<body>
+
+  <div id="3d-graph" width="600" style="width:600px"></div>
+
+  <!-- 
+    Graph parameters
+      https://github.com/vasturiano/3d-force-graph
+
+    Force node position with:
+      https://github.com/vasturiano/3d-force-graph/issues/90
+
+    Also see link hovering:
+      https://github.com/vasturiano/3d-force-graph/issues/14
+
+    See forcing link size:
+      https://github.com/d3/d3-force#forceLink
+
+    Example fetch of ontology using the GEEM platform "ontofetch.py" program. 
+    It returns a flat json list of terms branching from given root (defaults 
+    to owl:Entity)
+
+      python ontofetch.py http://purl.obolibrary.org/obo/bfo/2.0/bfo.owl -o data -r http://purl.obolibrary.org/obo/BFO_0000001
+      python ontofetch.py https://raw.githubusercontent.com/obi-ontology/obi/master/obi.owl -o data
+
+  -->
+  <script>
+    const LABEL_MAX_LINE_LENGTH = 60
+    const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
+
+    function loadData(URL, callback) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.overrideMimeType("application/json");
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          callback( JSON.parse(this.responseText) )
+        }
+      }
+      xhttp.open("GET", URL, true);
+      xhttp.send(null);
+    };
+
+    function doGraph(rawData) {
+      if ('specifications' in rawData) {
+        var data = {nodes:[], links:[]}
+
+        for (var item in rawData.specifications) {
+          node = rawData.specifications[item]
+          data.nodes.push(node)
+        }
+
+        for (var item in rawData.specifications) {
+          node = rawData.specifications[item]
+          parent_id = node.parent_id
+          if (parent_id in rawData.specifications) {
+            data.links.push({source:parent_id, target: node.id})
+          }
+        }
+      }
+      else {
+        var data = rawData
+      }
+
+      var dataLookup = {}
+      for (var item in data.nodes) {
+        dataLookup[data.nodes[item].id] = data.nodes[item]
+      }
+      
+      const elem = document.getElementById("3d-graph");
+
+      const Graph = ForceGraph3D()
+        (document.getElementById('3d-graph'))
+          .width('800')
+          .nodeAutoColorBy('group')
+          .numDimensions(2)
+          .forceEngine('d3') // So we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 },
+          //.d3Force('charge').strength(-150)
+          //.d3AlphaDecay([num]) //Getter/setter for the simulation intensity decay parameter, only applicable if using the d3 simulation engine.  0.0228
+          //.d3VelocityDecay([num])  //Getter/setter for the nodes' velocity decay that simulates the medium resistance, only applicable if using the d3 simulation engine.  0.4
+          //.d3Force('charge', function(test) {return 150})
+
+          .linkOpacity(1)
+          //.linkDirectionalParticles(1)
+          //.linkDirectionalParticleWidth(2)
+          //.nodeAutoColorBy(d => {return dataLookup[d.source].group} )
+          .linkAutoColorBy(d => {return dataLookup[d.source].group} )
+          .nodeLabel(node => `${node.id}: ${node.label} `) // Text shown on mouseover. //${node.definition}
+          .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+          .onNodeClick(node => window.open(`http://purl.obolibrary.org%2Fobo%2F${node.id}`, '_term'))
+          .onNodeClick(node => {
+            // Aim at node from outside it
+            const distance = 200;
+            //const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+            //TEST SWITCH TO 3D
+            //Graph.numDimensions(3)
+            Graph.cameraPosition(
+              { x: node.x, y: node.y, z: node.z + distance}, // new position
+              //{ x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+              node, // lookAt ({ x, y, z })
+              3000  // ms transition duration
+            )
+          })
+
+          .nodeThreeObject(node => {
+            // displays semi-sphere, then overlays with label text
+
+            var nodeRadius = 5;
+            var nodeColor = 0xff2020;
+            switch (node.id) {
+               case 'owl:Thing':
+                nodeRadius = 30;
+                nodeColor = 0xf0A000;
+                node.fx = 0;
+                node.fy = 0;
+                node.fz = 0;
+                break;
+
+              case 'oboInOwl:ObsoleteClass':
+                nodeRadius = 10;
+                nodeColor = 0xf0A000;
+                node.fx = 0;
+                node.fy = 1200;
+                node.fz = -100;
+                break;
+
+              case 'BFO:0000001': //entity
+                nodeRadius = 25;
+                nodeColor = 0xf0A000;
+                node.fx = 0;
+                node.fy = 0;
+                node.fz = -100;
+                break;
+              /*
+
+              case 'BFO:0000015': //process
+                nodeRadius = 25;
+                nodeColor = 0xf0A000;
+                node.fx = 0;
+                node.fy = 0;
+                node.fz = -100;
+                break;
+              case 'BFO:0000002': // continuant
+                nodeRadius = 20;
+                nodeColor = 0xf0A000;
+                node.fx = 1200;
+                node.fy = 0;
+                node.fz = -100;
+                break;
+              case 'BFO:0000004': // continuant
+                nodeRadius = 20;
+                nodeColor = 0xf0A000;
+                node.fx = 1300;
+                node.fy = 0;
+                node.fz = -100;
+                break;
+              case 'BFO:0000031': // generically dependent continuant
+                break;
+
+              case 'BFO:0000003': // occurant
+                nodeRadius = 20;
+                nodeColor = 0xf0A000;
+                node.fx = 1400;
+                node.fy = 0;
+                node.fz = -100;
+                break
+                */
+            }
+
+            //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
+            var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
+            var material = new THREE.MeshBasicMaterial( { color: nodeColor } );
+            var circle = new THREE.Mesh( geometry, material );
+            circle.position.set( 0, 0, 0 );
+
+
+            if (node.label) {
+              // label converted to first few words ...
+              var label = node.label.replace(LABEL_RE, '$1*');
+              var ptr = label.indexOf('*')
+              if (ptr > 0) label = label.split('*',1)[0] + ' ...'
+            }
+            else
+              var label = node.id
+
+            const sprite = new SpriteText(label);
+            sprite.color = node.color;
+            sprite.textHeight = 8;
+            sprite.fontSize = 20;
+            sprite.position.set( 0, 0, nodeRadius + 2 );
+
+            var height = sprite._canvas.height
+            var width = sprite._canvas.width
+
+            // HACK for background. Sprites always face camera. Need transparent image cropped
+            var spriteMap = new THREE.TextureLoader().load( "img/whitebox.png" );
+            var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0x808080 , opacity : 0.5} );
+            const sprite2 = new THREE.Sprite( spriteMaterial );
+            sprite2.position.set( 0, 0, nodeRadius + 1 );
+            sprite2.scale.set(width/2, 10 , 1);
+
+            var group = new THREE.Group();
+            group.add( circle );
+            group.add( sprite2 );
+            group.add( sprite );
+
+            return group;
+          })
+
+          .graphData(data);
+
+      // Spread nodes a little wider
+      //Graph.d3Force('charge').strength(-150);
+    }
+
+    //loadData('../datasets/miserables.json', doGraph)
+    loadData('data/bfo.json', doGraph)
+  </script>
+
+
+</body>
