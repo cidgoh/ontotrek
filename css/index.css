@@ -6,7 +6,7 @@ body { margin: 0; padding:0; background-color:white; }
 #title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
 #ontology {}
 #help {background-color:transparent; min-height:0;font-size:.8rem;margin-top:0;}
-#term_id {overflow-y:hidden}
+#term_id {overflow-y:hidden; background: #F8F8F0 url("globe.png") no-repeat  right; }
 #term_id a {text-decoration: none;}
 #label {}
 #definition {height:150px; overflow-y:scroll}
@@ -39,6 +39,7 @@ nav {
   background-color: #F8F8F0;
 }
 .deprecated {color:red;}
+.focus {color:blue;cursor:pointer;}
 .placeholder {color:silver;}
 .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
 .tooltip-id {font-size:.8rem;}

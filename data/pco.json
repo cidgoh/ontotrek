@@ -1,0 +1,1445 @@
+{
+    "@context": {
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "terms": "http://purl.org/dc/terms/",
+        "vcf": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "NDF-RT": "http://evs.nci.nih.gov/ftp1/NDF-RT/NDF-RT.owl#",
+        "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "xmls": "http://www.w3.org/2001/XMLSchema#",
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "BFO": "http://purl.obolibrary.org/obo/BFO_",
+        "UBERON": "http://purl.obolibrary.org/obo/UBERON_",
+        "GO": "http://purl.obolibrary.org/obo/GO_",
+        "RO": "http://purl.obolibrary.org/obo/RO_",
+        "ENVO": "http://purl.obolibrary.org/obo/ENVO_",
+        "PCO": "http://purl.obolibrary.org/obo/PCO_",
+        "PATO": "http://purl.obolibrary.org/obo/PATO_",
+        "IAO": "http://purl.obolibrary.org/obo/IAO_",
+        "PO": "http://purl.obolibrary.org/obo/PO_",
+        "NCBITaxon": "http://purl.obolibrary.org/obo/NCBITaxon_",
+        "CARO": "http://purl.obolibrary.org/obo/CARO_",
+        "CL": "http://purl.obolibrary.org/obo/CL_"
+    },
+    "metadata": {
+        "status": "release",
+        "type": "ontology",
+        "resource": "http://purl.obolibrary.org/obo/pco/imports/pato_import.owl"
+    },
+    "specifications": {
+        "RO:0002310": {
+            "parent_id": "BFO:0000015",
+            "definition": "A process occurring within or in the vicinity of an organism that exerts some causal influence on the organism via the interaction between an exposure stimulus and an exposure receptor. The exposure stimulus may be a process, material entity or condition (for example, lack of nutrients). The exposure receptor can be an organism, organism population or a part of an organism.",
+            "id": "RO:0002310",
+            "label": "exposure event or process"
+        },
+        "NCBITaxon:117570": {
+            "parent_id": "NCBITaxon:7776",
+            "id": "NCBITaxon:117570",
+            "label": "Teleostomi"
+        },
+        "GO:0007610": {
+            "definition": "The internally coordinated responses (actions or inactions) of animals (individuals or groups) to internal or external stimuli, via a mechanism that involves nervous system activity.",
+            "other_parents": [
+                "GO:0050896"
+            ],
+            "label": "behavior",
+            "parent_id": "GO:0008150",
+            "synonyms": "behavioral response to stimulus;behaviour;behavioural response to stimulus",
+            "id": "GO:0007610"
+        },
+        "GO:0030424": {
+            "parent_id": "GO:0043005",
+            "id": "GO:0030424",
+            "label": "axon"
+        },
+        "PCO:0000003": {
+            "parent_id": "PATO:0002003",
+            "definition": "A quality that inheres in a biological population.",
+            "id": "PCO:0000003",
+            "label": "quality of a population"
+        },
+        "PCO:0000018": {
+            "parent_id": "PCO:0000000",
+            "synonyms": "collection of organisms of the same species",
+            "definition": "A material entity that has as parts two or more organisms, viruses, or viroids of the same species and no members of any other species.",
+            "id": "PCO:0000018",
+            "label": "single-species collection of organisms"
+        },
+        "PCO:0000001": {
+            "parent_id": "PCO:0000018",
+            "definition": "A collection of organisms, all of the same species, that live in the same place.",
+            "id": "PCO:0000001",
+            "label": "population of organisms"
+        },
+        "PCO:0000000": {
+            "parent_id": "BFO:0000027",
+            "synonyms": "group of organism;organism collection",
+            "definition": "A material entity that consists of two or more organisms, viruses, or viroids.",
+            "other_parents": [
+                "PCO:0000031",
+                "PCO:0000031"
+            ],
+            "id": "PCO:0000000",
+            "label": "collection of organisms"
+        },
+        "PCO:0000007": {
+            "parent_id": "PCO:0000003",
+            "id": "PCO:0000007",
+            "label": "population death rate"
+        },
+        "PCO:0000006": {
+            "parent_id": "PCO:0000003",
+            "id": "PCO:0000006",
+            "label": "population birth rate"
+        },
+        "PCO:0000005": {
+            "parent_id": "BFO:0000015",
+            "definition": "A process that has as primary participant a population. ",
+            "id": "PCO:0000005",
+            "label": "population process"
+        },
+        "PCO:0000004": {
+            "parent_id": "PATO:0002003",
+            "definition": "A quality that inheres in a community.",
+            "id": "PCO:0000004",
+            "label": "quality of an ecological community"
+        },
+        "PCO:0000009": {
+            "parent_id": "oboInOwl:ObsoleteClass",
+            "definition": "The maximum number of individuals that can be supported in  a population that is growing according to logistic growth.",
+            "deprecated": "true",
+            "id": "PCO:0000009",
+            "label": "obsolete carrying capacity"
+        },
+        "PCO:0000008": {
+            "parent_id": "PCO:0000003",
+            "id": "PCO:0000008",
+            "label": "population growth rate"
+        },
+        "NCBITaxon:35493": {
+            "parent_id": "NCBITaxon:33090",
+            "id": "NCBITaxon:35493",
+            "label": "Streptophyta"
+        },
+        "PATO:0001241": {
+            "parent_id": "PATO:0000001",
+            "synonyms": "quality of a continuant;multiply inhering quality of a physical entity;monadic quality of a continuant;quality of continuant;quality of an object;quality of a single physical entity;monadic quality of an object;monadic quality of continuant",
+            "definition": "A quality which inheres in a continuant.",
+            "id": "PATO:0001241",
+            "label": "physical object quality"
+        },
+        "ENVO:01001000": {
+            "parent_id": "ENVO:01001110",
+            "definition": "An environmental system which is determined by a living organism.",
+            "id": "ENVO:01001000",
+            "label": "environmental system determined by an organism"
+        },
+        "PATO:0000402": {
+            "parent_id": "PATO:0002009",
+            "id": "PATO:0000402",
+            "label": "branched"
+        },
+        "ENVO:00000000": {
+            "parent_id": "ENVO:01000813",
+            "synonyms": "macroscopic spatial feature",
+            "id": "ENVO:00000000",
+            "label": "geographic feature"
+        },
+        "NCBITaxon:3041": {
+            "parent_id": "NCBITaxon:33090",
+            "synonyms": "green algae",
+            "id": "NCBITaxon:3041",
+            "label": "Chlorophyta"
+        },
+        "BFO:0000027": {
+            "parent_id": "BFO:0000040",
+            "id": "BFO:0000027",
+            "label": "object aggregate"
+        },
+        "BFO:0000020": {
+            "parent_id": "BFO:0000002",
+            "definition": "b is a specifically dependent continuant = Def. b is a continuant & there is some independent continuant c which is not a spatial region and which is such that b s-depends_on c at every time t during the course of b\u2019s existence. (axiom label in BFO2 Reference: [050-003])",
+            "id": "BFO:0000020",
+            "label": "specifically dependent continuant"
+        },
+        "PATO:0001236": {
+            "parent_id": "PATO:0000001",
+            "synonyms": "relational quality of occurrent;quality of a process;quality of occurrent;quality of process",
+            "definition": "A quality which inheres in an process.",
+            "id": "PATO:0001236",
+            "label": "process quality"
+        },
+        "BFO:0000023": {
+            "parent_id": "BFO:0000017",
+            "definition": "A realizable entity  the manifestation of which brings about some result or end that is not essential to a continuant  in virtue of the kind of thing that it is but that can be served or participated in by that kind of continuant  in some kinds of natural, social or institutional contexts.",
+            "id": "BFO:0000023",
+            "label": "role"
+        },
+        "GO:0044419": {
+            "parent_id": "GO:0051704",
+            "synonyms": "interspecies interaction;interspecies interaction with other organisms;interaction with another species",
+            "definition": "Any process in which an organism has an effect on an organism of a different species.",
+            "id": "GO:0044419",
+            "label": "interspecies interaction between organisms"
+        },
+        "BFO:0000141": {
+            "parent_id": "BFO:0000004",
+            "id": "BFO:0000141",
+            "label": "immaterial entity"
+        },
+        "GO:0051816": {
+            "parent_id": "GO:0007631",
+            "id": "GO:0051816",
+            "label": "acquisition of nutrients from other organism during symbiotic interaction"
+        },
+        "CARO:0001010": {
+            "parent_id": "PCO:0000031",
+            "definition": "Material anatomical entity that is a member of an individual species or is a viral or viroid particle.",
+            "id": "CARO:0001010",
+            "label": "organism or virus or viroid"
+        },
+        "CARO:0000014": {
+            "parent_id": "CARO:0000003",
+            "id": "CARO:0000014",
+            "label": "cell part"
+        },
+        "NCBITaxon:32524": {
+            "parent_id": "NCBITaxon:32523",
+            "synonyms": "amniotes",
+            "id": "NCBITaxon:32524",
+            "label": "Amniota"
+        },
+        "CARO:0000011": {
+            "parent_id": "CARO:0000006",
+            "other_parents": [
+                "RO:0002577"
+            ],
+            "id": "CARO:0000011",
+            "label": "connected anatomical system"
+        },
+        "NCBITaxon:32523": {
+            "parent_id": "NCBITaxon:1338369",
+            "synonyms": "tetrapods",
+            "id": "NCBITaxon:32523",
+            "label": "Tetrapoda"
+        },
+        "NCBITaxon:40674": {
+            "parent_id": "NCBITaxon:32524",
+            "synonyms": "mammals",
+            "id": "NCBITaxon:40674",
+            "label": "Mammalia"
+        },
+        "NCBITaxon:2": {
+            "parent_id": "NCBITaxon:131567",
+            "synonyms": "eubacteria",
+            "id": "NCBITaxon:2",
+            "label": "Bacteria"
+        },
+        "NCBITaxon:1": {
+            "parent_id": "BFO:0000040",
+            "id": "NCBITaxon:1",
+            "label": "root"
+        },
+        "PATO:0000322": {
+            "parent_id": "PATO:0000014",
+            "definition": "A color hue with high wavelength of the long-wave end of the visible spectrum, evoked in the human observer by radiant energy with wavelengths of approximately 630 to 750 nanometers.",
+            "id": "PATO:0000322",
+            "label": "red"
+        },
+        "IAO:0000409": {
+            "parent_id": "IAO:0000102",
+            "definition": "A denotator type indicates how a term should be interpreted from an ontological perspective.",
+            "id": "IAO:0000409",
+            "label": "denotator type"
+        },
+        "oboInOwl:Definition": {
+            "parent_id": "IAO:0000102",
+            "id": "oboInOwl:Definition"
+        },
+        "GO:0035176": {
+            "definition": "Behavior directed towards society, or taking place between members of the same species. Occurs predominantly, or only, in individuals that are part of a group.",
+            "other_parents": [
+                "GO:0051705"
+            ],
+            "label": "social behavior",
+            "parent_id": "GO:0051703",
+            "synonyms": "social behaviour",
+            "id": "GO:0035176"
+        },
+        "PCO:0000025": {
+            "parent_id": "oboInOwl:ObsoleteClass",
+            "deprecated": "true",
+            "id": "PCO:0000025",
+            "label": "red population"
+        },
+        "ENVO:00003075": {
+            "parent_id": "ENVO:01000010",
+            "id": "ENVO:00003075",
+            "label": "anthropogenic abiotic mesoscopic feature"
+        },
+        "ENVO:00003074": {
+            "parent_id": "ENVO:00003075",
+            "synonyms": "manufactured good",
+            "definition": "A material entity that has been processed by humans or their technology in any way, including intermediate products as well as final products.",
+            "id": "ENVO:00003074",
+            "label": "manufactured product"
+        },
+        "PCO:0000010": {
+            "parent_id": "PCO:0000004",
+            "definition": "The number of different species represented in an ecological community.",
+            "id": "PCO:0000010",
+            "label": "community species richness"
+        },
+        "PATO:0001338": {
+            "parent_id": "PATO:0002003",
+            "definition": "A biological sex quality inhering in a population of multiple sexes.",
+            "id": "PATO:0001338",
+            "label": "mixed sex"
+        },
+        "PCO:0000012": {
+            "parent_id": "PCO:0000011",
+            "definition": "A population process that leads to an increase in the numbers of individuals in a population following a logistic (S-shaped) curve. Generally occurs when the population has a carrying capacity in a particular habitat.",
+            "id": "PCO:0000012",
+            "label": "logistic population growth"
+        },
+        "PCO:0000013": {
+            "parent_id": "PCO:0000011",
+            "definition": "A population growth process that leads to an exponential increase in the number of individuals in a population.",
+            "id": "PCO:0000013",
+            "label": "exponential population growth"
+        },
+        "RO:0002577": {
+            "parent_id": "BFO:0000040",
+            "definition": "A material entity consisting of multiple components that are causally integrated.",
+            "id": "RO:0002577",
+            "label": "system"
+        },
+        "PCO:0000015": {
+            "parent_id": "BFO:0000023",
+            "id": "PCO:0000015",
+            "label": "prey role"
+        },
+        "PCO:0000016": {
+            "parent_id": "BFO:0000023",
+            "id": "PCO:0000016",
+            "label": "symbiont role"
+        },
+        "NCBITaxon:376913": {
+            "parent_id": "NCBITaxon:9443",
+            "id": "NCBITaxon:376913",
+            "label": "Haplorrhini"
+        },
+        "GO:0051703": {
+            "parent_id": "GO:0051704",
+            "synonyms": "intraspecies interaction with other organisms",
+            "definition": "Any process in which an organism has an effect on an organism of the same species.",
+            "id": "GO:0051703",
+            "label": "intraspecies interaction between organisms"
+        },
+        "GO:0051702": {
+            "parent_id": "GO:0044419",
+            "id": "GO:0051702",
+            "label": "interaction with symbiont"
+        },
+        "GO:0042995": {
+            "parent_id": "GO:0044464",
+            "id": "GO:0042995",
+            "label": "cell projection"
+        },
+        "NCBITaxon:2759": {
+            "parent_id": "NCBITaxon:131567",
+            "synonyms": "eucaryotes;eukaryotes",
+            "id": "NCBITaxon:2759",
+            "label": "Eukaryota"
+        },
+        "GO:0051705": {
+            "definition": "Any process in which an organism has a behavioral effect on another organism of the same or different species.",
+            "other_parents": [
+                "GO:0051704"
+            ],
+            "label": "multi-organism behavior",
+            "parent_id": "GO:0007610",
+            "synonyms": "behavioral interaction with other organism;behavioral interaction between organisms;behavioural interaction between organisms;behavioural interaction with other organism;behavioral signaling;behavioral signalling",
+            "id": "GO:0051705"
+        },
+        "GO:0051704": {
+            "parent_id": "GO:0008150",
+            "synonyms": "physiological interaction between organisms;physiological interaction with other organism;interaction between organisms",
+            "definition": "A biological process which involves another organism of the same or different species.",
+            "id": "GO:0051704",
+            "label": "multi-organism process"
+        },
+        "BFO:0000015": {
+            "parent_id": "BFO:0000003",
+            "definition": "An occurrent that has temporal proper parts and for some time t, p s-depends_on some material entity at t.",
+            "id": "BFO:0000015",
+            "label": "process"
+        },
+        "BFO:0000017": {
+            "parent_id": "BFO:0000020",
+            "definition": "A specifically dependent continuant  that inheres in continuant  entities and are not exhibited in full at every time in which it inheres in an entity or group of entities. The exhibition or actualization of a realizable entity is a particular manifestation, functioning or process that occurs under certain circumstances.",
+            "id": "BFO:0000017",
+            "label": "realizable entity"
+        },
+        "ENVO:01000637": {
+            "parent_id": "ENVO:00002297",
+            "definition": "Outer space is a hard vacuum containing a low density of particles, predominantly a plasma of hydrogen and helium as well as electromagnetic radiation, magnetic fields, neutrinos, dust and cosmic rays that exists between celestial bodies.",
+            "id": "ENVO:01000637",
+            "label": "outer space"
+        },
+        "BFO:0000016": {
+            "parent_id": "BFO:0000017",
+            "id": "BFO:0000016",
+            "label": "disposition"
+        },
+        "BFO:0000019": {
+            "parent_id": "BFO:0000020",
+            "id": "BFO:0000019",
+            "label": "quality"
+        },
+        "CARO:0000007": {
+            "parent_id": "BFO:0000141",
+            "id": "CARO:0000007",
+            "label": "immaterial anatomical entity"
+        },
+        "CARO:0000006": {
+            "parent_id": "BFO:0000040",
+            "id": "CARO:0000006",
+            "label": "material anatomical entity"
+        },
+        "CARO:0000003": {
+            "parent_id": "CARO:0000006",
+            "id": "CARO:0000003",
+            "label": "anatomical structure"
+        },
+        "NCBITaxon:9443": {
+            "parent_id": "NCBITaxon:314146",
+            "synonyms": "primate",
+            "id": "NCBITaxon:9443",
+            "label": "Primates"
+        },
+        "PCO:0000026": {
+            "parent_id": "oboInOwl:ObsoleteClass",
+            "deprecated": "true",
+            "id": "PCO:0000026",
+            "label": "red organism"
+        },
+        "GO:0007631": {
+            "parent_id": "GO:0007610",
+            "id": "GO:0007631",
+            "label": "feeding behavior"
+        },
+        "PO:0000003": {
+            "parent_id": "PO:0009011",
+            "synonyms": "planta entera (Spanish;exact);\\u690d\\u7269\\u4f53\\u5168\\u4f53 (Japanese;exact);liana (narrow);suffrutices (narrow);prothalli (narrow);frutex (narrow);frutices (narrow);bush (narrow);prothallium (narrow);suffrutex (narrow);woody clump (narrow);gametophyte (narrow);tree (narrow);shrub (narrow);vine (narrow);herb (narrow);seedling (narrow);prothallus (narrow);sporophyte (narrow)",
+            "definition": "A plant structure (PO:0005679) which is a whole organism.",
+            "id": "PO:0000003",
+            "label": "whole plant"
+        },
+        "ENVO:01000951": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system in which minimal to no anthropisation has occurred and non-human agents are the primary determinants of the system's dynamics and composition.",
+            "id": "ENVO:01000951",
+            "label": "natural environment"
+        },
+        "ENVO:01000952": {
+            "parent_id": "ENVO:02500027",
+            "synonyms": "anthropization",
+            "definition": "A process during which a natural environmental system is altered by human action.",
+            "id": "ENVO:01000952",
+            "label": "anthropisation"
+        },
+        "GO:0072519": {
+            "parent_id": "GO:0044403",
+            "id": "GO:0072519",
+            "label": "parasitism"
+        },
+        "PCO:0000038": {
+            "parent_id": "PCO:0000033",
+            "definition": "A human social gathering at which two people are married. May include a legal or social ceremony.",
+            "id": "PCO:0000038",
+            "label": "wedding"
+        },
+        "GO:0016881": {
+            "parent_id": "GO:0016879",
+            "id": "GO:0016881",
+            "label": "acid-amino acid ligase activity"
+        },
+        "NCBITaxon:2157": {
+            "parent_id": "NCBITaxon:131567",
+            "id": "NCBITaxon:2157",
+            "label": "Archaea"
+        },
+        "oboInOwl:Synonym": {
+            "parent_id": "IAO:0000102",
+            "id": "oboInOwl:Synonym"
+        },
+        "PCO:0000039": {
+            "parent_id": "PCO:0000033",
+            "definition": "A human social gathering at which the key participant is an expectant parent and other guests bring presents for the soon to be born baby.",
+            "id": "PCO:0000039",
+            "label": "baby shower"
+        },
+        "GO:0003674": {
+            "parent_id": "BFO:0000015",
+            "id": "GO:0003674",
+            "label": "molecular_function"
+        },
+        "PCO:0000020": {
+            "parent_id": "PCO:0000018",
+            "definition": "A domestic group, or a number of domestic groups linked through descent (demonstrated or stipulated) from a common ancestor, marriage, or adoption.",
+            "id": "PCO:0000020",
+            "label": "family"
+        },
+        "PCO:0000023": {
+            "parent_id": "PCO:0000004",
+            "definition": "A quality of a community that reflects how close in abundance all species in a community are.",
+            "id": "PCO:0000023",
+            "label": "community species evenness"
+        },
+        "PCO:0000022": {
+            "parent_id": "BFO:0000015",
+            "definition": "A process that ultimately leads to the death of all individuals in a population.",
+            "id": "PCO:0000022",
+            "label": "species extinction"
+        },
+        "PCO:0001000": {
+            "parent_id": "BFO:0000040",
+            "id": "PCO:0001000",
+            "label": "pair of interacting organisms"
+        },
+        "PATO:0000117": {
+            "parent_id": "PATO:0000051",
+            "definition": "A morphology quality inhering in a bearer by virtue of the bearer's physical magnitude.",
+            "id": "PATO:0000117",
+            "label": "size"
+        },
+        "NCBITaxon:33154": {
+            "parent_id": "NCBITaxon:2759",
+            "id": "NCBITaxon:33154",
+            "label": "Opisthokonta"
+        },
+        "PCO:0000029": {
+            "parent_id": "PCO:0000000",
+            "definition": "A collection of organisms that consists of two or more organisms from at least two species.",
+            "id": "PCO:0000029",
+            "label": "multi-species collection of organisms"
+        },
+        "PCO:0000028": {
+            "parent_id": "PCO:0000000",
+            "definition": "A collection of organisms of the same species whose members are all either genealogically related to each other or have mated with each other.",
+            "id": "PCO:0000028",
+            "label": "community"
+        },
+        "BFO:0000004": {
+            "parent_id": "BFO:0000002",
+            "definition": "A continuant that is a bearer of quality and realizable entity entities, in which other entities inhere and which itself cannot inhere in anything.",
+            "id": "BFO:0000004",
+            "label": "independent continuant"
+        },
+        "BFO:0000005": {
+            "parent_id": "oboInOwl:ObsoleteClass",
+            "definition": "A continuant  that is either dependent on one or other independent continuant  bearers or inheres in or is borne by other entities.",
+            "deprecated": "true",
+            "id": "BFO:0000005",
+            "label": "obsolete dependent continuant"
+        },
+        "BFO:0000002": {
+            "parent_id": "BFO:0000001",
+            "definition": "An entity that exists in full at any time in which it exists at all, persists through time while maintaining its identity and has no temporal parts.",
+            "id": "BFO:0000002",
+            "label": "continuant"
+        },
+        "BFO:0000003": {
+            "parent_id": "BFO:0000001",
+            "definition": "An entity that has temporal parts and that happens, unfolds or develops through time.",
+            "id": "BFO:0000003",
+            "label": "occurrent"
+        },
+        "BFO:0000001": {
+            "parent_id": "owl:Thing",
+            "id": "BFO:0000001",
+            "label": "entity"
+        },
+        "NCBITaxon:12884": {
+            "parent_id": "NCBITaxon:1",
+            "id": "NCBITaxon:12884",
+            "label": "Viroids"
+        },
+        "ENVO:01000744": {
+            "parent_id": "ENVO:00000070",
+            "definition": "A self-contained constructed feature used by one or more households as a home, such as a house, apartment, mobile home, houseboat or other 'substantial' structure. A dwelling typically includes nearby outbuildings, sheds etc. within the curtilage of the property, excluding any 'open fields beyond'. It has significance in relation to search and seizure, conveyancing of real property, burglary, trespass, and land use planning.",
+            "id": "ENVO:01000744",
+            "label": "human dwelling"
+        },
+        "IAO:0000030": {
+            "parent_id": "BFO:0000031",
+            "id": "IAO:0000030",
+            "label": "information content entity"
+        },
+        "PATO:0000051": {
+            "parent_id": "BFO:0000019",
+            "definition": "A quality of a single physical entity inhering in the bearer by virtue of the bearer's size or shape or structure.",
+            "other_parents": [
+                "PATO:0001241"
+            ],
+            "id": "PATO:0000051",
+            "label": "morphology"
+        },
+        "NCBITaxon:314146": {
+            "parent_id": "NCBITaxon:1437010",
+            "id": "NCBITaxon:314146",
+            "label": "Euarchontoglires"
+        },
+        "PCO:0000032": {
+            "parent_id": "PCO:0000020",
+            "synonyms": "genealogical family",
+            "definition": "A collection of organisms of the same species whose members are all either genealogically related to each other or have mated with each other.",
+            "id": "PCO:0000032",
+            "label": "biological family"
+        },
+        "NCBITaxon:9606": {
+            "parent_id": "NCBITaxon:9605",
+            "synonyms": "human;man",
+            "id": "NCBITaxon:9606",
+            "label": "Homo sapiens"
+        },
+        "NCBITaxon:9605": {
+            "parent_id": "NCBITaxon:207598",
+            "synonyms": "humans",
+            "id": "NCBITaxon:9605",
+            "label": "Homo"
+        },
+        "NCBITaxon:9604": {
+            "parent_id": "NCBITaxon:314295",
+            "synonyms": "great apes",
+            "id": "NCBITaxon:9604",
+            "label": "Hominidae"
+        },
+        "oboInOwl:DbXref": {
+            "parent_id": "IAO:0000102",
+            "id": "oboInOwl:DbXref"
+        },
+        "ENVO:02500000": {
+            "parent_id": "BFO:0000015",
+            "definition": "A process in which includes the components of an environmental system as participants.",
+            "id": "ENVO:02500000",
+            "label": "environmental system process"
+        },
+        "GO:0085030": {
+            "parent_id": "GO:0044403",
+            "id": "GO:0085030",
+            "label": "mutualism"
+        },
+        "GO:0085031": {
+            "parent_id": "GO:0044403",
+            "id": "GO:0085031",
+            "label": "commensalism"
+        },
+        "PCO:0000021": {
+            "parent_id": "PCO:0000005",
+            "definition": "A population process that ultimately leads to the death of all individuals in a population.",
+            "id": "PCO:0000021",
+            "label": "population extinction"
+        },
+        "GO:0016301": {
+            "parent_id": "GO:0016772",
+            "id": "GO:0016301",
+            "label": "kinase activity"
+        },
+        "PATO:0001291": {
+            "parent_id": "PATO:0001739",
+            "definition": "A physical quality that inheres in an bearer by virtue of how that bearer interacts with electromagnetic radiation.",
+            "id": "PATO:0001291",
+            "label": "electromagnetic (EM) radiation quality"
+        },
+        "NCBITaxon:10239": {
+            "parent_id": "NCBITaxon:1",
+            "id": "NCBITaxon:10239",
+            "label": "Viruses"
+        },
+        "PCO:0000033": {
+            "parent_id": "GO:0035176",
+            "definition": "A type of social behavior in which a collection of humans intentionally gathers together on a temporary basis to engage socially.",
+            "id": "PCO:0000033",
+            "label": "human social gathering activity"
+        },
+        "PCO:0000030": {
+            "parent_id": "PCO:0000024",
+            "definition": "A household in which the majority of the income of its members is derived from agricultural activities.",
+            "other_parents": [
+                "oboInOwl:ObsoleteClass"
+            ],
+            "id": "PCO:0000030",
+            "label": "agricultural household"
+        },
+        "PCO:0000031": {
+            "parent_id": "BFO:0000040",
+            "definition": "A material entity that is one or more organisms, viruses or viroids.",
+            "id": "PCO:0000031",
+            "label": "organismal entity"
+        },
+        "PCO:0000037": {
+            "parent_id": "PCO:0000033",
+            "id": "PCO:0000037",
+            "label": "potluck"
+        },
+        "PCO:0000034": {
+            "parent_id": "PCO:0000033",
+            "definition": "A human social event in which humans living in the same area or neighborhood gather to carry out activiites relevent to the people living in the area.",
+            "id": "PCO:0000034",
+            "label": "human community event"
+        },
+        "NCBITaxon:1437180": {
+            "parent_id": "NCBITaxon:58024",
+            "id": "NCBITaxon:1437180",
+            "label": "Acrogymnospermae"
+        },
+        "GO:0003824": {
+            "parent_id": "GO:0003674",
+            "id": "GO:0003824",
+            "label": "catalytic activity"
+        },
+        "PO:0025131": {
+            "parent_id": "BFO:0000040",
+            "synonyms": "\\u690d\\u7269 \\u89e3\\u5256\\u5b66\\uff08\\u5f62\\u614b\\uff09\\u7684\\u5b9f\\u4f53 (Japanese;exact);entidad anat&#243mica vegetal (Spanish;exact)",
+            "definition": "An anatomical entity that is or was part of a plant.",
+            "id": "PO:0025131",
+            "label": "plant anatomical entity"
+        },
+        "GO:0008150": {
+            "parent_id": "BFO:0000015",
+            "synonyms": "physiological process;biological process",
+            "definition": "Any process specifically pertinent to the functioning of integrated living units: cells, tissues, organs, and organisms. A process is a collection of molecular events with a defined beginning and end.",
+            "id": "GO:0008150",
+            "label": "biological_process"
+        },
+        "NCBITaxon:207598": {
+            "parent_id": "NCBITaxon:9604",
+            "id": "NCBITaxon:207598",
+            "label": "Homininae"
+        },
+        "PCO:0000011": {
+            "parent_id": "PCO:0000005",
+            "definition": "A process that leads to a change in the number of individuals (positive or negative) in a population.",
+            "id": "PCO:0000011",
+            "label": "population growth"
+        },
+        "PATO:0002124": {
+            "parent_id": "PATO:0000141",
+            "id": "PATO:0002124",
+            "label": "laminar"
+        },
+        "oboInOwl:Subset": {
+            "parent_id": "IAO:0000102",
+            "id": "oboInOwl:Subset"
+        },
+        "NCBITaxon:3398": {
+            "parent_id": "NCBITaxon:58024",
+            "synonyms": "angiosperms;flowering plants",
+            "id": "NCBITaxon:3398",
+            "label": "Magnoliophyta"
+        },
+        "GO:0004842": {
+            "parent_id": "GO:0019787",
+            "id": "GO:0004842",
+            "label": "ubiquitin-protein ligase activity"
+        },
+        "ENVO:00000002": {
+            "parent_id": "ENVO:00000000",
+            "definition": "An anthropogenic geographic feature is a geographic feature\nresulting from the influence of human beings on nature.",
+            "id": "ENVO:00000002",
+            "label": "anthropogenic geographic feature"
+        },
+        "PATO:0000068": {
+            "parent_id": "PATO:0000001",
+            "id": "PATO:0000068",
+            "label": "qualitative"
+        },
+        "PATO:0000069": {
+            "parent_id": "PATO:0000068",
+            "definition": "A quality inhering in a bearer by virtue of the whether the bearer differs from normal or average.",
+            "id": "PATO:0000069",
+            "label": "deviation(from_normal)"
+        },
+        "IAO:0000027": {
+            "parent_id": "IAO:0000030",
+            "id": "IAO:0000027",
+            "label": "data item"
+        },
+        "GO:0042734": {
+            "parent_id": "GO:0016020",
+            "other_parents": [
+                "GO:0044456"
+            ],
+            "id": "GO:0042734",
+            "label": "presynaptic membrane"
+        },
+        "PATO:0002009": {
+            "parent_id": "PATO:0000052",
+            "id": "PATO:0002009",
+            "label": "branchiness"
+        },
+        "GO:0016772": {
+            "parent_id": "GO:0016740",
+            "id": "GO:0016772",
+            "label": "transferase activity, transferring phosphorus-containing groups"
+        },
+        "GO:0050896": {
+            "parent_id": "GO:0008150",
+            "id": "GO:0050896",
+            "label": "response to stimulus"
+        },
+        "ENVO:01001002": {
+            "parent_id": "ENVO:01001000",
+            "synonyms": "Metazoan-associated environment",
+            "definition": "An environmental system determined by an animal.",
+            "id": "ENVO:01001002",
+            "label": "animal-associated environment"
+        },
+        "PATO:0001199": {
+            "parent_id": "PATO:0000052",
+            "id": "PATO:0001199",
+            "label": "linear"
+        },
+        "PATO:0002003": {
+            "parent_id": "PATO:0001241",
+            "definition": "A quality that inheres in an entire population or part of a population.",
+            "id": "PATO:0002003",
+            "label": "population quality"
+        },
+        "ENVO:01000817": {
+            "parent_id": "ENVO:01000813",
+            "definition": "A biosphere is an environmental system which includes, as parts, all the living entities within the gravitational sphere of influence of an astronomical body, and the non-living and dead entities which they interact with.",
+            "other_parents": [
+                "ENVO:01001110"
+            ],
+            "id": "ENVO:01000817",
+            "label": "biosphere"
+        },
+        "PO:0009011": {
+            "parent_id": "PO:0025131",
+            "synonyms": "estructura vegetal (Spanish;exact);\\u690d\\u7269 \\u69cb\\u9020 (Japanese;exact)",
+            "definition": "An anatomical structure that is or was part of a plant, or was derived from a part of a plant.",
+            "id": "PO:0009011",
+            "label": "plant structure"
+        },
+        "ENVO:01000813": {
+            "parent_id": "ENVO:00002297",
+            "definition": "A material part of an astronomical body.",
+            "id": "ENVO:01000813",
+            "label": "astronomical body part"
+        },
+        "ENVO:00002004": {
+            "parent_id": "ENVO:00002297",
+            "definition": "An environmental feature that is, or can be, contained and is predominantly composed of one or a few types of stuff.",
+            "id": "ENVO:00002004",
+            "label": "mesoscopic physical object"
+        },
+        "NCBITaxon:33090": {
+            "parent_id": "NCBITaxon:2759",
+            "synonyms": "green plants",
+            "id": "NCBITaxon:33090",
+            "label": "Viridiplantae"
+        },
+        "NCBITaxon:7711": {
+            "parent_id": "NCBITaxon:33511",
+            "synonyms": "chordates",
+            "id": "NCBITaxon:7711",
+            "label": "Chordata"
+        },
+        "GO:0016020": {
+            "parent_id": "GO:0044464",
+            "id": "GO:0016020",
+            "label": "membrane"
+        },
+        "NCBITaxon:9526": {
+            "parent_id": "NCBITaxon:314293",
+            "id": "NCBITaxon:9526",
+            "label": "Catarrhini"
+        },
+        "NCBITaxon:314295": {
+            "parent_id": "NCBITaxon:9526",
+            "synonyms": "ape;apes",
+            "id": "NCBITaxon:314295",
+            "label": "Hominoidea"
+        },
+        "NCBITaxon:7776": {
+            "parent_id": "NCBITaxon:7742",
+            "synonyms": "Gnathostomata;jawed vertebrates",
+            "id": "NCBITaxon:7776",
+            "label": "Gnathostomata <vertebrate>"
+        },
+        "NCBITaxon:33208": {
+            "parent_id": "NCBITaxon:33154",
+            "synonyms": "multicellular animals;metazoans",
+            "id": "NCBITaxon:33208",
+            "label": "Metazoa"
+        },
+        "PATO:0001739": {
+            "parent_id": "PATO:0001018",
+            "definition": "A quality that inheres in an bearer by virtue of how that bearer interacts with radiation.",
+            "id": "PATO:0001739",
+            "label": "radiation quality"
+        },
+        "GO:0019787": {
+            "parent_id": "GO:0016881",
+            "id": "GO:0019787",
+            "label": "small conjugating protein ligase activity"
+        },
+        "NCBITaxon:58023": {
+            "parent_id": "NCBITaxon:3193",
+            "synonyms": "vascular plants",
+            "id": "NCBITaxon:58023",
+            "label": "Tracheophyta"
+        },
+        "NCBITaxon:58024": {
+            "parent_id": "NCBITaxon:78536",
+            "synonyms": "seed plants",
+            "id": "NCBITaxon:58024",
+            "label": "Spermatophyta"
+        },
+        "GO:0005634": {
+            "parent_id": "GO:0044464",
+            "id": "GO:0005634",
+            "label": "nucleus"
+        },
+        "GO:0016740": {
+            "parent_id": "GO:0003824",
+            "id": "GO:0016740",
+            "label": "transferase activity"
+        },
+        "GO:0051850": {
+            "parent_id": "GO:0051702",
+            "other_parents": [
+                "GO:0051705",
+                "GO:0051816"
+            ],
+            "id": "GO:0051850",
+            "label": "acquisition of nutrients from symbiont"
+        },
+        "ENVO:01000804": {
+            "parent_id": "ENVO:00002297",
+            "definition": "An object which is composed of one or more gravitationally bound structures that are associated with a position in space.",
+            "id": "ENVO:01000804",
+            "label": "astronomical object"
+        },
+        "GO:0044456": {
+            "parent_id": "CARO:0000014",
+            "id": "GO:0044456",
+            "label": "synapse part"
+        },
+        "GO:0043005": {
+            "parent_id": "GO:0042995",
+            "id": "GO:0043005",
+            "label": "neuron projection"
+        },
+        "ENVO:02500027": {
+            "parent_id": "ENVO:02500000",
+            "definition": "An environmental process which is driven by the action of humans.",
+            "id": "ENVO:02500027",
+            "label": "anthropogenic environmental process"
+        },
+        "PCO:0000002": {
+            "definition": "A community of at least two different species, living in a particular area. Must have at least two populations of different species as members.",
+            "other_parents": [
+                "PCO:0000029"
+            ],
+            "label": "ecological community",
+            "parent_id": "PCO:0000028",
+            "synonyms": "multispecies community",
+            "id": "PCO:0000002"
+        },
+        "ENVO:01000254": {
+            "parent_id": "RO:0002577",
+            "synonyms": "environment",
+            "definition": "A system which has the disposition to environ one or more material entities.",
+            "id": "ENVO:01000254",
+            "label": "environmental system"
+        },
+        "RO:0002534": {
+            "parent_id": "RO:0002532",
+            "definition": "Any entity that can be divided into parts such that each part is an atomical unit of a sequence",
+            "id": "RO:0002534",
+            "label": "sequence bearer"
+        },
+        "RO:0002533": {
+            "parent_id": "RO:0002532",
+            "definition": "Any individual unit of a collection of like units arranged in a linear order",
+            "id": "RO:0002533",
+            "label": "sequence atomic unit"
+        },
+        "RO:0002532": {
+            "parent_id": "owl:Thing",
+            "definition": "Any entity that is ordered in discrete units along a linear axis.",
+            "id": "RO:0002532",
+            "label": "sequentially ordered entity"
+        },
+        "GO:0045211": {
+            "parent_id": "GO:0016020",
+            "other_parents": [
+                "GO:0044456"
+            ],
+            "id": "GO:0045211",
+            "label": "postsynaptic membrane"
+        },
+        "CL:0000540": {
+            "parent_id": "CL:0000000",
+            "id": "CL:0000540",
+            "label": "neuron"
+        },
+        "NCBITaxon:89593": {
+            "parent_id": "NCBITaxon:7711",
+            "synonyms": "Craniata",
+            "id": "NCBITaxon:89593",
+            "label": "Craniata <chordata>"
+        },
+        "NCBITaxon:117571": {
+            "parent_id": "NCBITaxon:117570",
+            "synonyms": "bony vertebrates",
+            "id": "NCBITaxon:117571",
+            "label": "Euteleostomi"
+        },
+        "NCBITaxon:6072": {
+            "parent_id": "NCBITaxon:33208",
+            "id": "NCBITaxon:6072",
+            "label": "Eumetazoa"
+        },
+        "PCO:1000002": {
+            "parent_id": "PCO:1000001",
+            "definition": "A population migration during which a population of humans moves from one area to another with the intention of settling permanently in the new location.",
+            "id": "PCO:1000002",
+            "label": "human population migration"
+        },
+        "PCO:1000003": {
+            "parent_id": "PCO:0000027",
+            "definition": "A migratory population of humans, travelling with the intention of settling in a new area.",
+            "id": "PCO:1000003",
+            "label": "human migratory population"
+        },
+        "PCO:1000000": {
+            "parent_id": "PCO:0000001",
+            "definition": "A population which is participating in a migration process.",
+            "id": "PCO:1000000",
+            "label": "migratory population"
+        },
+        "PCO:1000001": {
+            "parent_id": "PCO:0000005",
+            "definition": "A population process during which a population moves from one area to another.",
+            "id": "PCO:1000001",
+            "label": "population migration"
+        },
+        "ENVO:01001057": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system determined by part of a living or dead plant, or a whole small plant.",
+            "id": "ENVO:01001057",
+            "label": "environment associated with a plant part or small plant"
+        },
+        "PCO:1000004": {
+            "parent_id": "PCO:0000002",
+            "definition": "An ecological community which is composed of co-existing populations of microbial organisms that interact, directly or indirectly, such that they impact one another's ecological fitness.",
+            "id": "PCO:1000004",
+            "label": "microbial community"
+        },
+        "ENVO:01001055": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system determined by part of a living or dead animal, or a whole small animal.",
+            "id": "ENVO:01001055",
+            "label": "environment associated with an animal part or small animal"
+        },
+        "PATO:0000001": {
+            "parent_id": "BFO:0000020",
+            "synonyms": "trait",
+            "definition": "A dependent entity that inheres in a bearer by virtue of how the bearer is related to other entities",
+            "id": "PATO:0000001",
+            "label": "quality"
+        },
+        "ENVO:01001110": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system which includes both living and non-living components.",
+            "id": "ENVO:01001110",
+            "label": "ecosystem"
+        },
+        "UBERON:0001062": {
+            "parent_id": "BFO:0000004",
+            "definition": "Biological entity that is either an individual member of a biological species or constitutes the structural organization of an individual member of a biological species.",
+            "id": "UBERON:0001062",
+            "label": "anatomical entity"
+        },
+        "NCBITaxon:3193": {
+            "parent_id": "NCBITaxon:131221",
+            "synonyms": "plants;higher plants;land plants",
+            "id": "NCBITaxon:3193",
+            "label": "Embryophyta"
+        },
+        "oboInOwl:SynonymType": {
+            "parent_id": "IAO:0000102",
+            "id": "oboInOwl:SynonymType"
+        },
+        "NCBITaxon:32525": {
+            "parent_id": "NCBITaxon:40674",
+            "synonyms": "Theria",
+            "id": "NCBITaxon:32525",
+            "label": "Theria <Mammalia>"
+        },
+        "NCBITaxon:314293": {
+            "parent_id": "NCBITaxon:376913",
+            "id": "NCBITaxon:314293",
+            "label": "Simiiformes"
+        },
+        "GO:0044464": {
+            "parent_id": "CARO:0000014",
+            "id": "GO:0044464",
+            "label": "cell part"
+        },
+        "ENVO:00000428": {
+            "parent_id": "ENVO:01000254",
+            "id": "ENVO:00000428",
+            "label": "biome"
+        },
+        "PATO:0000161": {
+            "parent_id": "PATO:0002062",
+            "definition": "A quality of a single process inhering in a bearer by virtue of the bearer's occurrence per unit time.",
+            "id": "PATO:0000161",
+            "label": "rate"
+        },
+        "NCBITaxon:1437010": {
+            "parent_id": "NCBITaxon:9347",
+            "id": "NCBITaxon:1437010",
+            "label": "Boreoeutheria"
+        },
+        "NCBITaxon:1338369": {
+            "parent_id": "NCBITaxon:8287",
+            "id": "NCBITaxon:1338369",
+            "label": "Dipnotetrapodomorpha"
+        },
+        "NCBITaxon:131567": {
+            "parent_id": "NCBITaxon:1",
+            "id": "NCBITaxon:131567",
+            "label": "cellular organisms"
+        },
+        "PATO:0002301": {
+            "parent_id": "PATO:0000069",
+            "definition": "A quality that has a value that is decreased compared to normal or average.",
+            "id": "PATO:0002301",
+            "label": "decreased quality"
+        },
+        "NCBITaxon:78536": {
+            "parent_id": "NCBITaxon:58023",
+            "id": "NCBITaxon:78536",
+            "label": "Euphyllophyta"
+        },
+        "PATO:0002303": {
+            "parent_id": "PATO:0001241",
+            "definition": "A quality of an object that has a value that is decreased compared to normal or average.",
+            "other_parents": [
+                "PATO:0002301"
+            ],
+            "id": "PATO:0002303",
+            "label": "decreased object quality"
+        },
+        "ENVO:00010483": {
+            "parent_id": "BFO:0000040",
+            "synonyms": "portion of environmental material",
+            "definition": "A portion of environmental material is a fiat object which forms the medium or part of the medium of an environmental system.",
+            "id": "ENVO:00010483",
+            "label": "environmental material"
+        },
+        "PATO:0002062": {
+            "parent_id": "PATO:0001236",
+            "id": "PATO:0002062",
+            "label": "physical quality of a process"
+        },
+        "GO:0004872": {
+            "parent_id": "owl:Thing",
+            "id": "GO:0004872",
+            "label": "receptor activity"
+        },
+        "BFO:0000034": {
+            "parent_id": "BFO:0000016",
+            "id": "BFO:0000034",
+            "label": "function"
+        },
+        "CARO:0010004": {
+            "parent_id": "CARO:0001010",
+            "definition": "An individual member of a clade.",
+            "id": "CARO:0010004",
+            "label": "organism"
+        },
+        "CARO:0010000": {
+            "parent_id": "CARO:0000003",
+            "id": "CARO:0010000",
+            "label": "multicellular anatomical structure"
+        },
+        "IAO:0000078": {
+            "parent_id": "IAO:0000102",
+            "definition": "The curation status of the term. The allowed values come from an enumerated list of predefined terms. See the specification of these instances for more detailed definitions of each enumerated value.",
+            "id": "IAO:0000078",
+            "label": "curation status specification"
+        },
+        "IAO:0000102": {
+            "parent_id": "IAO:0000027",
+            "definition": "data about an ontology part is a data item about a part of an ontology, for example a term",
+            "id": "IAO:0000102",
+            "label": "data about an ontology part"
+        },
+        "GO:0045202": {
+            "parent_id": "CARO:0000014",
+            "id": "GO:0045202",
+            "label": "synapse"
+        },
+        "PCO:0001001": {
+            "parent_id": "PCO:0001000",
+            "id": "PCO:0001001",
+            "label": "pair of interacting organisms of the same species"
+        },
+        "GO:0030425": {
+            "parent_id": "GO:0043005",
+            "id": "GO:0030425",
+            "label": "dendrite"
+        },
+        "PCO:0000024": {
+            "parent_id": "PCO:0000031",
+            "definition": "A material entity that consists of one or more people who live in the same dwelling and also share at meals or living accommodation, and may consist of a single family or some other grouping of people.\n",
+            "id": "PCO:0000024",
+            "label": "household"
+        },
+        "PATO:0001300": {
+            "parent_id": "PATO:0001291",
+            "definition": "An EM radiation quality in which the EM radiation is within the fiat range of the spectrum visible deemed to be light.",
+            "id": "PATO:0001300",
+            "label": "optical quality"
+        },
+        "ENVO:01000983": {
+            "parent_id": "ENVO:01000813",
+            "definition": "An environmental system which includes, as parts, all the entities which have been constructed or manufactured by humans or their technology within the gravitational sphere of influence of an astronomical body.",
+            "id": "ENVO:01000983",
+            "label": "technosphere"
+        },
+        "IAO:0000225": {
+            "parent_id": "IAO:0000102",
+            "definition": "The reason for which a term has been deprecated. The allowed values come from an enumerated list of predefined terms. See the specification of these instances for more detailed definitions of each enumerated value.",
+            "id": "IAO:0000225",
+            "label": "obsolescence reason specification"
+        },
+        "PATO:0000014": {
+            "parent_id": "PATO:0001300",
+            "synonyms": "relative color;colour",
+            "definition": "A composite chromatic quality composed of hue, saturation and intensity parts.",
+            "id": "PATO:0000014",
+            "label": "color"
+        },
+        "BFO:0000040": {
+            "parent_id": "BFO:0000004",
+            "definition": "An independent continuant that is spatially extended whose identity is independent of that of other entities and can be maintained through time.",
+            "id": "BFO:0000040",
+            "label": "material entity"
+        },
+        "PATO:0000587": {
+            "definition": "A size quality which is relatively low.",
+            "other_parents": [
+                "PATO:0002303"
+            ],
+            "label": "decreased size",
+            "parent_id": "PATO:0000117",
+            "synonyms": "underdeveloped;hypoplasia",
+            "id": "PATO:0000587"
+        },
+        "PCO:0000035": {
+            "parent_id": "PCO:0000033",
+            "definition": "A human social gathering in which the intention is to have a good time. Often the intention is to celebrate something like a birthday, anniversary, or holiday, but there is not always a purpose.",
+            "id": "PCO:0000035",
+            "label": "party"
+        },
+        "PATO:0001018": {
+            "parent_id": "PATO:0001241",
+            "synonyms": "relational physical quality",
+            "definition": "A quality of a physical entity that exists through action of continuants at the physical level of organisation in relation to other entities.",
+            "id": "PATO:0001018",
+            "label": "physical quality"
+        },
+        "ENVO:01000799": {
+            "parent_id": "ENVO:01000804",
+            "definition": "An object which is naturally occuring, bound together by gravitational or electromagnetic forces, and surrounded by space.",
+            "id": "ENVO:01000799",
+            "label": "astronomical body"
+        },
+        "ENVO:00000070": {
+            "parent_id": "ENVO:00000002",
+            "synonyms": "constructed feature",
+            "definition": "A feature that has been constructed by deliberate human effort.",
+            "id": "ENVO:00000070",
+            "label": "construction"
+        },
+        "PCO:0000019": {
+            "parent_id": "PCO:0000004",
+            "definition": "The number of different species that are represented in a given community, weighted by their abundance. Community species diversity can be calculated in different ways, but consists of two components: species richness and species evenness.",
+            "id": "PCO:0000019",
+            "label": "community species diversity"
+        },
+        "owl:Thing": {
+            "datatype": "entity",
+            "id": "owl:Thing"
+        },
+        "NCBITaxon:33213": {
+            "parent_id": "NCBITaxon:6072",
+            "id": "NCBITaxon:33213",
+            "label": "Bilateria"
+        },
+        "PCO:0000017": {
+            "parent_id": "PCO:0000018",
+            "definition": "A collection of organisms that has as parts every organism of given species and no organisms of any other species.",
+            "id": "PCO:0000017",
+            "label": "species as a collection of organisms"
+        },
+        "GO:0016879": {
+            "parent_id": "GO:0016874",
+            "id": "GO:0016879",
+            "label": "ligase activity, forming carbon-nitrogen bonds"
+        },
+        "NCBITaxon:7742": {
+            "parent_id": "NCBITaxon:89593",
+            "synonyms": "Vertebrata;vertebrates",
+            "id": "NCBITaxon:7742",
+            "label": "Vertebrata <Metazoa>"
+        },
+        "NCBITaxon:9347": {
+            "parent_id": "NCBITaxon:32525",
+            "synonyms": "placental mammals;eutherian mammals;placentals",
+            "id": "NCBITaxon:9347",
+            "label": "Eutheria"
+        },
+        "NCBITaxon:33511": {
+            "parent_id": "NCBITaxon:33213",
+            "synonyms": "deuterostomes",
+            "id": "NCBITaxon:33511",
+            "label": "Deuterostomia"
+        },
+        "GO:0044403": {
+            "parent_id": "GO:0044419",
+            "id": "GO:0044403",
+            "label": "symbiosis, encompassing mutualism through parasitism"
+        },
+        "oboInOwl:ObsoleteClass": {
+            "parent_id": "owl:Thing",
+            "id": "oboInOwl:ObsoleteClass",
+            "label": "Obsolete Class"
+        },
+        "GO:0016874": {
+            "parent_id": "GO:0003824",
+            "id": "GO:0016874",
+            "label": "ligase activity"
+        },
+        "ENVO:01000313": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An anthropogenic environment is an environmental system which is the product of human activity.",
+            "id": "ENVO:01000313",
+            "label": "anthropogenic environment"
+        },
+        "GO:0040011": {
+            "parent_id": "owl:Thing",
+            "id": "GO:0040011"
+        },
+        "ENVO:01000993": {
+            "parent_id": "ENVO:01000952",
+            "definition": "A planned process during which raw or recycled materials are transformed into products for use or sale using labour and machines, tools, chemical and biological processing, or formulation.",
+            "id": "ENVO:01000993",
+            "label": "manufacturing process"
+        },
+        "PATO:0000141": {
+            "parent_id": "PATO:0000051",
+            "id": "PATO:0000141",
+            "label": "structure"
+        },
+        "ENVO:01000996": {
+            "parent_id": "ENVO:01000952",
+            "definition": "An process during which natural or manufactured materials and products are processed and arranged by humans or their technology into structures.",
+            "id": "ENVO:01000996",
+            "label": "construction process"
+        },
+        "ENVO:01000997": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system which is determined by materials bearing roughly homogeneous qualities.",
+            "id": "ENVO:01000997",
+            "label": "environmental system determined by a quality"
+        },
+        "ENVO:01000998": {
+            "parent_id": "ENVO:01000254",
+            "definition": "An environmental system within which an environmental material strongly influences the system's composition and properties.",
+            "id": "ENVO:01000998",
+            "label": "environmental system determined by a material"
+        },
+        "PATO:0001415": {
+            "parent_id": "PATO:0002003",
+            "definition": "A quality inhering in a population by virtue of the proportion of its members that are ill at a given time.",
+            "id": "PATO:0001415",
+            "label": "morbidity"
+        },
+        "PCO:0000027": {
+            "parent_id": "PCO:0000018",
+            "synonyms": "human population;human community",
+            "definition": "A collection of organisms of the same species that has as members only humans.",
+            "id": "PCO:0000027",
+            "label": "collection of humans"
+        },
+        "ENVO:00002297": {
+            "parent_id": "BFO:0000040",
+            "definition": "A material entity which determines an environmental system.",
+            "id": "ENVO:00002297",
+            "label": "environmental feature"
+        },
+        "ENVO:01000010": {
+            "parent_id": "ENVO:00002004",
+            "id": "ENVO:01000010",
+            "label": "abiotic mesoscopic physical object"
+        },
+        "BFO:0000031": {
+            "parent_id": "BFO:0000002",
+            "definition": "A continuant that is dependent on one or other independent continuant bearers. For every instance of A requires some instance of (an independent continuant type) B but which instance of B serves can change from time to time.",
+            "id": "BFO:0000031",
+            "label": "generically dependent continuant"
+        },
+        "CL:0000000": {
+            "parent_id": "CARO:0000003",
+            "id": "CL:0000000",
+            "label": "cell"
+        },
+        "PATO:0000052": {
+            "parent_id": "PATO:0000051",
+            "id": "PATO:0000052",
+            "label": "shape"
+        },
+        "NCBITaxon:8287": {
+            "parent_id": "NCBITaxon:117571",
+            "id": "NCBITaxon:8287",
+            "label": "Sarcopterygii"
+        },
+        "CARO:0001000": {
+            "parent_id": "CARO:0000003",
+            "id": "CARO:0001000",
+            "label": "multi-cell-part structure"
+        },
+        "CARO:0001001": {
+            "parent_id": "CARO:0001000",
+            "id": "CARO:0001001",
+            "label": "neuron projection bundle"
+        },
+        "PCO:0000014": {
+            "parent_id": "BFO:0000023",
+            "id": "PCO:0000014",
+            "label": "predator role"
+        },
+        "NCBITaxon:131221": {
+            "parent_id": "NCBITaxon:35493",
+            "id": "NCBITaxon:131221",
+            "label": "Streptophytina"
+        },
+        "BFO:0000029": {
+            "parent_id": "BFO:0000141",
+            "id": "BFO:0000029",
+            "label": "site"
+        }
+    }
+}
