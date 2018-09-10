@@ -2,23 +2,30 @@
 body { margin: 0; padding:0; background-color:white; } 
 
 #3d-graph {}
-#control {}
-#title {font-weight:bold; font-size:1.3rem;background-color:transparent;}
+#title {font-weight:bold; font-size:1.3rem; background-color:transparent;}
 #ontology {}
-#help {background-color:transparent; min-height:0;font-size:.8rem;margin-top:0;}
-#term_id {overflow-y:hidden; background: #F8F8F0 url("globe.png") no-repeat  right; }
-#term_id a {text-decoration: none;}
-#label {}
-#definition {height:150px; overflow-y:scroll}
+#control {
+  background-color: #D8EFFF; 
+  padding:7px;
+  font-size: .8rem;
+  line-height: 1.2rem;
+}
+#faster {white-space: nowrap; background:transparent;padding:3px;}
+#faster input {margin:0;}
+
+#label {font-weight:bold; font-size:1.1rem;
+  margin-left:10%;margin-right:0%;width:85%;
+}
+.label_id {font-weight:normal; font-size:.8rem;}
+#children {margin-left:15%;margin-right:0%;width:80%;}
+#definition {height:100px; overflow-y:scroll}
+#ui_label {}
 #ui_definition {height:50px; overflow-y:scroll}
 #label_search {}
-
-select {margin-top:0;margin-bottom:0;}
-
+#depth_control {width:50px !important;}
 nav {
   display: inline-block;
   vertical-align: top;
-  border-left:1px solid silver;
   width:24%;
   height:100%;
 }
@@ -29,12 +36,14 @@ nav {
   display: inline-block;
   vertical-align: top;
   width: 74%;
-  height:100%
+  height:100%;
+  border-right: 1px solid silver;
 }
 
 .text {
   padding:3px;font-family:arial;
-  width:90%;margin:5%;
+  width:90%;margin-left:5%;margin-right:5%;
+  margin-top:5px;
   font-size:.8rem;
   background-color: #F8F8F0;
 }
@@ -43,3 +52,7 @@ nav {
 .placeholder {color:silver;}
 .scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
 .tooltip-id {font-size:.8rem;}
+
+select {margin:5px 0 5px 0 !important; width:100% !important}
+
+.chosen-container {padding:0;margin-left:0;}

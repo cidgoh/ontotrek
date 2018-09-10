@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link href="css/index.css" rel="stylesheet" type="text/css">
-    <script src="js/bundle.js"></script>
+    <link rel="stylesheet" href="js/chosen/chosen.css">
   </head>
 
   <body>
@@ -13,51 +13,113 @@
 
       <img src="img/introduction.png" align="right" style="margin:30px"/>
       <div style="padding-top:20px;padding-left:30px">
-        <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of 3d graph rendering software. We have a few ontologies to choose from during this alpha/beta phase - some easy to load like IDO, some too big, like CLO and GenEpiO - they don't fully organize before the force placement algorithm ends.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak". OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play. Currently it displays all class-subclass relations starting from owl:Entity or BFO:0000001 Entity. (Its actually running off of flat JSON versions of the given ontologies, which were generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
+        <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "skeleton", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
 
-        <p>Changes in the presentation of the graph are planned so that a more hierarchic, mountain-like display with upper level terms is shown, enabling users to have a stable (BFO) reference point over time.</p>
+        <p>OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play. Currently it displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
 
-        <p> Use mouse or trackpad to rotate, zoom, or pan the display.  Click on a node to focus on it; rotation will occur around that item. Clicking on a link will take you to its child node.  Click on dashboard parent to navigate up to top.</p>
+        <p> Use mouse or trackpad to rotate, zoom, or pan the display.  Click on a node to focus on it; rotation will occur around that item. Clicking on a link will take you to its child node.  Click on dashboard parent to navigate up to top, or on child to journey into the depths.</p>
 
         <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
       </div>
     </div>
 
-    <nav id="control" class="nav">
+    <nav class="nav">
       <div id="title" class="text">OntoTrek Viewer</div>
 
-      <select id="ontology" class="text">
-          <option value="">Select an ontology to view</option>
-          <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
-          <option value="data/obi.json">OBI: Ontology for Biomedical Investigations (big)</option>
-          <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
-          <option value="data/hp.json">HP: Human Phenotype Ontology (giant)</option>
-          <option value="data/agro.json">AGRO: Agronomy Ontology</option>
-          <option value="data/aro.json">ARO: Antibiotic Resistance Ontology</option>
-          <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
-          <option value="data/pato.json">PATO: Phenotype and Trait Ontology</option>          
-          <option value="data/pco.json">PCO: Population and Community Ontology</option>   
-          <option value="data/po.json">PO: Plant Ontology (anatomical branch)</option> 
-          <option value="data/clo_merged.json">CLO: Cell Line Ontology (too big! 40k)</option> 
-          <option value="data/cmo.json">CMO: Clinical Measurements Ontology (CMO)</option>  
-          <option value="data/eco.json">ECO: Evidence & Conclusion Ontology (ECO)  </option>  
-          <option value="data/genepio.json">GENEPIO: Genomic Epidemiology Ontology (too big 16K)</option>                 
-          <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
-      </select>
+      <div id="control" class="text">
 
-      <div id="help" class="text">Click on a graph node to focus on it</div>
-      <div id="term_id" class="text"><span class="placeholder">id</span></div>
+        <select id="ontology" class="text">
+            <option value="">Select an ontology to view</option>
+            <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
+            <option value="data/agro.json">AGRO: Agronomy Ontology</option>
+            <option value="data/aro.json">ARO: Antibiotic Resistance Ontology</option>
+            <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K nodes)</option> 
+            <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
+            <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
+            <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
+            <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
+            <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
+            <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
+            <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
+            <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
+            <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
+            <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
+            <option value="data/obi.json">OBI: Ontology for Biomedical Investigations</option>
+            <option value="data/pato.json">PATO: Phenotype and Trait Ontology</option>          
+            <option value="data/pco.json">PCO: Population and Community Ontology</option>   
+            <option value="data/po.json">PO: Plant Ontology (anatomical branch)</option> 
+
+        </select>
+
+        <span id="faster">
+          render: <input type="checkbox" id="render_quicker">
+          <label for="render_quicker">skeleton</label>
+          &nbsp;
+          <input type="checkbox" id="render_labels" checked="checked">
+          <label for="render_labels">labels</label>
+          &nbsp;
+          <input type="checkbox" id="render_galaxy">
+          <label for="render_galaxy">galactic</label>
+        </span>
+
+        <br/>
+               
+        <span id="depth">
+          <label for="depth_control">depth filter:</label>
+          <select id="depth_control">
+            <option value="50">all</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="7">8</option>
+            <option value="7">9</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+          </select>
+        </span>
+        &nbsp;
+
+        <span id="deprecated">
+          <input type="checkbox" id="render_deprecated">
+          <label for="render_deprecated"> see deprecated</label>
+        </span>
+        <br/>
+
+
+        <!-- Now click or navigate within graph display -->
+
+        <select id="label_search" class="regular text"></select>
+
+      </div>
+ 
+      <!-- textarea id="dump" rows="10" cols="50" -->
+        
+      </textarea>
+
+      <div class="text" style="background-color:transparent"><i>Graphs are rendered in two passes, with a pause in-between. Runs best on Power CPUs!</i></div>
+
+      <div id="status" class="text"><span class="placeholder">term count</span></div>
+      <div id="parents" class="text"><span class="placeholder">parent(s)</span></div>
+      <!-- div id="term_id" class="text"><span class="placeholder">id</span></div -->
       <div id="label" class="text"><span class="placeholder">label</span></div>
+      <div id="children" class="text">
+        <select id="select_child" class="text"></select>
+      </div>
       <div id="definition" class="text"><span class="placeholder">definition</span></div>
       <div id="synonyms" class="text"><span class="placeholder">synonyms</span></div>
-      <div id="parents" class="text"><span class="placeholder">parents</span></div>
       <div id="ui_label" class="text"><span class="placeholder">UI label</span></div>
       <div id="ui_definition" class="text"><span class="placeholder">UI definition</span></div>
-      <hr size="1">
-      <select id="label_search" class="text"><option value="">Select a term to focus it ...</option></select>
+
+     
+
     </nav>
 
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/chosen/chosen.jquery.min.js"></script>
+    <script src="js/bundle.js"></script>
+    <script src="js/lookup_tables.js"></script>
     <script src="js/development.js"></script>
-     
+
   </body>
 </html>

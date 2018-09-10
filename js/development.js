@@ -15,9 +15,10 @@ Also see link hovering:
 See forcing link size:
   https://github.com/d3/d3-force#forceLink
 
-Example fetch of ontology using the GEEM platform "ontofetch.py" program. 
+Example fetchs of ontology using the GEEM platform "ontofetch.py" program. 
 It returns a flat json list of terms branching from given root (defaults 
-to owl:Entity)
+to owl:Entity). No option currently to retrieve all terms - terms must have
+a single root.
 
   python ontofetch.py http://purl.obolibrary.org/obo/bfo/2.0/bfo.owl -o data -r http://purl.obolibrary.org/obo/BFO_0000001
   python ontofetch.py https://raw.githubusercontent.com/obi-ontology/obi/master/obi.owl -o data
@@ -37,31 +38,112 @@ to owl:Entity)
 
 ******************************************************************************/
 
+RENDER_QUICKER = false
+RENDER_DEPTH = 50
+RENDER_GALAXY = false
+RENDER_DEPRECATED = false
+RENDER_LABELS = true
+
 const LABEL_MAX_LINE_LENGTH = 30  // label text will be cut after first word ending before this character limit.
 const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
+const GRAPH_DOM_EL = $("#3d-graph");
 const GRAPH_BACKGROUND_COLOR = 0x302020
 const GRAPH_DIMENSIONS = 3
 // For BFO layout: -2000, .01, .011
-const GRAPH_CHARGE_STRENGTH = -600 // -2000 for BFO
+const GRAPH_CHARGE_STRENGTH = -100 // -2000 for BFO
+const GRAPH_NODE_DEPTH = 100
 const GRAPH_VELOCITY_DECAY = 0.4 // default 0.4
 const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
-const GRAPH_COOLDOWN = 20000 // default 15000
+const GRAPH_COOLDOWN = 30000 // default 15000
 const GRAPH_PARTICLES = 1 // animation that shows directionality of links
 const ONTOLOGY_LOOKUP_URL = 'http://purl.obolibrary.org/obo/'
-const CAMERA_DISTANCE = 300
+const CAMERA_DISTANCE = 300.0
+const NO_LABELS = false
 
-const elem = document.getElementById("3d-graph");
+dataLookup = {}
+
+init_search() 
 
 // Selection list of all node labels allows user to zoom in on one
-document.getElementById("ontology").onchange = function(item){
-  loadData(this.value, do_graph)
+$("#ontology")
+  .on('change', function(item){
+    if (this.value > '') {
+      loadData(this.value, do_graph)
+    }
+  })
+
+
+
+// Try this in case URL had path, before chosen() is applied 
+var auto_load = document.location.href.indexOf('?ontology=')
+if (auto_load) {
+    var choice = document.location.href.substr(auto_load+10)
+    $("#ontology").children(`option[value="data/${choice}.json"]`).attr("selected","selected");
+    $("#ontology").trigger('change')
 }
 
+$("#ontology").chosen({placeholder_text_single: 'Select an item ...'})
+
 // Selection list of all node labels allows user to zoom in on one
-document.getElementById("label_search").onchange = function(item){
+$("#label_search").on('change', function(item){
   if (this.value != '')
     node_focus(top.dataLookup[this.value])
-}
+})
+
+// Top level setting controls whether shortcuts on rendering speed things up
+$("#render_deprecated").on('change', function(item) {
+  RENDER_DEPRECATED = this.checked
+  if (Graph) do_graph (top.rawData)
+})
+
+// Top level setting controls whether shortcuts on rendering speed things up
+$("#render_quicker").on('change', function(item) {
+  RENDER_QUICKER = this.checked
+  if (top.Graph) {
+    // Have to put this here because Graph.graphData bypasses do_graph
+    Graph.linkDirectionalParticles(  (data.nodes.length > 4000 || RENDER_QUICKER) ? 0 : GRAPH_PARTICLES)
+    refresh_graph();
+  }
+})
+
+$("#render_labels").on('change', function(item) {
+  RENDER_LABELS = this.checked
+  if (top.Graph) {
+    refresh_graph();
+  }
+})
+
+
+// Galaxy or hierarchic view
+$("#render_galaxy").on('change', function(item) {
+  RENDER_GALAXY = this.checked
+  if (top.Graph) {
+    let { nodes, links } = Graph.graphData();
+    for (item in nodes) {
+      var node = nodes[item]
+      if (!layout[node.id]) {
+        if (RENDER_GALAXY) { // release z position.
+          node.fz = null  
+        }
+        else // reestablish z hierarchy
+          node.fz = 500 - node.depth * GRAPH_NODE_DEPTH;
+      }
+    }
+    Graph.graphData({"nodes":nodes, "links":links})
+  }
+})
+
+// Controls depth of nodes being rendered.
+$("#depth_control").on('change', function(item) {
+  RENDER_DEPTH = parseInt(this.value)
+  if (Graph) do_graph (top.rawData)
+})
+
+// Selection list of all node labels allows user to zoom in on one
+$("#select_child").on('change', function(item){
+  if (this.value != '')
+    node_focus(top.dataLookup[this.value])
+})
 
 
 function loadData(URL, callback) {
@@ -69,7 +151,13 @@ function loadData(URL, callback) {
   xhttp.overrideMimeType("application/json");
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      callback( JSON.parse(this.responseText) )
+      try {
+        var data = JSON.parse(this.responseText)
+      }
+      catch(err) {
+        alert(err.message);
+      }
+      callback(data )
     }
   }
   xhttp.open("GET", URL, true);
@@ -82,61 +170,27 @@ function do_graph(rawData) {
   Main function for loading a new data file and rendering a graph of it.
 
   */
-  top.Graph = init()
+  $(document.body).css({'cursor' : 'wait'});
 
-  top.dataLookup = {}
-  var data = {nodes:[], links:[]}
+  top.Graph = init() // Any possible memory leak on reload?
+  top.rawData = rawData
 
-  // Case for GEEM ontofetch.py ontology term specification table:
-  if ('specifications' in rawData) {
-    for (var item in rawData.specifications) {
-      node = rawData.specifications[item]
-      prefix = node.id.split(':')[0]
-      if (prefix in colorMapping)
-        node.color = colorMapping[prefix].code
-      else {
-        console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
-        node.color = 'red'
-      }
-      data.nodes.push(node)
-    }
+  // Usual case for GEEM ontofetch.py ontology term specification table:
+  data = init_geem_data(rawData)
 
-    for (var item in rawData.specifications) {
-      node = rawData.specifications[item]
-      parent_id = node.parent_id
-      if (parent_id in rawData.specifications) {
-        data.links.push({source:parent_id, target: node.id, color: node.color})
-      }
+  init_search(data) 
 
-      // ESTABLISH "LIGHT" LINKS TO OTHER PARENTS?
-    }
-  }
-  else {
-    data = rawData
-  }
-
-  data.nodes.sort(function(a,b) {return (a.label === undefined || a.label.localeCompare(b.label))})
-
-  const label_search = document.getElementById("label_search")
-  for (var item in data.nodes) {
-    top.dataLookup[data.nodes[item].id] = data.nodes[item]
-
-    var option = document.createElement("option");
-    option.text = data.nodes[item].label;
-    option.value = data.nodes[item].id
-    label_search.add(option);
-
-  }
-  
   //function updateGeometries() {
   //  Graph.nodeRelSize(4); // trigger update of 3d objects in scene
   //}
 
   // Too much overhead for particles on larger graphs 
-  Graph.linkDirectionalParticles( data.nodes.length > 4000 ? 0 : 1)
+  Graph.linkDirectionalParticles( (data.nodes.length > 4000 || RENDER_QUICKER) ? 0 : GRAPH_PARTICLES)
 
   // Spread nodes a little wider
   Graph.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH);
+  //Graph.d3Force('link').strength(100);
+  //Graph.d3Force('center').strength(10);
 
   // Getter/setter for the simulation intensity decay parameter, only 
   // applicable if using the d3 simulation engine.  
@@ -146,39 +200,120 @@ function do_graph(rawData) {
   // resistance, only applicable if using the d3 simulation engine.
   //Graph.d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
 
-  Graph.graphData(data);
+  // Incrementally adds graph nodes in batches until maximum depth reached
+  /*
+  if (data.nodes.length) {
+      //console.log(top.dataLookup)
+      var maxDepth = top.builtData.nodes[top.builtData.nodes.length-1].depth;
+      var depth = 1;
+      var depthIterator = setInterval(function(){
+        //console.log(depth);
 
+        var newNodes = top.builtData.nodes.filter(n => n.depth >= depth)
+        var newLinks = top.builtData.links.filter(l => top.dataLookup[l.target] && top.dataLookup[l.target].depth == depth);
+        //console.log(newNodes)
+        //console.log(newLinks)
+
+        const { nodes, links } = Graph.graphData();
+        Graph.graphData({
+          nodes: [...nodes, ...newNodes],
+          links: [...links, ...newLinks]
+        });
+
+        depth++
+        if (depth == maxDepth) clearInterval(depthIterator);
+      }, 5000);
+  }*/
+  
+  $("#status").html(top.builtData.nodes.length + " terms");
+
+  // Chop the data into two parts so first pulls most upper level categories into position.
+  //var tempQ = top.RENDER_QUICKER
+  //var tempL = top.RENDER_LABELS
+  //top.RENDER_QUICKER = true
+  //top.RENDER_LABELS = false
+
+  var depthThreshold = 9
+  var newNodes = top.builtData.nodes.filter(n => n.depth < depthThreshold)
+  var newLinks = top.builtData.links.filter(l => top.dataLookup[l.target] && top.dataLookup[l.target].depth < depthThreshold);
+  Graph.graphData({nodes: newNodes, links: newLinks});
+
+  /*
+  setTimeout(function(tempQ,tempL) {
+
+    top.RENDER_QUICKER = tempQ
+    top.RENDER_LABELS = tempL
+
+  }, 1000)
+  */
+
+  if (newNodes.length != top.builtData.nodes.length) {
+
+    setTimeout(function() {
+
+
+      var newNodes = top.builtData.nodes.filter(n => n.depth >= depthThreshold)
+      var newLinks = top.builtData.links.filter(l => top.dataLookup[l.target] && top.dataLookup[l.target].depth >= depthThreshold);
+      //console.log(newNodes)
+      //console.log(newLinks)
+
+      const { nodes, links } = Graph.graphData();
+      Graph.graphData({
+        nodes: nodes.concat(newNodes), //[...nodes, ...newNodes],
+        links: links.concat(newLinks) //[...links, ...newLinks]
+      });
+      
+      $(document.body).css({'cursor' : 'default'});
+
+    }, 8000)
+
+  }
+  else
+    $(document.body).css({'cursor' : 'default'});
+
+  /*
   // Navigate to root BFO node if there is one. Slight delay to enable
   // engine to create reference points.  Ideally event for this.
   if('BFO:0000001' in top.dataLookup) {
-    setTimeout(function(){node_focus(top.dataLookup['BFO:0000001']) }, 2000)
+    setTimeout(function(){
+      node_focus(top.dataLookup['BFO:0000001']) 
+    }, 2000)
   }
+  */
 
 }
 
-
+function refresh_graph() {
+  // The graph engine is triggered to redraw its own data.
+  let { nodes, links } = Graph.graphData();
+  Graph.graphData({"nodes":nodes, "links":links})
+}
 
 function init() {
+
   return ForceGraph3D()(document.getElementById('3d-graph'))
-    .width(elem.offsetWidth)
-    .warmupTicks(4)
+    .width(GRAPH_DOM_EL.width())
+    .warmupTicks(1)
     .cooldownTime(GRAPH_COOLDOWN)
     //.cooldownTicks(300)
     .backgroundColor(GRAPH_BACKGROUND_COLOR)
     .numDimensions(GRAPH_DIMENSIONS)
     // Using D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
     .forceEngine('d3') 
-
+    .cameraPosition({x:0, y:0, z: 2000 })
     .linkOpacity(1)
-    .linkDirectionalParticles(GRAPH_PARTICLES)
-    .linkDirectionalParticleWidth(2)
+
+    //.linkDirectionalParticles( RENDER_QUICKER ? 0 : GRAPH_PARTICLES) // done in do_graph
+    .linkDirectionalParticleWidth(4)
+    .linkDirectionalParticleSpeed(.002)
     //.nodeAutoColorBy('color')
-    // Why does link color not always correspond to d.target? BECAUSE d.target is an object!
-    /*.linkAutoColorBy(d => some bug})*/
-    
+    // Note d.target is an object!
+    /*.linkAutoColorBy(d => d.target.color})*/
+    .linkWidth(1)
+    .linkResolution(3)
     .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) // Text shown on mouseover. //${node.definition}
     //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
-    .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+    .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
     .onLinkClick(link => {node_focus(link.target)})
     /*
     .onLinkHover(link => {
@@ -193,56 +328,69 @@ function init() {
 
     .nodeThreeObject(node => {
       // Displays semi-sphere, then overlays with label text
+      var group = new THREE.Group();
+      var fancyLayout = layout[node.id] || !RENDER_QUICKER
+      // Plain rendering skips node sphere markers
+      var nodeRadius = fancyLayout ? 5 : 0;
 
-      var nodeRadius = 5;
+      // These should be top-level nodes
+      if (layout[node.id]) nodeRadius = 20
 
-      switch (node.id) {
-         case 'owl:Thing':
-          nodeRadius = 30; node.fx = 0; node.fy = 0; node.fz = 1100; break;
+      // The center of all things
+      if ((node.id == 'owl:Thing') || ! node.parent_id) {
+        node.color = "gold"
+        nodeRadius = 30
       }
-      const layout_node = layout[node.id]
-      if (layout_node) {
-        nodeRadius = 20;
-        node.fz = 1000;
-        node.fx = layout_node.x;
-        node.fy = layout_node.y;
+
+      if (fancyLayout) {
+        //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
+        var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
+        var material = new THREE.MeshBasicMaterial( { color: node.color } );
+        var circle = new THREE.Mesh( geometry, material );
+        circle.position.set( 0, 0, 0 );
+        group.add( circle );
       }
 
-      //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
-      var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
-      var material = new THREE.MeshBasicMaterial( { color: node.color } );
-      var circle = new THREE.Mesh( geometry, material );
-      circle.position.set( 0, 0, 0 );
 
-      if (node.label) {
+  // HACK for background sized to text; using 2nd sprite as it always faces camera.
+  var spriteMap = new THREE.TextureLoader().load( "img/whitebox.png" );
+  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0x808080 , opacity : 0.5} );
+
+
+      if (RENDER_LABELS) {
         // label converted to first few words ...
         var label = node.label.replace(LABEL_RE, '$1*');
         var ptr = label.indexOf('*')
         if (ptr > 0) label = label.split('*',1)[0] + ' ...'
+          label = label
+
+
+        var sprite = new SpriteText(label);
+        sprite.color = node.color;
+        sprite.textHeight = 8;
+        sprite.fontSize = 20;
+        sprite.position.set( 0, fancyLayout ? 5 : 0, nodeRadius + 2 );
+
+        if (fancyLayout) {
+          var height = sprite._canvas.height
+          var width = sprite._canvas.width
+
+          const sprite2 = new THREE.Sprite( spriteMaterial );
+          sprite2.position.set( 0, 5, nodeRadius + 1 );
+          sprite2.scale.set(width/2, 10 , 1);
+
+          group.add( sprite2 );
+        }
+        group.add( sprite );
       }
-      else
-        var label = node.id
+      /*
+      else {
+          var  sprite = new THREE.Sprite( spriteMaterial );
+          sprite.position.set( 0, 5, nodeRadius + 1 );
+          sprite.scale.set(10, 10 , 1);
+      }
+*/
 
-      const sprite = new SpriteText(label);
-      sprite.color = node.color;
-      sprite.textHeight = 8;
-      sprite.fontSize = 20;
-      sprite.position.set( 0, -10, nodeRadius + 2 );
-
-      var height = sprite._canvas.height
-      var width = sprite._canvas.width
-
-      // HACK for background sized to text; using 2nd sprite as it always faces camera.
-      var spriteMap = new THREE.TextureLoader().load( "img/whitebox.png" );
-      var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0x808080 , opacity : 0.5} );
-      const sprite2 = new THREE.Sprite( spriteMaterial );
-      sprite2.position.set( 0, -10, nodeRadius + 1 );
-      sprite2.scale.set(width/2, 10 , 1);
-
-      var group = new THREE.Group();
-      group.add( circle );
-      group.add( sprite2 );
-      group.add( sprite );
 
       return group;
     })
@@ -259,14 +407,201 @@ function init() {
       console.log(JSON.stringify(nodes, null, 4))
       */
     })
-  // End Graph setup ***********
+    .graphData({ nodes: [], links: [] }); // so can add on incrementally
+
+}
+
+
+function init_search(data) {
+  // Create a select list of all the node labels, in alphabetical order.
+  // Includes search of the node's synonyms via a customization of chosen.js
+  var label_search = $("#label_search")
+  label_search.empty().append('<option value="">Term search ...</option>')
+
+  if (data) {      
+    // search 
+    var sorted_data = data.nodes.concat().sort(function(a,b) {
+      return (a.label === undefined || a.label.localeCompare(b.label))
+    })
+
+    for (var item in sorted_data) {
+      var node = sorted_data[item]
+      var option = $(`<option value="${node.id}">${node.label}</option>`);
+ 
+      // Search by node id + custom addition of synonym data
+      option.attr('synonyms', node.id + ' ' + (node.synonyms ? ';' + node.synonyms : '')) ;
+
+      label_search.append(option);
+    }
+  }
+  
+  label_search.chosen({
+    placeholder_text_single: 'Term search ...',
+    no_results_text: "Oops, nothing found!",
+    disable_search_threshold: 10,
+    search_contains: true, //substring search
+  })
+
+  label_search.prop('disabled', data && data.nodes.length > 0 ? false : true)
+  label_search.trigger("chosen:updated");
+  
+}
+
+function get_term_prefix(entity_id) {
+  return entity_id.split(':')[0].split('#')[0]
+}
+
+function init_geem_data(rawData) {
+  /*
+  This is a 3 pass algorithm, but maybe scrunchable to 2 passes.
+  */
+  var data = {nodes:[], links:[]}
+  top.dataLookup = {}
+
+
+  //    var lookupId = item.iri.split("/").pop().replace('_',':')
+
+  var node_lookup = {}
+  // 1st pass does all the nodes.  (Matters if links come first?)
+  for (var item in rawData.specifications) {
+    var node = rawData.specifications[item]
+    if (!node.deprecated || RENDER_DEPRECATED) {
+      node.children = []
+      var prefix = get_term_prefix(node.id)
+      if (prefix in colorMapping)
+        node.color = colorMapping[prefix].code
+      else {
+        console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
+        node.color = '#F00'
+
+      }
+      node.depth = null
+      
+      if (!node.label) node.label = node.id
+
+      data.nodes.push(node)
+      node_lookup[node.id] = node
+    }
+  }
+
+
+  // 2nd pass does links:
+  for (var item in data.nodes) {
+    const node = data.nodes[item]
+    const parent_id = node.parent_id
+    if (parent_id && node_lookup[parent_id]) { // passed deprecated filter
+      data.links.push({source:parent_id, target: node.id, color: node.color})
+      // Keep track of all the child links
+      node_lookup[parent_id].children.push(node.id)
+    }
+
+    // ESTABLISH "LIGHT" LINKS TO OTHER PARENTS?
+  }
+
+
+  // 3rd pass does depth calculation
+  // Note - multihomed nodes get depth according to "official" parent.
+  for (var item in rawData.specifications) {
+    var node = rawData.specifications[item]
+    if (!node.depth) {
+      // Pop 
+      var ancestors = [node]
+      var focus = node
+      while (focus.parent_id) {
+        if (focus.id == focus.parent_id) {
+          console.log('ERROR: ontology term has itself as parent:' + focus.id)
+          focus.depth = 1;
+          break;
+        }
+        focus = rawData.specifications[focus.parent_id]
+        if (focus.depth) {
+          break;
+        }
+        if (!focus.parent_id) {
+          focus.depth = 1
+          break;
+        }
+        ancestors.push(focus)
+      }
+      // focus now has depth to convey to all ancestors
+      // Ancestors are in reverse order, from shallowest to deepest.
+      // Bizarrely, ptr is a string if using "(ptr in ancestors)" !
+      for (var ptr = 0; ptr < ancestors.length; ptr ++) {
+        //don't use ancestor = ancestors.pop(); seems to intefere with data.nodes ???
+        var ancestor = ancestors[ancestors.length - ptr - 1] 
+        ancestor.depth = focus.depth + ptr + 1
+      }
+    }
+  }
+
+
+  // To support the idea that graph can work on top-level nodes first
+  data.nodes.sort(function(a,b) { return (a.depth - b.depth) })
+
+  if (RENDER_DEPTH != 50) 
+    data.nodes = data.nodes.filter(n => n.depth <= RENDER_DEPTH); // Remove deeper nodes
+
+  data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
+  
+  if (RENDER_DEPTH != 50) // uses top.dataLookup()
+    data.links = data.links.filter(l => top.dataLookup[l.source] && top.dataLookup[l.target]); // Remove archaic links
+
+  for (var item in data.nodes) {
+    var node = data.nodes[item]
+
+    if (!RENDER_GALAXY)
+      // Initially fix all nodes
+      node.fz = 500 - node.depth * GRAPH_NODE_DEPTH;
+
+    // Give initial x,y hint based on parents
+    var layout_node = layout[node.id]
+    if (layout_node) {
+      node.fz = 500 -node.depth * GRAPH_NODE_DEPTH;
+      node.fx = layout_node.x;
+      node.x = layout_node.x;
+      node.fy = layout_node.y;
+      node.y = layout_node.y;
+    }
+
+    else
+      if (node.parent_id) {
+        var parent = top.dataLookup[node.parent_id]
+        if (parent && parent.x !== undefined) {
+          node.x = parent.x +  parseInt(Math.random() * 20-10)
+          node.y = parent.y +  parseInt(Math.random() * 20-10)
+        }
+      }
+     
+  }
+  top.builtData = data
+  return data
 }
 
 
 function lookup_url(term_id, label) {
+  /* Returns native term URI as well as OLS link
+  */
   if (!label)
     label = top.dataLookup[term_id].label
-  return  `<a href="${ONTOLOGY_LOOKUP_URL}${term_id.replace(':','_')}" target="term">${label}</a>`
+
+  var ols_lookup_URL = null
+  // If no prefix, then whole term_id returned, and its probably a URI
+  var prefix = get_term_prefix(term_id) 
+  if (prefix == term_id) { 
+    var term_url = term_id
+  }
+  else {
+  // A prefix was recognized
+    ols_lookup_URL = `https://www.ebi.ac.uk/ols/ontologies/${prefix}/terms?iri=`
+    term_url = top.rawData['@context'][prefix]
+    if (!term_url) {
+      term_url = ONTOLOGY_LOOKUP_URL
+    }
+    term_url = term_url + term_id.split(/[:#]/)[1]
+
+  }
+
+  return  `<a href="${term_url}" target="_term">${label}</a>` + (ols_lookup_URL ? `, <a href="${ols_lookup_URL}${term_url}" target="_term">OLS</a> ` : '')
 }
 
 
@@ -304,362 +639,45 @@ function node_focus(node) {
 
   parents = get_term_id_urls(parents)
 
-  document.getElementById("term_id").innerHTML = lookup_url(node.id, node.id) + (node.deprecated ? '<span class="deprecated">(deprecated)</span>' : '');
-  document.getElementById("label").innerHTML = node.label || '<span class="placeholder">label</span>';
-  document.getElementById("definition").innerHTML = node.definition || '<span class="placeholder">definition</span>';
-  document.getElementById("ui_label").innerHTML = node.ui_label || '<span class="placeholder">UI label</span>';
-  document.getElementById("ui_definition").innerHTML = node.ui_definition || '<span class="placeholder">UI definition</span>'; 
-  document.getElementById("synonyms").innerHTML = node.synonyms || '<span class="placeholder">synonyms</span>';
-  document.getElementById("parents").innerHTML = parents || '<span class="placeholder">parents</span>';
+  // Label includes term id and links to 
+  label = node.label + '<span class="label_id"> (' + node.id + (node.deprecated ? ' <span class="deprecated">deprecated</span>' : '') + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
+  // <img src="img/link_out_20.png" border="0" width="16">
+  $("#parents").html(parents || '<span class="placeholder">parent(s)</span>');
+  $("#label").html(label || '<span class="placeholder">label</span>');
+  $("#definition").html(node.definition || '<span class="placeholder">definition</span>');
+  $("#synonyms").html(node.synonyms || '<span class="placeholder">synonyms</span>');
+  
+  if (node.ui_label)
+    $("#ui_label").show().html(node.ui_label);
+  else
+    $("#ui_label").hide()
+
+  if (node.ui_definition)
+    $("#ui_definition").show().html(node.ui_definition);
+  else
+    $("#ui_definition").hide()
+
+  var select_child = $("#select_child")
+  select_child.empty()
+  select_child.css('visibility', node.children.length > 0 ? 'visible':'hidden')
+  if (node.children.length > 0) {
+    var option = document.createElement("option");
+    select_child.append('<option value="">children ...</option>')
+
+    for (var item in node.children) {
+      const child = top.dataLookup[node.children[item]]
+      if (child) // How couldn't it be?  Filtered?
+        select_child.append(`<option value="${child.id}">${child.label}</option>`)
+    }
+  }
+
 
   // Aim at node from z dimension
+  // STRANGELY CAMERA LOOSES ITS "UP" POSITION if trying to view from side?
+  // bring camera up, then down again?
   Graph.cameraPosition(
-    { x: node.x, y: node.y, z: node.z + CAMERA_DISTANCE}, // new position
-    node, // lookAt ({ x, y, z })
+    {x: node.x, y: node.y - CAMERA_DISTANCE/3 , z: node.z + CAMERA_DISTANCE}, // new position
+    node, // lookAt ({ x, y, z })  
     3000  // 3 second transition duration
   )
-}
-
-// MUST BE X11 colors for THREE.js
-var colorTable = [
-      
-  {"color":"AntiqueWhite",  "code":"#FAEBD7"},
-  {"color":"Aquamarine",  "code":"#7FFFD4"},
-  {"color":"Blue",  "code":"#0000FF"},
-  {"color":"BlueViolet",  "code":"#8A2BE2"},
-  {"color":"Brown", "code":"#A52A2A"},
-  {"color":"CadetBlue", "code":"#5F9EA0"},
-  {"color":"Chartreuse",  "code":"#7FFF00"},
-  {"color":"Chocolate", "code":"#D2691E"},
-  {"color":"Coral", "code":"#FF7F50"},
-  {"color":"CornflowerBlue",  "code":"#6495ED"},
-  {"color":"Crimson", "code":"#DC143C"},
-  {"color":"Cyan",  "code":"#00FFFF"},
-  {"color":"DarkGoldenrod", "code":"#B8860B"},
-  {"color":"DarkGray",  "code":"#A9A9A9"},
-  {"color":"DarkKhaki", "code":"#BDB76B"},
-  {"color":"DarkOliveGreen",  "code":"#556B2F"},
-  {"color":"DarkOrange",  "code":"#FF8C00"},
-  {"color":"DarkOrchid",  "code":"#9932CC"},
-  {"color":"DarkRed", "code":"#8B0000"},
-  {"color":"DarkSeaGreen",  "code":"#8FBC8F"},
-  {"color":"DarkTurquoise", "code":"#00CED1"},
-  {"color":"DeepPink",  "code":"#FF1493"},
-  {"color":"DeepSkyBlue", "code":"#00BFFF"},
-  {"color":"DodgerBlue",  "code":"#1E90FF"},
-  {"color":"FireBrick", "code":"#B22222"},
-  {"color":"Gold",  "code":"#FFD700"},
-  {"color":"Goldenrod", "code":"#DAA520"},
-  {"color":"Green", "code":"#008000"},
-  {"color":"GreenYellow", "code":"#ADFF2F"},
-  {"color":"HotPink", "code":"#FF69B4"},
-  {"color":"IndianRed", "code":"#CD5C5C"},
-  {"color":"Ivory", "code":"#FFFFF0"},
-  {"color":"Khaki", "code":"#F0E68C"},
-  {"color":"Lavender",  "code":"#E6E6FA"},
-  {"color":"LawnGreen", "code":"#7CFC00"},
-  {"color":"LemonChiffon",  "code":"#FFFACD"},
-  {"color":"LightCyan", "code":"#E0FFFF"},
-  {"color":"LightGoldenrodYellow",  "code":"#FAFAD2"},
-  {"color":"LightGreen",  "code":"#90EE90"},
-  {"color":"LightPink", "code":"#FFB6C1"},
-  {"color":"LightSalmon", "code":"#FFA07A"},
-  {"color":"LightSeaGreen", "code":"#20B2AA"},
-  {"color":"LightSteelBlue",  "code":"#B0C4DE"},
-  {"color":"Lime",  "code":"#00FF00"},
-  {"color":"LimeGreen", "code":"#32CD32"},
-  {"color":"Magenta", "code":"#FF00FF"},
-  {"color":"Maroon",  "code":"#800000"},
-  {"color":"MediumAquamarine",  "code":"#66CDAA"},
-  {"color":"MediumPurple",  "code":"#9370DB"},
-  {"color":"MediumSeaGreen",  "code":"#3CB371"},
-  {"color":"MediumSlateBlue", "code":"#7B68EE"},
-  {"color":"MediumSpringGreen", "code":"#00FA9A"},
-  {"color":"MediumTurquoise", "code":"#48D1CC"},
-  {"color":"NavajoWhite", "code":"#FFDEAD"},
-  {"color":"Olive", "code":"#808000"},
-  {"color":"OliveDrab", "code":"#6B8E23"},
-  {"color":"Orange",  "code":"#FFA500"},
-  {"color":"OrangeRed", "code":"#FF4500"},
-  {"color":"Orchid",  "code":"#DA70D6"},
-  {"color":"PaleGoldenrod", "code":"#EEE8AA"},
-  {"color":"PaleGreen", "code":"#98FB98"},
-  {"color":"PaleTurquoise", "code":"#AFEEEE"},
-  {"color":"PaleVioletRed", "code":"#DB7093"},
-  {"color":"PeachPuff", "code":"#FFDAB9"},
-  {"color":"Peru",  "code":"#CD853F"},
-  {"color":"Pink",  "code":"#FFC0CB"},
-  {"color":"PowderBlue",  "code":"#B0E0E6"},
-  {"color":"Purple",  "code":"#800080"},
-  {"color":"Red", "code":"#FF0000"},
-  {"color":"RosyBrown", "code":"#BC8F8F"},
-  {"color":"RoyalBlue", "code":"#4169E1"},
-  {"color":"Salmon",  "code":"#FA8072"},
-  {"color":"SandyBrown",  "code":"#F4A460"},
-  {"color":"SeaGreen",  "code":"#2E8B57"},
-  {"color":"Sienna",  "code":"#A0522D"},
-  {"color":"Silver",  "code":"#C0C0C0"},
-  {"color":"SkyBlue", "code":"#87CEEB"},
-  {"color":"SpringGreen", "code":"#00FF7F"},
-  {"color":"SteelBlue", "code":"#4682B4"},
-  {"color":"Tan", "code":"#D2B48C"},
-  {"color":"Teal",  "code":"#008080"},
-  {"color":"Tomato",  "code":"#FF6347"},
-  {"color":"Turquoise", "code":"#40E0D0"},
-  {"color":"Violet",  "code":"#EE82EE"},
-  {"color":"Wheat", "code":"#F5DEB3"},
-  {"color":"WhiteSmoke",  "code":"#F5F5F5"},
-  {"color":"Yellow",  "code":"#FFFF00"},
-  {"color":"YellowGreen", "code":"#9ACD32"}
-]
-
-// https://github.com/OBOFoundry/OBOFoundry.github.io/blob/master/registry/obo_context.jsonld
-var colorMapping = {
-  "owl":  {"color":"Gold",  code:"#FFD700"},
-  "oboInOwl": {"color":"Gold",  code:"#FFD700"},
-
-  "AAO":  {"color":"AntiqueWhite",  code:"#FAEBD7"},
-  "ADW":  {"color":"Aquamarine",  code:"#7FFFD4"},
-  "AEO":  {"color":"Blue",  code:"#0000FF"},
-  "AERO": {"color":"BlueViolet",  code:"#8A2BE2"},
-  "AGRO": {"color":"Cyan",  code:"#00FFFF"},
-  "APO":  {"color":"CadetBlue", code:"#5F9EA0"},
-  "ARO":  {"color":"Chartreuse",  code:"#7FFF00"},
-  "ATO":  {"color":"Chocolate", code:"#D2691E"},
-  "BCGO": {"color":"Coral", code:"#FF7F50"},
-  "BCO":  {"color":"CornflowerBlue",  code:"#6495ED"},
-  "BFO":  {"color":"Goldenrod", code:"#DAA520"},
-  "BILA": {"color":"Cyan",  code:"#00FFFF"},
-  "BOOTSTREP":  {"color":"DarkGoldenrod", code:"#B8860B"},
-  "BSPO": {"color":"DarkGray",  code:"#A9A9A9"},
-  "BTO":  {"color":"DarkKhaki", code:"#BDB76B"},
-  "CARO": {"color":"Khaki", code:"#F0E68C"},
-  "CDAO": {"color":"DarkOrange",  code:"#FF8C00"},
-  "CEPH": {"color":"DarkOrchid",  code:"#9932CC"},
-  "CHEBI":  {"color":"OrangeRed", code:"#FF4500"},
-  "CHEMINF":  {"color":"DarkSeaGreen",  code:"#8FBC8F"},
-  "CHMO": {"color":"DarkTurquoise", code:"#00CED1"},
-  "CIO":  {"color":"DeepPink",  code:"#FF1493"},
-  "CL": {"color":"DeepSkyBlue", code:"#00BFFF"},
-  "CLO":  {"color":"DodgerBlue",  code:"#1E90FF"},
-  "CMF":  {"color":"FireBrick", code:"#B22222"},
-  "CMO":  {"color":"Gold",  code:"#FFD700"},
-  "CRO":  {"color":"Goldenrod", code:"#DAA520"},
-  "CTENO":  {"color":"Green", code:"#008000"},
-  "CVDO": {"color":"GreenYellow", code:"#ADFF2F"},
-  "DC_CL":  {"color":"HotPink", code:"#FF69B4"},
-  "DDANAT": {"color":"IndianRed", code:"#CD5C5C"},
-  "DDPHENO":  {"color":"Ivory", code:"#FFFFF0"},
-  "DIDEO":  {"color":"Khaki", code:"#F0E68C"},
-  "DINTO":  {"color":"Lavender",  code:"#E6E6FA"},
-  "DOID": {"color":"LawnGreen", code:"#7CFC00"},
-  "DRON": {"color":"LemonChiffon",  code:"#FFFACD"},
-  "DUO":  {"color":"LightCyan", code:"#E0FFFF"},
-  "ECO":  {"color":"LightGoldenrodYellow",  code:"#FAFAD2"},
-  "ECOCORE":  {"color":"LightGreen",  code:"#90EE90"},
-  "EHDA": {"color":"LightPink", code:"#FFB6C1"},
-  "EHDAA":  {"color":"LightSalmon", code:"#FFA07A"},
-  "EHDAA2": {"color":"LightSeaGreen", code:"#20B2AA"},
-  "EMAP": {"color":"LightSteelBlue",  code:"#B0C4DE"},
-  "EMAPA":  {"color":"Lime",  code:"#00FF00"},
-  "ENVO": {"color":"LimeGreen", code:"#32CD32"},
-  "EO": {"color":"Magenta", code:"#FF00FF"},
-  "EPO":  {"color":"Maroon",  code:"#800000"},
-  "ERO":  {"color":"MediumAquamarine",  code:"#66CDAA"},
-  "EUPATH": {"color":"MediumPurple",  code:"#9370DB"},
-  "EV": {"color":"MediumSeaGreen",  code:"#3CB371"},
-  "EXO":  {"color":"MediumSlateBlue", code:"#7B68EE"},
-  "FAO":  {"color":"MediumSpringGreen", code:"#00FA9A"},
-  "FBSP": {"color":"MediumTurquoise", code:"#48D1CC"},
-  "FBbi": {"color":"NavajoWhite", code:"#FFDEAD"},
-  "FBbt": {"color":"Olive", code:"#808000"},
-  "FBcv": {"color":"OliveDrab", code:"#6B8E23"},
-  "FBdv": {"color":"Orange",  code:"#FFA500"},
-  "FIX":  {"color":"OrangeRed", code:"#FF4500"},
-  "FLOPO":  {"color":"Orchid",  code:"#DA70D6"},
-  "FLU":  {"color":"PaleGoldenrod", code:"#EEE8AA"},
-  "FMA":  {"color":"PaleGreen", code:"#98FB98"},
-  "FOODON": {"color":"PaleTurquoise", code:"#AFEEEE"},
-  "FYPO": {"color":"PaleVioletRed", code:"#DB7093"},
-  "GAZ":  {"color":"PeachPuff", code:"#FFDAB9"},
-  "GENEPIO":  {"color":"Peru",  code:"#CD853F"},
-  "GENO": {"color":"Pink",  code:"#FFC0CB"},
-  "GEO":  {"color":"PowderBlue",  code:"#B0E0E6"},
-  "GO": {"color":"PowderBlue",  code:"#B0E0E6"},
-  "GRO":  {"color":"Red", code:"#FF0000"},
-  "HABRONATTUS":  {"color":"RosyBrown", code:"#BC8F8F"},
-  "HANCESTRO":  {"color":"SandyBrown",  code:"#F4A460"},
-  "HAO":  {"color":"Salmon",  code:"#FA8072"},
-  "HOM":  {"color":"SandyBrown",  code:"#F4A460"},
-  "HP": {"color":"PeachPuff", code:"#FFDAB9"},
-  "HSAPDV": {"color":"Sienna",  code:"#A0522D"},
-  "IAO":  {"color":"Silver",  code:"#C0C0C0"},
-  "ICO":  {"color":"SkyBlue", code:"#87CEEB"},
-  "IDO":  {"color":"SpringGreen", code:"#00FF7F"},
-  "IDOMAL": {"color":"SteelBlue", code:"#4682B4"},
-  "IEV":  {"color":"Tan", code:"#D2B48C"},
-  "IMR":  {"color":"Teal",  code:"#008080"},
-  "INO":  {"color":"Tomato",  code:"#FF6347"},
-  "IPR":  {"color":"Turquoise", code:"#40E0D0"},
-  "KISAO":  {"color":"Violet",  code:"#EE82EE"},
-  "LIPRO":  {"color":"Wheat", code:"#F5DEB3"},
-  "LOGGERHEAD": {"color":"WhiteSmoke",  code:"#F5F5F5"},
-  "MA": {"color":"Yellow",  code:"#FFFF00"},
-  "MAMO": {"color":"YellowGreen", code:"#9ACD32"},
-  "MAO":  {"color":"AntiqueWhite",  code:"#FAEBD7"},
-  "MAT":  {"color":"Aquamarine",  code:"#7FFFD4"},
-  "MF": {"color":"Blue",  code:"#0000FF"},
-  "MFMO": {"color":"BlueViolet",  code:"#8A2BE2"},
-  "MFO":  {"color":"Brown", code:"#A52A2A"},
-  "MFOEM":  {"color":"CadetBlue", code:"#5F9EA0"},
-  "MFOMD":  {"color":"Chartreuse",  code:"#7FFF00"},
-  "MI": {"color":"Chocolate", code:"#D2691E"},
-  "MIAPA":  {"color":"Coral", code:"#FF7F50"},
-  "MICRO":  {"color":"CornflowerBlue",  code:"#6495ED"},
-  "MIRNAO": {"color":"Crimson", code:"#DC143C"},
-  "MIRO": {"color":"Cyan",  code:"#00FFFF"},
-  "MMO":  {"color":"DarkGoldenrod", code:"#B8860B"},
-  "MMUSDV": {"color":"DarkGray",  code:"#A9A9A9"},
-  "MO": {"color":"DarkKhaki", code:"#BDB76B"},
-  "MOD":  {"color":"DarkOliveGreen",  code:"#556B2F"},
-  "MONDO":  {"color":"DarkOrange",  code:"#FF8C00"},
-  "MOP":  {"color":"DarkOrchid",  code:"#9932CC"},
-  "MP": {"color":"DarkRed", code:"#8B0000"},
-  "MPATH":  {"color":"DarkSeaGreen",  code:"#8FBC8F"},
-  "MPIO": {"color":"DarkTurquoise", code:"#00CED1"},
-  "MRO":  {"color":"DeepPink",  code:"#FF1493"},
-  "MS": {"color":"DeepSkyBlue", code:"#00BFFF"},
-  "NBO":  {"color":"DodgerBlue",  code:"#1E90FF"},
-  "NCBITaxon":  {"color":"Ivory", code:"#FFFFF0"},
-  "NCIT": {"color":"Gold",  code:"#FFD700"},
-  "NCRO": {"color":"Goldenrod", code:"#DAA520"},
-  "NIF_CELL": {"color":"Green", code:"#008000"},
-  "NIF_DYSFUNCTION":  {"color":"GreenYellow", code:"#ADFF2F"},
-  "NIF_GROSSANATOMY": {"color":"HotPink", code:"#FF69B4"},
-  "NMR":  {"color":"IndianRed", code:"#CD5C5C"},
-  "OAE":  {"color":"Ivory", code:"#FFFFF0"},
-  "OARCS":  {"color":"Khaki", code:"#F0E68C"},
-  "OBA":  {"color":"Lavender",  code:"#E6E6FA"},
-  "OBCS": {"color":"LawnGreen", code:"#7CFC00"},
-  "OBI":  {"color":"LemonChiffon",  code:"#FFFACD"},
-  "OBIB": {"color":"LightCyan", code:"#E0FFFF"},
-  "OBO_REL":  {"color":"LightGoldenrodYellow",  code:"#FAFAD2"},
-  "OGG":  {"color":"LightGreen",  code:"#90EE90"},
-  "OGI":  {"color":"LightPink", code:"#FFB6C1"},
-  "OGMS": {"color":"LightSalmon", code:"#FFA07A"},
-  "OGSF": {"color":"LightSeaGreen", code:"#20B2AA"},
-  "OHD":  {"color":"LightSteelBlue",  code:"#B0C4DE"},
-  "OHMI": {"color":"Lime",  code:"#00FF00"},
-  "OLATDV": {"color":"LimeGreen", code:"#32CD32"},
-  "OMIABIS":  {"color":"Magenta", code:"#FF00FF"},
-  "OMIT": {"color":"Maroon",  code:"#800000"},
-  "OMP":  {"color":"MediumAquamarine",  code:"#66CDAA"},
-  "OMRSE":  {"color":"MediumPurple",  code:"#9370DB"},
-  "ONTONEO":  {"color":"MediumSeaGreen",  code:"#3CB371"},
-  "OOSTT":  {"color":"MediumSlateBlue", code:"#7B68EE"},
-  "OPL":  {"color":"MediumSpringGreen", code:"#00FA9A"},
-  "OVAE": {"color":"MediumTurquoise", code:"#48D1CC"},
-  "PAO":  {"color":"MediumTurquoise", code:"#48D1CC"},
-  "PATO": {"color":"PaleVioletRed", code:"#DB7093"},
-  "PCO":  {"color":"Orange",  code:"#FFA500"},
-  "PDRO": {"color":"Orange",  code:"#FFA500"},
-  "PDUMDV": {"color":"OrangeRed", code:"#FF4500"},
-  "PD_ST":  {"color":"Orchid",  code:"#DA70D6"},
-  "PECO": {"color":"PaleGoldenrod", code:"#EEE8AA"},
-  "PGDSO":  {"color":"PaleGreen", code:"#98FB98"},
-  "PLANA":  {"color":"PaleTurquoise", code:"#AFEEEE"},
-  "PLO":  {"color":"PaleVioletRed", code:"#DB7093"},
-  "PO": {"color":"PeachPuff", code:"#FFDAB9"},
-  "PORO": {"color":"Peru",  code:"#CD853F"},
-  "PPO":  {"color":"Pink",  code:"#FFC0CB"},
-  "PR": {"color":"PowderBlue",  code:"#B0E0E6"},
-  "PROPREO":  {"color":"Purple",  code:"#800080"},
-  "PW": {"color":"Red", code:"#FF0000"},
-  "RESID":  {"color":"RosyBrown", code:"#BC8F8F"},
-  "REX":  {"color":"RoyalBlue", code:"#4169E1"},
-  
-  "REO":  {"color":"RoyalBlue", code:"#4169E1"}, //???
-
-  "RNAO": {"color":"Salmon",  code:"#FA8072"},
-  "RO": {"color":"SandyBrown",  code:"#F4A460"},
-  "RS": {"color":"SeaGreen",  code:"#2E8B57"},
-  "RXNO": {"color":"Sienna",  code:"#A0522D"},
-  "SAO":  {"color":"Silver",  code:"#C0C0C0"},
-  "SBO":  {"color":"SkyBlue", code:"#87CEEB"},
-  "SEP":  {"color":"SpringGreen", code:"#00FF7F"},
-  "SEPIO":  {"color":"SteelBlue", code:"#4682B4"},
-  "SIBO": {"color":"Tan", code:"#D2B48C"},
-  "SO": {"color":"Teal",  code:"#008080"},
-  "SOPHARM":  {"color":"Tomato",  code:"#FF6347"},
-  "SPD":  {"color":"Turquoise", code:"#40E0D0"},
-  "STATO":  {"color":"Violet",  code:"#EE82EE"},
-  "SWO":  {"color":"Wheat", code:"#F5DEB3"},
-  "SYMP": {"color":"WhiteSmoke",  code:"#F5F5F5"},
-  "TADS": {"color":"Yellow",  code:"#FFFF00"},
-  "TAHE": {"color":"YellowGreen", code:"#9ACD32"},
-  "TAHH": {"color":"AntiqueWhite",  code:"#FAEBD7"},
-  "TAO":  {"color":"Aquamarine",  code:"#7FFFD4"},
-  "TAXRANK":  {"color":"Blue",  code:"#0000FF"},
-  "TGMA": {"color":"BlueViolet",  code:"#8A2BE2"},
-  "TO": {"color":"Brown", code:"#A52A2A"},
-  "TRANS":  {"color":"CadetBlue", code:"#5F9EA0"},
-  "TTO":  {"color":"Chartreuse",  code:"#7FFF00"},
-  "UBERON": {"color":"Chocolate", code:"#D2691E"},
-  "UO": {"color":"Coral", code:"#FF7F50"},
-  "UPHENO": {"color":"CornflowerBlue",  code:"#6495ED"},
-  "VARIO":  {"color":"Crimson", code:"#DC143C"},
-  "VHOG": {"color":"Cyan",  code:"#00FFFF"},
-  "VO": {"color":"DarkGoldenrod", code:"#B8860B"},
-  "VSAO": {"color":"DarkGray",  code:"#A9A9A9"},
-  "VT": {"color":"DarkKhaki", code:"#BDB76B"},
-  "VTO":  {"color":"DarkOliveGreen",  code:"#556B2F"},
-  "WBBT": {"color":"DarkOrange",  code:"#FF8C00"},
-  "WBLS": {"color":"DarkOrchid",  code:"#9932CC"},
-  "WBPhenotype":  {"color":"DarkRed", code:"#8B0000"},
-  "XAO":  {"color":"DarkSeaGreen",  code:"#8FBC8F"},
-  "XCO":  {"color":"DarkTurquoise", code:"#00CED1"},
-  "XL": {"color":"DeepPink",  code:"#FF1493"},
-  "YPO":  {"color":"DeepSkyBlue", code:"#00BFFF"},
-  "ZEA":  {"color":"DodgerBlue",  code:"#1E90FF"},
-  "ZECO": {"color":"FireBrick", code:"#B22222"},
-  "ZFA":  {"color":"Gold",  code:"#FFD700"},
-  "ZFS":  {"color":"YellowGreen", code:"#9ACD32"}
-}
-
-layout = {
-  "BFO:0000002": { "x": -95, "y": -224 },
-  "BFO:0000140": { "x": 833, "y": 265},
-  "BFO:0000016": {"x": 177, "y": -1402},
-  "BFO:0000024": {"x": 34, "y": 571},
-  "BFO:0000034": {"x": 201, "y": -1518},
-  "BFO:0000031": {"x": -93, "y": -305},
-  "BFO:0000182": {"x": -1098, "y": 274},
-  "BFO:0000141": {"x": 553, "y": 362},
-  "BFO:0000004": {"x": 146, "y": 193},
-  "BFO:0000040": {"x": -3, "y": 475},
-  "BFO:0000030": {"x": -102, "y": 515},
-  "BFO:0000027": {"x": -55, "y": 600},
-  "BFO:0000003": {"x": -841, "y": 22},
-  "BFO:0000142": {"x": 932, "y": 196},
-  "BFO:0000026": {"x": 857, "y": 806},
-  "BFO:0000038": {"x": -1245, "y": -165},
-  "BFO:0000015": {"x": -995, "y": 220},
-  "BFO:0000035": {"x": -918, "y": -10},
-  "BFO:0000144": {"x": -1006, "y": 327},
-  "BFO:0000019": {"x": 268, "y": -845},
-  "BFO:0000017": {"x": 135, "y": -1156},
-  "BFO:0000145": {"x": 373, "y": -896},
-  "BFO:0000023": {"x": 166, "y": -1238},
-  "BFO:0000029": {"x": 537, "y": 435},
-  "BFO:0000006": {"x": 755, "y": 724},
-  "BFO:0000011": {"x": -817, "y": -60},
-  "BFO:0000020": {"x": 96, "y": -747},
-  "BFO:0000008": {"x": -1153, "y": -89},
-  "BFO:0000028": {"x": 858, "y": 716},
-  "BFO:0000146": {"x": 937, "y": 295},
-  "BFO:0000009": {"x": 782, "y": 853},
-  "BFO:0000147": {"x": 833, "y": 169},
-  "BFO:0000001": {"x": -486, "y": -116},
-  "BFO:0000018": {"x": 700, "y": 812},
-  "BFO:0000148": {"x": -1269, "y": -64}
 }
