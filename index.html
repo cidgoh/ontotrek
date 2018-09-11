@@ -13,18 +13,18 @@
 
       <img src="img/introduction.png" align="right" style="margin:30px"/>
       <div style="padding-top:20px;padding-left:30px">
-        <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "skeleton", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
+        <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
 
         <p>OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play. Currently it displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
 
-        <p> Use mouse or trackpad to rotate, zoom, or pan the display.  Click on a node to focus on it; rotation will occur around that item. Clicking on a link will take you to its child node.  Click on dashboard parent to navigate up to top, or on child to journey into the depths.</p>
+        <p> Use mouse or trackpad to rotate, zoom, or pan the display.  Click on a node to focus on it; view will rotate and move towards that item (some more work needs to be done to orient the camera naturally). Clicking on a link will take you to its child node.  Click on dashboard parent to navigate up to top, or on child to journey into the depths.</p>
 
         <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
       </div>
     </div>
 
     <nav class="nav">
-      <div id="title" class="text">OntoTrek Viewer</div>
+      <div id="title" class="text">OntoTrek 3D Viewer</div>
 
       <div id="control" class="text">
 
@@ -32,8 +32,8 @@
             <option value="">Select an ontology to view</option>
             <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
             <option value="data/agro.json">AGRO: Agronomy Ontology</option>
-            <option value="data/aro.json">ARO: Antibiotic Resistance Ontology</option>
-            <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K nodes)</option> 
+            <option value="data/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
+            <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
             <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
             <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
             <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
@@ -51,18 +51,22 @@
 
         </select>
 
-        <span id="faster">
-          render: <input type="checkbox" id="render_quicker">
-          <label for="render_quicker">skeleton</label>
+        <span id="switches">
+          <input type="checkbox" id="render_quicker">
+          <label for="render_quicker">wireframe</label>
           &nbsp;
           <input type="checkbox" id="render_labels" checked="checked">
           <label for="render_labels">labels</label>
           &nbsp;
           <input type="checkbox" id="render_galaxy">
           <label for="render_galaxy">galactic</label>
+          &nbsp;
+          <select id="render_dimensions">
+            =<option value = "3" selected="selected">3D</option>
+            <option value = "2">2D</option>
+            <option value = "1">1D</option>
+          </select>
         </span>
-
-        <br/>
                
         <span id="depth">
           <label for="depth_control">depth filter:</label>
@@ -82,10 +86,8 @@
 
         <span id="deprecated">
           <input type="checkbox" id="render_deprecated">
-          <label for="render_deprecated"> see deprecated</label>
+          <label for="render_deprecated">deprecated</label>
         </span>
-        <br/>
-
 
         <!-- Now click or navigate within graph display -->
 

@@ -124,7 +124,7 @@ var colorMapping = {
   "ATO":  {"color":"Chocolate", code:"#D2691E"},
   "BCGO": {"color":"Coral", code:"#FF7F50"},
   "BCO":  {"color":"CornflowerBlue",  code:"#6495ED"},
-  "BFO":  {"color":"Goldenrod", code:"#DAA520"},
+  "BFO":  {"color":"Gold", code:"#FFD700"},
   "BILA": {"color":"Cyan",  code:"#00FFFF"},
   "BOOTSTREP":  {"color":"DarkGoldenrod", code:"#B8860B"},
   "BSPO": {"color":"DarkGray",  code:"#A9A9A9"},

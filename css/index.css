@@ -10,8 +10,8 @@ body { margin: 0; padding:0; background-color:white; }
   font-size: .8rem;
   line-height: 1.2rem;
 }
-#faster {white-space: nowrap; background:transparent;padding:3px;}
-#faster input {margin:0;}
+#switches {background:transparent;padding:3px;}
+#switches input {margin:0;}
 
 #label {font-weight:bold; font-size:1.1rem;
   margin-left:10%;margin-right:0%;width:85%;
@@ -23,6 +23,8 @@ body { margin: 0; padding:0; background-color:white; }
 #ui_definition {height:50px; overflow-y:scroll}
 #label_search {}
 #depth_control {width:50px !important;}
+#render_dimensions {width:45px !important;}
+
 nav {
   display: inline-block;
   vertical-align: top;

@@ -43,12 +43,12 @@ RENDER_DEPTH = 50
 RENDER_GALAXY = false
 RENDER_DEPRECATED = false
 RENDER_LABELS = true
+GRAPH_DIMENSIONS = 3
 
 const LABEL_MAX_LINE_LENGTH = 30  // label text will be cut after first word ending before this character limit.
 const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
 const GRAPH_DOM_EL = $("#3d-graph");
 const GRAPH_BACKGROUND_COLOR = 0x302020
-const GRAPH_DIMENSIONS = 3
 // For BFO layout: -2000, .01, .011
 const GRAPH_CHARGE_STRENGTH = -100 // -2000 for BFO
 const GRAPH_NODE_DEPTH = 100
@@ -77,7 +77,7 @@ $("#ontology")
 // Try this in case URL had path, before chosen() is applied 
 var auto_load = document.location.href.indexOf('?ontology=')
 if (auto_load) {
-    var choice = document.location.href.substr(auto_load+10)
+    var choice = document.location.href.substr(auto_load+10).toLowerCase()
     $("#ontology").children(`option[value="data/${choice}.json"]`).attr("selected","selected");
     $("#ontology").trigger('change')
 }
@@ -93,7 +93,7 @@ $("#label_search").on('change', function(item){
 // Top level setting controls whether shortcuts on rendering speed things up
 $("#render_deprecated").on('change', function(item) {
   RENDER_DEPRECATED = this.checked
-  if (Graph) do_graph (top.rawData)
+  if (top.Graph) do_graph (top.rawData) // Recalculate dataset with deprecated terms
 })
 
 // Top level setting controls whether shortcuts on rendering speed things up
@@ -108,11 +108,16 @@ $("#render_quicker").on('change', function(item) {
 
 $("#render_labels").on('change', function(item) {
   RENDER_LABELS = this.checked
+  refresh_graph();
+})
+
+$("#render_dimensions").on('change', function(item) {
+  GRAPH_DIMENSIONS = this.value
   if (top.Graph) {
+    Graph.numDimensions(GRAPH_DIMENSIONS)
     refresh_graph();
   }
 })
-
 
 // Galaxy or hierarchic view
 $("#render_galaxy").on('change', function(item) {
@@ -136,7 +141,7 @@ $("#render_galaxy").on('change', function(item) {
 // Controls depth of nodes being rendered.
 $("#depth_control").on('change', function(item) {
   RENDER_DEPTH = parseInt(this.value)
-  if (Graph) do_graph (top.rawData)
+  if (top.Graph) do_graph (top.rawData)
 })
 
 // Selection list of all node labels allows user to zoom in on one
@@ -285,8 +290,10 @@ function do_graph(rawData) {
 
 function refresh_graph() {
   // The graph engine is triggered to redraw its own data.
-  let { nodes, links } = Graph.graphData();
-  Graph.graphData({"nodes":nodes, "links":links})
+  if (top.Graph) {
+    let { nodes, links } = Graph.graphData();
+    Graph.graphData({"nodes":nodes, "links":links})
+  }
 }
 
 function init() {
@@ -300,7 +307,7 @@ function init() {
     .numDimensions(GRAPH_DIMENSIONS)
     // Using D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
     .forceEngine('d3') 
-    .cameraPosition({x:0, y:0, z: 2000 })
+    .cameraPosition({x:0, y:0, z: 1300 })
     .linkOpacity(1)
 
     //.linkDirectionalParticles( RENDER_QUICKER ? 0 : GRAPH_PARTICLES) // done in do_graph
@@ -330,19 +337,17 @@ function init() {
       // Displays semi-sphere, then overlays with label text
       var group = new THREE.Group();
       var fancyLayout = layout[node.id] || !RENDER_QUICKER
-      // Plain rendering skips node sphere markers
-      var nodeRadius = fancyLayout ? 5 : 0;
 
-      // These should be top-level nodes
-      if (layout[node.id]) nodeRadius = 20
-
-      // The center of all things
-      if ((node.id == 'owl:Thing') || ! node.parent_id) {
-        node.color = "gold"
+      if (layout[node.id])
         nodeRadius = 30
-      }
-
-      if (fancyLayout) {
+      else
+        if (node.depth < 4) 
+          var nodeRadius = 40 - node.depth*10
+        // Plain rendering skips node sphere markers
+        else
+          var nodeRadius = fancyLayout ? 5 : 0;
+ 
+      if (fancyLayout || node.depth < 4) {
         //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
         var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
         var material = new THREE.MeshBasicMaterial( { color: node.color } );
@@ -447,9 +452,6 @@ function init_search(data) {
   
 }
 
-function get_term_prefix(entity_id) {
-  return entity_id.split(':')[0].split('#')[0]
-}
 
 function init_geem_data(rawData) {
   /*
@@ -563,7 +565,7 @@ function init_geem_data(rawData) {
       node.y = layout_node.y;
     }
 
-    else
+    else // Is this working at all? Doesn't seem like it.
       if (node.parent_id) {
         var parent = top.dataLookup[node.parent_id]
         if (parent && parent.x !== undefined) {
@@ -577,6 +579,9 @@ function init_geem_data(rawData) {
   return data
 }
 
+function get_term_prefix(entity_id) {
+  return entity_id.split(':')[0].split('#')[0]
+}
 
 function lookup_url(term_id, label) {
   /* Returns native term URI as well as OLS link
