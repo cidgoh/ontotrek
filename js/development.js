@@ -347,6 +347,9 @@ function init() {
         else
           var nodeRadius = fancyLayout ? 5 : 0;
  
+      // 2D + 1D versions benefit from bumping nodeRadius down a bit.
+      if (GRAPH_DIMENSIONS < 3 && nodeRadius > 25) nodeRadius = 25 
+        
       if (fancyLayout || node.depth < 4) {
         //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
         var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
