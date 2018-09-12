@@ -374,14 +374,14 @@ function init() {
         sprite.color = node.color;
         sprite.textHeight = 8;
         sprite.fontSize = 20;
-        sprite.position.set( 0, fancyLayout ? 5 : 0, nodeRadius + 2 );
+        sprite.position.set( 0, fancyLayout ? 5 : 0, nodeRadius + 3 );
 
         if (fancyLayout) {
           var height = sprite._canvas.height
           var width = sprite._canvas.width
 
           const sprite2 = new THREE.Sprite( spriteMaterial );
-          sprite2.position.set( 0, 5, nodeRadius + 1 );
+          sprite2.position.set( 0, 5, nodeRadius + 2 );
           sprite2.scale.set(width/2, 10 , 1);
 
           group.add( sprite2 );
