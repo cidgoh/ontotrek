@@ -35,6 +35,7 @@ a single root.
   python ontofetch.py https://raw.githubusercontent.com/CLO-ontology/CLO/master/src/ontology/clo_merged.owl -o test -r http://purl.obolibrary.org/obo/BFO_0000001
   python ontofetch.py http://purl.obolibrary.org/obo/cmo.owl -o test -r http://purl.obolibrary.org/obo/CMO_0000000
   python ontofetch.py https://raw.githubusercontent.com/evidenceontology/evidenceontology/master/eco.owl -o test -r http://purl.obolibrary.org/obo/BFO_0000001
+  python ~/GitHub/GEEM/scripts/ontofetch.py https://raw.githubusercontent.com/biobanking/biobanking/master/ontology/obib.owl
 
 ******************************************************************************/
 
@@ -349,7 +350,7 @@ function init() {
  
       // 2D + 1D versions benefit from bumping nodeRadius down a bit.
       if (GRAPH_DIMENSIONS < 3 && nodeRadius > 25) nodeRadius = 25 
-        
+
       if (fancyLayout || node.depth < 4) {
         //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation
         var geometry = new THREE.SphereGeometry(nodeRadius, 8, 6, 0, Math.PI);
@@ -648,7 +649,7 @@ function node_focus(node) {
   parents = get_term_id_urls(parents)
 
   // Label includes term id and links to 
-  label = node.label + '<span class="label_id"> (' + node.id + (node.deprecated ? ' <span class="deprecated">deprecated</span>' : '') + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
+  label = node.label + (node.deprecated ? ' <span class="deprecated">deprecated</span>' : '') + '<span class="label_id"> (' + node.id + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
   // <img src="img/link_out_20.png" border="0" width="16">
   $("#parents").html(parents || '<span class="placeholder">parent(s)</span>');
   $("#label").html(label || '<span class="placeholder">label</span>');

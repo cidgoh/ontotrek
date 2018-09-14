@@ -16,7 +16,7 @@ body { margin: 0; padding:0; background-color:white; }
 #label {font-weight:bold; font-size:1.1rem;
   margin-left:10%;margin-right:0%;width:85%;
 }
-.label_id {font-weight:normal; font-size:.8rem;}
+.label_id {font-weight:normal; font-size:.8rem; white-space: nowrap;}
 #children {margin-left:15%;margin-right:0%;width:80%;}
 #definition {height:100px; overflow-y:scroll}
 #ui_label {}
