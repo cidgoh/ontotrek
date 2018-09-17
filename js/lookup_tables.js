@@ -178,7 +178,7 @@ var colorMapping = {
   "FOODON": {"color":"PaleTurquoise", code:"#AFEEEE"},
   "FYPO": {"color":"PaleVioletRed", code:"#DB7093"},
   "GAZ":  {"color":"PeachPuff", code:"#FFDAB9"},
-  "GENEPIO":  {"color":"Peru",  code:"#CD853F"},
+  "GENEPIO":  {"color":"Peru",  code:"#CDB59F"},
   "GENO": {"color":"Pink",  code:"#FFC0CB"},
   "GEO":  {"color":"PowderBlue",  code:"#B0E0E6"},
   "GO": {"color":"PowderBlue",  code:"#B0E0E6"},
@@ -300,7 +300,7 @@ var colorMapping = {
   "TO": {"color":"Brown", code:"#A52A2A"},
   "TRANS":  {"color":"CadetBlue", code:"#5F9EA0"},
   "TTO":  {"color":"Chartreuse",  code:"#7FFF00"},
-  "UBERON": {"color":"Chocolate", code:"#D2691E"},
+  "UBERON": {"color":"Chocolate", code:"#E2992E"},
   "UO": {"color":"Coral", code:"#FF7F50"},
   "UPHENO": {"color":"CornflowerBlue",  code:"#6495ED"},
   "VARIO":  {"color":"Crimson", code:"#DC143C"},
@@ -324,13 +324,13 @@ var colorMapping = {
 
 layout = {
 
-  "owl:Thing": {"x": 0, "y": 0},
-  "oboInOwl:ObsoleteClass": {"x": 500, "y": 0},
+  "owl:Thing": {"x": -600, "y": -600},
+  "oboInOwl:ObsoleteClass": {"x": -1200, "y": -1200},
 
   "BFO:0000002": { "x": -95, "y": -224 },
   "BFO:0000140": { "x": 833, "y": 265},
   "BFO:0000016": {"x": 177, "y": -1402},
-  "BFO:0000024": {"x": 34, "y": 571},
+  "BFO:0000024": {"x": 164, "y": 571},
   "BFO:0000034": {"x": 201, "y": -1518},
   "BFO:0000031": {"x": -93, "y": -305},
   "BFO:0000182": {"x": -1098, "y": 274},
@@ -348,7 +348,7 @@ layout = {
   "BFO:0000144": {"x": -1006, "y": 327},
   "BFO:0000019": {"x": 268, "y": -845},
   "BFO:0000017": {"x": 135, "y": -1156},
-  "BFO:0000145": {"x": 373, "y": -896},
+  "BFO:0000145": {"x": 373, "y": -796},
   "BFO:0000023": {"x": 166, "y": -1238},
   "BFO:0000029": {"x": 537, "y": 435},
   "BFO:0000006": {"x": 755, "y": 724},
