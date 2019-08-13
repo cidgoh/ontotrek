@@ -25,8 +25,6 @@
 
         <p>OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play. Currently it displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
 
-        <p> Use mouse or trackpad to rotate, zoom, or pan the display.  Click on a node to focus on it; view will rotate and move towards that item (some more work needs to be done to orient the camera naturally). Clicking on a link will take you to its child node.  Click on dashboard parent to navigate up to top, or on child to journey into the depths.</p>
-
         <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
       </div>
     </div>
@@ -108,8 +106,6 @@
         
       </textarea>
 
-      <div class="text" style="background-color:transparent"><i>Runs best on Power CPUs!</i></div>
-
       <div id="status" class="text"><span class="placeholder">term count</span></div>
       <div id="parents" class="text"><span class="placeholder">parent(s)</span></div>
       <!-- div id="term_id" class="text"><span class="placeholder">id</span></div -->
@@ -122,6 +118,17 @@
       <div id="ui_label" class="text"><span class="placeholder">UI label</span></div>
       <div id="ui_definition" class="text"><span class="placeholder">UI definition</span></div>
 
+      <div class="text" style="background-color:transparent">
+        <b>Viewport navigation:</b>
+        Click on a node to focus on it; view will rotate and move towards that item. Clicking on a link will take you to its target node.  <br/> 
+        <b>Trackpad:</b> Zoom: 2 finger motion up and down (no motion sideways); Pan: 2 finger + click and hold mouse. Rotate: 3 finger motion. <br/> 
+
+        <b>Mouse:</b> Zoom: move + click/hold right button or D key; Rotate: move + click/hold left button or A key. Rotate: move + click/hold middle button or S key.  <br/> 
+
+        <b>Dashboard navigation:</b>
+        Click on parent to navigate up to top, or on child to journey into the depths.
+      </div>
+
     </nav>
 
     <script src="js/jquery-3.3.1.slim.min.js"></script>
@@ -129,6 +136,7 @@
     <script src="js/bundle.js"></script>
     <script src="js/lookup_tables.js"></script>
     <script src="js/development2.js"></script>
+    <script src="js/common.js"></script>
 
   </body>
 </html>
