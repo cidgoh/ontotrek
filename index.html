@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="/img/favicon.ico">
@@ -10,148 +10,289 @@
     <link rel="shortcut icon" sizes="64x64" href="/img/favicon-64.png">
     <link rel="apple-touch-icon" href="/img/icon-64x64.png">
 
-    <link href="css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/foundation-icons.css">
+    <link rel="stylesheet" href="css/foundation-icons.svg">
+    <link rel="stylesheet" href="css/foundation-icons.eot">
+    <link rel="stylesheet" href="css/foundation-icons.ttf">
+    <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="js/chosen/chosen.css">
   </head>
 
   <body>
-    
-    <div class="column">
-      <div id="3d-graph"></div>
-
-      <img src="img/introduction.png" align="right" style="margin:30px"/>
-      <div style="padding-top:20px;padding-left:30px">
-        <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
-
-        <p>OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play. Currently it displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
-
-        <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
+     <div class="grid-container">
+      <div class="grid-x grid-padding-x">
+        <div class="large-12 cell">
+          <h3> <img src="img/favicon-32.png" width="32" align="left" style="margin:5px"/> OntoTrek 3D Viewer</h3>
+        </div>
       </div>
-    </div>
 
-    <nav class="nav">
-      <div id="title" class="text" style="margin-bottom:10px"><img src="img/favicon-32.png" width="32" align="left" style="margin-right:5px"/> OntoTrek 3D Viewer</div>
+      <div class="grid-x grid-padding-x">
+        <div class="large-8 cell">
+          <div class="callout" style="padding:0">
+            <div id="3d-graph">
+              <img src="img/introduction.png"/>
+            </div>
 
-      <div id="control" class="text">
+            <div style="padding:20px;">
+              <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
 
-        <select id="ontology">
-            <option value="">Select an ontology to view</option>
-            <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
-            <option value="data/agro.json">AGRO: Agronomy Ontology</option>
-            <option value="data/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
-            <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
-            <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
-            <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
-            <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
-            <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
-            <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
-            <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
-            <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
-            <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
-            <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
-            <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
-            <option value="data/obi.json">OBI: Ontology for Biomedical Investigations</option>
-            <option value="data/obib.json">OBIB: Ontology for Biobanking</option>           
-            <option value="data/pato.json">PATO: Phenotype and Trait Ontology</option>          
-            <option value="data/pco.json">PCO: Population and Community Ontology</option>   
-            <option value="data/po.json">PO: Plant Ontology (anatomical branch)</option> 
+              <p> OntoTrek displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
 
-        </select>
+              <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
+            </div>
 
-        <span id="switches">
-          <input type="checkbox" id="render_quicker">
-          <label for="render_quicker">wireframe</label>
-          &nbsp;
-          <input type="checkbox" id="render_labels" checked="checked">
-          <label for="render_labels">labels</label>
-          &nbsp;
-          <input type="checkbox" id="render_galaxy">
-          <label for="render_galaxy">galactic</label>
-          &nbsp;
-          <select id="render_dimensions">
-            =<option value = "3" selected="selected">3D</option>
-            <option value = "2">2D</option>
-            <option value = "1">1D</option>
-          </select>
-        </span>
-        
-        <span id="thickness">
-          <label for="thickness_control">bold</label>
-          <select id="thickness_control" style="width:38px !important">
-            <option value=".5">.5</option>
-            <option value="1" >1</option>
-            <option value="2" selected="selected">2</option>
-            <option value="3">3</option>
-            <option value="5">5</option>
-          </select>
-        </span>
-        &nbsp;
-
-        <span id="depth">
-          <label for="depth_control">depth</label>
-          <select id="depth_control">
-            <option value="50">all</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="7">8</option>
-            <option value="7">9</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-          </select>
-        </span>
-        &nbsp;
-
-        <span id="deprecated">
-          <input type="checkbox" id="render_deprecated">
-          <label for="render_deprecated">deprecated</label>
-        </span>
+          </div>
+        </div>
+        <div class="large-4 cell">
+          <ul class="tabs" data-tabs id="example-tabs">
+            <li class="tabs-title is-active">
+                <a href="#panel_search" aria-selected="true">Search</a>
+            </li>
+            <li class="tabs-title">
+              <a data-tabs-target="panel_settings" href="#panel_settings">Settings</a>
+            </li>
+            <li class="tabs-title">
+              <a data-tabs-target="panel_legend" href="#panel_legend">Legend</a>
+            </li>
+            <li class="tabs-title">
+              <a data-tabs-target="panel_trace" href="#panel_trace">Trace</a>
+            </li>
+            <li class="tabs-title">
+              <a data-tabs-target="panel_help" href="#panel_help">Help</a>
+            </li>
+          </ul>
 
 
+          <div class="tabs-content" data-tabs-content="example-tabs" style="min-height:550px;overflow-y:scroll">
+
+            <!-- **************************** SEARCH ************************ -->
+            <div class="tabs-panel is-active" id="panel_search">
+              <div class="callout primary">
+                Select an ontology to display
+                <span data-tooltip class="top" tabindex="1" title="The listed ontologies are from http://obofoundry.org, and were downloaded and converted into a simpler json file format for this program to use"><i class="fi-info blue"></i></span>
+
+                <select id="ontology">
+                    <option value="">Select an ontology to view</option>
+                    <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
+                    <option value="data/agro.json">AGRO: Agronomy Ontology</option>
+                    <option value="data/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
+                    <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
+                    <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
+                    <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
+                    <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
+                    <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
+                    <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
+                    <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
+                    <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
+                    <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
+                    <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
+                    <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
+                    <option value="data/obi.json">OBI: Ontology for Biomedical Investigations</option>
+                    <option value="data/obib.json">OBIB: Ontology for Biobanking</option>           
+                    <option value="data/pato.json">PATO: Phenotype and Trait Ontology</option>          
+                    <option value="data/pco.json">PCO: Population and Community Ontology</option>   
+                    <option value="data/po.json">PO: Plant Ontology (anatomical branch)</option> 
+
+                </select>
+
+                <div id="status" ><span class="placeholder">&nbsp;</span></div>
+              
+              </div>
+
+              <div class="callout primary">
+                Search for terms</span> to navigate to
+                <span data-tooltip class="top light-gray" tabindex="2" title="You can search ontology terms by synonym too!"><i class="fi-info blue"></i></span>
+
+                <select id="label_search" class="regular text"></select>
+              </div>
+
+              <div class="callout primary">
+                Navigate by term context
+                <span data-tooltip class="top light-gray" tabindex="2" title="Click on a listed parent or on a child listed in the pulldown menu to to focus on it."><i class="fi-info blue"></i></span>
+
+                <div id="parents" class="text"><span class="placeholder">parent(s)</span></div>
+                <!-- div id="term_id" class="text"><span class="placeholder">id</span></div -->
+                <div id="label" class="text">
+                  <span class="placeholder">label</span>
+                </div>
+                <div id="children">
+                  <select id="select_child">
+                    <option disabled="disabled">children will be displayed here</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="callout secondary">
+                <div id="definition" class="text">
+                  <span class="placeholder">definition</span>
+                </div>
+                <div id="synonyms" class="text">
+                  <span class="placeholder">synonyms</span>
+                </div>
+                <div id="ui_label" class="text">
+                  <span class="placeholder">UI label</span>
+                </div>
+                <div id="ui_definition" class="text">
+                  <span class="placeholder">UI definition</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- **************************** SETTINGS ************************ -->
+            <div class="tabs-panel" id="panel_settings">
+
+              <div class="callout primary">
+                <p>OntoTrek color coding
+                  <span data-tooltip class="top light-gray" tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and BFO terms as defined in js/lookup_tables.js "><i class="fi-info blue"></i></span></p>
+
+                <div class="grid-x grid-padding-x">
+                  <div class="large-6 medium-6 cell">
+                    <label>Color edges by</label>
+                    <input type="radio" name="edge_coloring" value="Red" id="edge_coloring_onto"><label for="edge_coloring_onto">ontology</label><br/>
+                    <input type="radio" name="edge_coloring" value="Blue" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO domain</label>
+                  </div>
+
+                  <div class="large-6 medium-6 cell">
+                    <label>Color nodes by</label>
+                    <input type="radio" name="node_coloring" value="Red" id="node_coloring_onto"><label for="node_coloring_onto">ontology</label><br/>
+                    <input type="radio" name="node_coloring" value="Blue" id="node_coloring_bfo"><label for="node_coloring_bfo">BFO domain</label>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="switch float-left">
+                <input class="switch-input" id="render_labels" type="checkbox" name="render_labels" checked="checked">
+                <label class="switch-paddle" for="render_labels">
+                  <span class="show-for-sr">Show labels</span>
+                </label>
+              </div>
+              <label for="render_labels"> Show labels. This slows rendering a bit.</label>
+              <br clear="both"/>
+
+              <div class="switch float-left">
+                <input class="switch-input" id="render_deprecated" type="checkbox" name="render_deprecated">
+                <label class="switch-paddle" for="render_deprecated">
+                  <span class="show-for-sr">show deprecated terms</span>
+                </label>
+              </div>
+              <label for="render_deprecated">Show deprecated terms</label>
+              <br clear="both"/>
+
+              <div class="switch float-left">
+                <input class="switch-input" id="render_quicker" type="checkbox" name="render_quicker">
+                <label class="switch-paddle" for="render_quicker">
+                  <span class="show-for-sr">render wireframe</span>
+                </label>
+              </div>
+              <label for="render_quicker"> Show a wireframe view (skinny edges, no label backgrounds) for all but upper level edges. This speeds rendering.</label>
+              <br clear="both"/>
+
+              <select id="render_dimensions" class="float-left">
+                <option value = "3" selected="selected">3D</option>
+                <option value = "2">2D</option>
+                <option value = "1">1D</option>
+              </select>
+              <label>3D view is shown by default; a 2D or 1D view is possible too</label>
+              <br clear="both"/>
+              <!--
+              <input type="checkbox" id="render_galaxy">
+              <label for="render_galaxy">galactic</label><br/>
+              -->
+
+              <select id="thickness_control" class="float-left">
+                <option value=".5">.5</option>
+                <option value="1" >1</option>
+                <option value="2" selected="selected">2</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+              </select>
+              <label for="thickness_control">Render deeper edges with this thickness</label>
+              <br clear="both">
+
+              <select id="depth_control" class="float-left">
+                <option value="50">all</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="7">8</option>
+                <option value="7">9</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+              </select>
+              <label for="depth_control" class="middle">Render from top down to this node depth.</label>
+            </div>
+
+            <!-- **************************** LEGEND ************************ -->
+            <div class="tabs-panel" id="panel_legend">
+              <b>Node coloring</b>
+              <br/>
+
+              <b>Edge coloring</b>
+            </div>
+
+            <!-- **************************** TRACE ************************ -->
+            <div class="tabs-panel" id="panel_trace">
+              <p>Experimental: To visualize a disjoint axiom related unsatisfiability error about a particular term in a given ontology, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot explanation command to produce a report of the error. 
+              <div class="callout secondary">
+                &gt; robot explain --input [YOUR ONTOLOGY FILE] --reasoner HermiT --axiom "'[PUT PROBLEM TERM'S rdfs:label HERE]' EquivalentTo owl:Nothing" --explanation output.md
+              </div>
+              <p>Enter the resulting text markup below, press Trace, and the paths of the conflicting items will be highlighted along with the node responsible for the disjoint axiom.</p>
+
+              <textarea rows="4" placeholder="enter robot markup here"></textarea>
+              <button type="button" class="success button">Trace</button>
+
+              <!-- # [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
+
+  - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234)
+    - [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234) SubClassOf [geopolitical region](http://semanticscience.org/resource/SIO_000415)
+      - [geopolitical region](http://semanticscience.org/resource/SIO_000415) SubClassOf [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886)
+        - [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886) SubClassOf [site](http://purl.obolibrary.org/obo/BFO_0000029)
+          - [site](http://purl.obolibrary.org/obo/BFO_0000029) SubClassOf [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
+  - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [material entity](http://purl.obolibrary.org/obo/BFO_0000040)
+  - [material entity](http://purl.obolibrary.org/obo/BFO_0000040) DisjointWith [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
+-->
 
 
-        <!-- Now click or navigate within graph display -->
+            </div>
 
-        <select id="label_search" class="regular text"></select>
 
+            <!-- **************************** HELP ************************ -->
+            <div class="tabs-panel" id="panel_help">
+              <p>Note that it can take a while to render an ontology, and until rendering is complete, changing settings or attempting to navigate to terms may not work.</p>
+
+              <p><b>Viewport navigation:</b></p>
+              <p>While your cursor is positioned over the display viewport, both mouse and trackpad take on the following functions:</p>
+
+              <p>Click on a node to focus on it; view will rotate and move towards that item. Clicking on a link will take you to its child (lower depth) node.</p>
+
+              <p><b>Trackpad:</b> Zoom: 2 finger motion up and down (no motion sideways); Pan: 2 finger + click and hold mouse. Rotate: 3 finger motion.</p>
+
+              <p><b>Mouse:</b> Zoom: move + click/hold right button or D key; Rotate: move + click/hold left button or A key. Rotate: move + click/hold middle button or S key.</p>
+
+            </div>
+          </div>
+
+        </div>
       </div>
- 
-      <!-- textarea id="dump" rows="10" cols="50" -->
-        
-      </textarea>
 
-      <div id="status" class="text"><span class="placeholder">term count</span></div>
-      <div id="parents" class="text"><span class="placeholder">parent(s)</span></div>
-      <!-- div id="term_id" class="text"><span class="placeholder">id</span></div -->
-      <div id="label" class="text"><span class="placeholder">label</span></div>
-      <div id="children" class="text">
-        <select id="select_child" class="text"></select>
-      </div>
-      <div id="definition" class="text"><span class="placeholder">definition</span></div>
-      <div id="synonyms" class="text"><span class="placeholder">synonyms</span></div>
-      <div id="ui_label" class="text"><span class="placeholder">UI label</span></div>
-      <div id="ui_definition" class="text"><span class="placeholder">UI definition</span></div>
+    <!-- textarea id="dump" rows="10" cols="50"></textarea>-->
 
-      <div class="text" style="background-color:transparent">
-        <b>Viewport navigation:</b>
-        Click on a node to focus on it; view will rotate and move towards that item. Clicking on a link will take you to its target node.  <br/> 
-        <b>Trackpad:</b> Zoom: 2 finger motion up and down (no motion sideways); Pan: 2 finger + click and hold mouse. Rotate: 3 finger motion. <br/> 
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
 
-        <b>Mouse:</b> Zoom: move + click/hold right button or D key; Rotate: move + click/hold left button or A key. Rotate: move + click/hold middle button or S key.  <br/> 
-
-        <b>Dashboard navigation:</b>
-        Click on parent to navigate up to top, or on child to journey into the depths.
-      </div>
-      
-    </nav>
-
-    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <!-- <script src="js/jquery-3.3.1.slim.min.js"></script> -->
     <script src="js/chosen/chosen.jquery.min.js"></script>
     <script src="js/bundle.js"></script>
     <script src="js/lookup_tables.js"></script>
     <script src="js/development.js"></script>
     <script src="js/common.js"></script>
+ 
 
   </body>
 </html>

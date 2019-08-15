@@ -94,7 +94,7 @@ var colorTable = [
 */
 
 // https://github.com/OBOFoundry/OBOFoundry.github.io/blob/master/registry/obo_context.jsonld
-var colorMapping = {
+var edge_color_mapping = {
   "owl":  {"color":"Gold",  code:"#FFD700"},
   "oboInOwl": {"color":"Gold",  code:"#FFD700"},
 

@@ -1,0 +1,51 @@
+
+/* body { margin: 0; padding:0; background-color:white; } */
+div.grid-container {max-width:75.0rem  !important}
+
+#3d-graph {}
+#title {font-weight:bold; font-size:1.3rem; background-color:transparent;}
+#ontology {}
+
+/* display of term in context of its parents and children */
+#label {font-weight:bold; 
+  margin-left:10%;margin-right:0%;width:85%;
+}
+.label_id {font-weight:normal; font-size:.8rem; white-space: nowrap;}
+#children {margin-left:15%;margin-right:0%;width:80%;}
+
+/* term's definition and user interface label and definition and synonyms */
+#definition {height:100px; overflow-y:scroll}
+#ui_label {}
+#ui_definition {height:50px; overflow-y:scroll}
+
+#label_search {}
+
+/* Settings */
+
+span.placeholder {color:gray;}
+
+.deprecated {color:red;}
+.focus {color:blue;cursor:pointer;}
+
+/* Styles used right in 3d canvass html5 */
+.scene-tooltip > div {max-width:300px; text-align: center; background-color:rgba(128, 128, 128, 0.5); padding:10px;}
+.tooltip-id {font-size:.8rem;}
+
+.text + .text {border-top:1px solid silver;}
+
+.chosen-container {padding:0;margin-left:0;}
+
+.blue {color:blue;}
+
+div.switch.float-left {margin-right:10px;clear:both;}
+select.float-left {
+  margin-right:10px; 
+  width:70px;
+  clear:both;
+}
+
+.tabs-title > a 
+{
+	padding-left:1.2rem;
+	padding-right:1.2rem;
+}

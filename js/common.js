@@ -101,6 +101,8 @@ a single root.
 
 init_search() 
 init_interface()
+   
+$(document).foundation()
 
 // Try this in case URL had path, before chosen() is applied 
 var auto_load = document.location.href.indexOf('?ontology=')
@@ -280,8 +282,8 @@ function init_geem_data(rawData) {
     if (!node.deprecated || RENDER_DEPRECATED) {
       node.children = []
       var prefix = get_term_prefix(node.id)
-      if (prefix in colorMapping)
-        node.color = colorMapping[prefix].code
+      if (prefix in edge_color_mapping)
+        node.color = edge_color_mapping[prefix].code
       else {
         console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
         node.color = '#F00'
