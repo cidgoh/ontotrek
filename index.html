@@ -5,16 +5,16 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
     <link rel="icon" sizes="16x16 32x32 64x64" href="/img/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <!-- link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" -->
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
     <link rel="shortcut icon" sizes="64x64" href="/img/favicon-64.png">
     <link rel="apple-touch-icon" href="/img/icon-64x64.png">
 
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/foundation-icons.css">
-    <link rel="stylesheet" href="css/foundation-icons.svg">
+    <!-- <link rel="stylesheet" href="css/foundation-icons.svg">
     <link rel="stylesheet" href="css/foundation-icons.eot">
-    <link rel="stylesheet" href="css/foundation-icons.ttf">
+    <link rel="stylesheet" href="css/foundation-icons.ttf">-->
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="js/chosen/chosen.css">
   </head>
@@ -69,8 +69,10 @@
             <!-- **************************** SEARCH ************************ -->
             <div class="tabs-panel is-active" id="panel_search">
               <div class="callout primary">
+
+                <i class="fi-info blue" data-tooltip tabindex="1" title="The listed ontologies are from http://obofoundry.org, and were downloaded and converted into a simpler json file format for this program to use"></i>
+
                 Select an ontology to display
-                <span data-tooltip class="top" tabindex="1" title="The listed ontologies are from http://obofoundry.org, and were downloaded and converted into a simpler json file format for this program to use"><i class="fi-info blue"></i></span>
 
                 <select id="ontology">
                     <option value="">Select an ontology to view</option>
@@ -101,15 +103,17 @@
               </div>
 
               <div class="callout primary">
+
+                <i class="fi-info blue" data-tooltip tabindex="2" title="You can search ontology terms by synonym too!"></i> 
                 Search for terms</span> to navigate to
-                <span data-tooltip class="top light-gray" tabindex="2" title="You can search ontology terms by synonym too!"><i class="fi-info blue"></i></span>
 
                 <select id="label_search" class="regular text"></select>
               </div>
 
               <div class="callout primary">
+                <i class="fi-info blue" data-tooltip tabindex="2" title="Click on a listed parent or on a child listed in the pulldown menu to to focus on it."></i>
+
                 Navigate by term context
-                <span data-tooltip class="top light-gray" tabindex="2" title="Click on a listed parent or on a child listed in the pulldown menu to to focus on it."><i class="fi-info blue"></i></span>
 
                 <div id="parents" class="text"><span class="placeholder">parent(s)</span></div>
                 <!-- div id="term_id" class="text"><span class="placeholder">id</span></div -->
@@ -145,22 +149,23 @@
             <div class="tabs-panel" id="panel_settings">
 
               <div class="callout primary">
-                <p>OntoTrek color coding
-                  <span data-tooltip class="top light-gray" tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and BFO terms as defined in js/lookup_tables.js "><i class="fi-info blue"></i></span></p>
+
 
                 <div class="grid-x grid-padding-x">
-                  <div class="large-6 medium-6 cell">
-                    <label>Color edges by</label>
-                    <input type="radio" name="edge_coloring" value="Red" id="edge_coloring_onto"><label for="edge_coloring_onto">ontology</label><br/>
-                    <input type="radio" name="edge_coloring" value="Blue" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO domain</label>
-                  </div>
 
+                  <div class="large-12 medium-12 cell">
+                    <i class="fi-info blue" data-tooltip class="top light-gray" tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and BFO terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select BFO domain to have edges colored by occurent, continuant, process, etc."></i>
+                    <label>Color edges by</label>
+                    <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">ontology</label> &nbsp; &nbsp; 
+                    <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO domain</label>
+                  </div>
+                  <!--
                   <div class="large-6 medium-6 cell">
                     <label>Color nodes by</label>
                     <input type="radio" name="node_coloring" value="Red" id="node_coloring_onto"><label for="node_coloring_onto">ontology</label><br/>
                     <input type="radio" name="node_coloring" value="Blue" id="node_coloring_bfo"><label for="node_coloring_bfo">BFO domain</label>
                   </div>
-
+                  -->
                 </div>
               </div>
 
@@ -171,6 +176,17 @@
                 </label>
               </div>
               <label for="render_labels"> Show labels. This slows rendering a bit.</label>
+              <br clear="both"/>
+
+              
+              <div class="switch float-left">
+                <input class="switch-input" id="render_other_parents" type="checkbox" name="render_other_parents">
+                <label class="switch-paddle" for="render_other_parents">
+                  <span class="show-for-sr">Show other parents for a term</span>
+                </label>
+              </div>
+              <i class="fi-info blue" data-tooltip title="Other (i.e. multihomed non-inferred) parent links are shown in orange.  These are not inferred.  A term's primary parent is currently somewhat arbitrary.  Currently no inferred class display is possible."></i>
+              <label for="render_deprecated">Experimental: Show a term's other (non-inferred) parent links</label>
               <br clear="both"/>
 
               <div class="switch float-left">
@@ -229,24 +245,35 @@
 
             <!-- **************************** LEGEND ************************ -->
             <div class="tabs-panel" id="panel_legend">
-              <b>Node coloring</b>
-              <br/>
-
-              <b>Edge coloring</b>
+              <div class="grid-x grid-padding-x">
+                  <div id="edge_legend">Select an ontology to view it; a legend of node and edge colors will be displayed here</div>
+                  <div id="node_legend"></div>
+              </div>
             </div>
 
             <!-- **************************** TRACE ************************ -->
             <div class="tabs-panel" id="panel_trace">
-              <p>Experimental: To visualize a disjoint axiom related unsatisfiability error about a particular term in a given ontology, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot explanation command to produce a report of the error. 
+              <p>Experimental: To visualize a disjoint axiom-related unsatisfiability error about a particular term in a given ontology that you have encountered, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command directly on that ontology to get the error explanation report. 
               <div class="callout secondary">
                 &gt; robot explain --input [YOUR ONTOLOGY FILE] --reasoner HermiT --axiom "'[PUT PROBLEM TERM'S rdfs:label HERE]' EquivalentTo owl:Nothing" --explanation output.md
               </div>
               <p>Enter the resulting text markup below, press Trace, and the paths of the conflicting items will be highlighted along with the node responsible for the disjoint axiom.</p>
 
-              <textarea rows="4" placeholder="enter robot markup here"></textarea>
-              <button type="button" class="success button">Trace</button>
+              <textarea rows="4" id="trace_content" placeholder="enter robot markup here">
+                ## [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
 
-              <!-- # [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
+                - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234)
+    - [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234) SubClassOf [geopolitical region](http://semanticscience.org/resource/SIO_000415)
+      - [geopolitical region](http://semanticscience.org/resource/SIO_000415) SubClassOf [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886)
+        - [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886) SubClassOf [site](http://purl.obolibrary.org/obo/BFO_0000029)
+          - [site](http://purl.obolibrary.org/obo/BFO_0000029) SubClassOf [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
+  - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [material entity](http://purl.obolibrary.org/obo/BFO_0000040)
+  - [material entity](http://purl.obolibrary.org/obo/BFO_0000040) DisjointWith [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
+              </textarea>
+              <button type="button" class="success button" id="trace_button">Trace</button>
+
+              <!-- 
+                ## [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
 
   - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234)
     - [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234) SubClassOf [geopolitical region](http://semanticscience.org/resource/SIO_000415)

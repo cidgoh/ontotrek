@@ -8,6 +8,8 @@ RENDER_DEPTH = 50
 RENDER_GALAXY = false
 RENDER_DEPRECATED = false
 RENDER_LABELS = true
+RENDER_ULO_EDGE = false
+RENDER_OTHER_PARENTS = false
 GRAPH_DIMENSIONS = 3
 GRAPH_LINK_WIDTH = 2
 EXIT_DEPTH = 26;
@@ -30,6 +32,8 @@ const GRAPH_PARTICLES = 0 // animation that shows directionality of links
 const ONTOLOGY_LOOKUP_URL = 'http://purl.obolibrary.org/obo/'
 const CAMERA_DISTANCE = 300.0
 const NO_LABELS = false
+// Regular expression to match robot's markup triple explanation of unsatisfiable reasoning:
+const RE_MD_TRIPLE = /\[(?<subject_label>[^\]]+)\]\((?<subject_uri>[^)]+)\) (?<relation>\w+) \[(?<object_label>[^\]]+)\]\((?<object_uri>[^)]+)\)/;
 
 
 function do_graph(rawData) {
@@ -192,7 +196,12 @@ function depth_iterate() {
       /* can't set node.x, y on new nodes. */
     }
 
-    var newLinks = top.builtData.links.filter(l => top.dataLookup[l.target] && top.dataLookup[l.target].depth == top.ITERATE);
+    // Issue: link with otherparent getting added by target depth BUT other parent not in nodes yet.
+    var newLinks = top.builtData.links.filter(
+      l => top.dataLookup[l.target] 
+      && top.dataLookup[l.target].depth == top.ITERATE
+      && l.other === false
+      );
     
     Graph.cooldownTicks((top.NEW_NODES.length+30)/6)
 
@@ -216,15 +225,28 @@ function depth_iterate() {
     // z coordinate reset to standard hierarchy
     for (item in top.builtData.nodes) {
       node = top.builtData.nodes[item]
-      node.fz = node_depth(node) + Math.random()*20 - 10
+      node.fz = node_depth(node) + Math.random() * 20 - 10
     }
     // don't make below var newNodes / var newLinks?
-    newNodes = top.builtData.nodes.filter(n => n.depth >= top.ITERATE && n.depth <= top.RENDER_DEPTH)
-    newLinks = top.builtData.links.filter(l => function(l) {
-      var target = top.dataLookup[l.target]
-      return target.depth >= top.ITERATE && target.depth <= top.RENDER_DEPTH
-    });
+    var newNodes = top.builtData.nodes.filter(n => n.depth.within(top.ITERATE, top.RENDER_DEPTH))
 
+    // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
+    var newLinks = top.builtData.links.filter(
+      l => top.dataLookup[l.target] && ((RENDER_OTHER_PARENTS && l.other === true) 
+        || (l.other === false && top.dataLookup[l.target].depth.within(top.ITERATE, top.RENDER_DEPTH))
+      )
+    );    
+    /*
+    // For some reason, can't code abovce as  .filter(l => function(l){...}) ?
+    var newLinks = top.builtData.links.filter( l => function(l){
+      target = top.dataLookup[l.target]
+      // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
+      // 
+      return (RENDER_OTHER_PARENTS && l.other ===true) || ((l.other === false) && target.depth >= top.ITERATE && target.depth <= top.RENDER_DEPTH)
+    });
+    */
+   
+    // Fetches existing tuple of nodes and links
     const { nodes, links } = Graph.graphData();
 
     const total_nodes = nodes.length + newNodes.length
@@ -243,3 +265,11 @@ function depth_iterate() {
   top.ITERATE ++;
 
 }
+
+Number.prototype.within = function(a, b) {
+  var min = Math.min.apply(Math, [a, b]),
+      max = Math.max.apply(Math, [a, b]);
+  return this >= min && this <= max;
+};
+
+

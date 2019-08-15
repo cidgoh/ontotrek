@@ -137,6 +137,15 @@ function init_interface() {
     if (top.Graph) do_graph (top.rawData) // Recalculate dataset with deprecated terms
   })
 
+  // upper level ontology edge coloring
+  $("input[name='ulo_edge_coloring']").on('change', function(item) {
+    RENDER_ULO_EDGE = (this.value == 'true')
+    if (top.Graph) {
+      //refresh_graph();
+      do_graph (top.rawData)
+    }
+  })
+
 
   $("#thickness_control").on('change', function(item) {
     GRAPH_LINK_WIDTH = parseFloat(this.value)
@@ -156,6 +165,12 @@ function init_interface() {
   $("#render_labels").on('change', function(item) {
     RENDER_LABELS = this.checked
     refresh_graph();
+  })
+
+  $("#render_other_parents").on('change', function(item) {
+    RENDER_OTHER_PARENTS = this.checked
+    do_graph (top.rawData)
+    // FUTURE: Just toggle visibility via WEBGL
   })
 
   $("#render_dimensions").on('change', function(item) {
@@ -197,6 +212,58 @@ function init_interface() {
       node_focus(top.dataLookup[this.value])
   })
 
+  // Trace works on ROBOT or Protege "explanation" report.
+  $("#trace_button").on('click', function(item){
+    var trace_content = $('#trace_content').val().trim()
+    if (trace_content != '') {
+      var content = trace_content.split('\n')
+      var focus = null // DisjointWith node to focus on in analysis.
+
+      for (ptr in content) {
+
+        var result = triple_parse(content[ptr])
+        if (result) {
+          switch (result.relation) {
+            case 'DisjointWith':
+              // Find shared parent class/node of both those nodes 
+              // - that is where disjointness is defined?
+              var focus = top.dataLookup[xxxxxxx]
+              alert(result.subject_uri + " " + result.object_uri)
+
+              
+              break;
+            case 'SubClassOf': 
+              break;                 
+          }
+        }
+      }
+
+      if (focus)
+        node_focus()
+    }
+  })
+
+}
+
+function triple_parse (line) {
+  /* Find markdown expression of [subject relation object] tripe and return
+  a dictionary of each element.
+  
+  INPUT: a text line hopefully of markup representation of a triple: form, e.g.
+   "- [geopolitical region](http://semanticscience.org/resource/SIO_000415) SubClassOf [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886)"
+
+  OUTPUT: dictionary of form:
+    { object_label: "immaterial entity"
+      object_uri: "http://purl.obolibrary.org/obo/BFO_0000141"
+      relation: "DisjointWith"
+      subject_label: "material entity"
+      subject_uri: "http://purl.obolibrary.org/obo/BFO_0000040"
+    }
+  
+  */
+
+  var matchObj = RE_MD_TRIPLE.exec(line);
+  return matchObj.groups
 }
 
 
@@ -275,15 +342,19 @@ function init_geem_data(rawData) {
   var data = {nodes:[], links:[]}
   top.dataLookup = {}
   var node_lookup = {}
-
+  var legend = {}
   // 1st pass does all the nodes.
   for (var item in rawData.specifications) {
-    var node = rawData.specifications[item]
+    var node = rawData.specifications[item];
     if (!node.deprecated || RENDER_DEPRECATED) {
-      node.children = []
-      var prefix = get_term_prefix(node.id)
-      if (prefix in edge_color_mapping)
-        node.color = edge_color_mapping[prefix].code
+      node.children = [];
+      var prefix = get_term_prefix(node.id);
+      if (!(prefix in legend)) 
+        legend[prefix] = null;
+      if (prefix in edge_color_mapping){
+        node.color = colors[edge_color_mapping[prefix].color];
+
+      }
       else {
         console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
         node.color = '#F00'
@@ -331,8 +402,21 @@ function init_geem_data(rawData) {
         ancestor.depth = focus.depth + ptr + 1
       }
     }
+
   }
 
+  // Render legend for node coloring
+  $("#node_legend").empty()
+  var legend_sorted = Object.keys(legend).sort()
+  if (legend_sorted.length) $("#node_legend").append('Node coloring<br/>')
+  for (var ptr in legend_sorted) {
+    var prefix = legend_sorted[ptr]
+    var color = edge_color_mapping[prefix] ? edge_color_mapping[prefix].color : null;
+
+    $("#node_legend").append(`<div class="legend_color" style="background-color:${color}">&nbsp;</div>
+      <div class="legend_item">${prefix}</div>
+      <br/>`)
+  }
 
   // To support the idea that graph can work on top-level nodes first
   data.nodes.sort(function(a,b) { return (a.depth - b.depth) })
@@ -341,18 +425,40 @@ function init_geem_data(rawData) {
     data.nodes = data.nodes.filter(n => (n.depth <= RENDER_DEPTH)) ; // Remove deeper nodes
 
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
-  
+
+  $("#edge_legend").empty()
+
   // 2nd pass does LINKS according to depth:
   for (var item in data.nodes) {
-    const node = data.nodes[item]
-    node.radius = Math.pow(2, 7-node.depth) // # of levels
-    const parent_id = node.parent_id
-    if (parent_id && node_lookup[parent_id]) {
+    const node = data.nodes[item];
+    node.radius = Math.pow(2, 7-node.depth); // # of levels
+    const parent_id = node.parent_id;
+    const parent = node_lookup[parent_id];
+    if (parent_id && parent) {
+      // Upper level ontology edge color takes cue from parent node
+      if (RENDER_ULO_EDGE) {
+        var layout_node = layout[node.id]
+        if (layout_node && layout_node.color !== null) {
+          var color = colors[layout_node.color]
+          node.edge_color = color
+          $("#edge_legend").append(`<div class="legend_color" style="background-color:${layout_node.color}">&nbsp;</div>
+            <div class="legend_item">${node.label}</div>
+            <br/>`)
+        }
+        else {
+          var color = parent.edge_color
+          node.edge_color = color
+        }
+      }
+      else 
+        var color = node.color;
+
       link = { 
         source: parent_id, 
         target: node.id, 
-        color: node.color,
-        width: node.radius
+        color: color,
+        width: node.radius,
+        other: false // signals "primary" parent
       }
       data.links.push(link)
       // Keep track of all the child links
@@ -360,8 +466,36 @@ function init_geem_data(rawData) {
         node_lookup[parent_id].children.push(node.id)
     }
 
-    // Establish 2ndary (multihomed) to other parents?
   }
+
+  // 3rd pass does LINKS according to depth:
+  for (var item in data.nodes) {
+    const node = data.nodes[item];
+
+    // Establish 2ndary (multihomed) to other parents
+    for (var ptr in node.other_parents) {
+      const parent_id = node.other_parents[ptr]
+      const parent = node_lookup[parent_id];
+
+      // "other: true" Signals that this needs to be handled by final pass in
+      // depth_iterate() 
+      if (parent) {
+        var link = { 
+          source: parent_id, 
+          target: node.id, 
+          color: '#FFA500',
+          width: node.radius,
+          other: true 
+        }
+        data.links.push(link)
+        node_lookup[parent_id].children.push(node.id)
+
+      }
+    }
+  }
+
+  if ($("#edge_legend").children().length)
+    $("#edge_legend").prepend('Edge coloring<br/>')
 
 
   if (RENDER_DEPTH != 50)
@@ -593,10 +727,11 @@ function node_focus(node = {}) {
     // Color assigned here but rendered color isn't actually affected until AFTER next rebuild of graph/viewport.
     node.color = 'red'; 
     // This sets visual color directly in rendering engine so we don't have to rerender graph as a whole!
-    node.marker.material.color.setHex(0xFF0000); 
+    if (node.marker.material)
+      node.marker.material.color.setHex(0xFF0000); 
 
     Graph.cameraPosition(
-      {x: node.x, y: node.y, z: node.z+200}, // new position  + CAMERA_DISTANCE/2 
+      {x: node.x+500, y: node.y, z: node.z+50}, // new position  + CAMERA_DISTANCE/2 
       node, // lookAt ({ x, y, z })  
       4000  // 4 second transition duration
     )

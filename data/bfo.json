@@ -47,7 +47,8 @@
         },
         "BFO:0000001": {
             "datatype": "entity",
-            "id": "BFO:0000001"
+            "id": "BFO:0000001",
+            "label":"entity"
         },
         "BFO:0000024": {
             "parent_id": "BFO:0000040",
