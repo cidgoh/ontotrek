@@ -31,13 +31,15 @@
         <div class="large-8 cell">
           <div class="callout" style="padding:0">
             <div id="3d-graph">
-              <img src="img/introduction.png"/>
+              <img src="img/introduction.png" style="margin:15px;border:2px solid silver" />
             </div>
 
             <div style="padding:20px;">
-              <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like IDO, some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", or limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an "independent streak", also illustrating the difference between taxonomic and application ontologies. </p>
+              <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like AGRO and ECOCORE, and some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", and limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an independent streak which may illustrate the difference between reference and application ontologies. </p>
 
-              <p> OntoTrek displays all class-subclass relations starting from owl:Entity or BFO:0000001 entity or a specified entity that we downloaded underlying terms of.  OntoTrek doesn't draw other term relations.  (OntoTrek is actually running off of flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
+              <p> OntoTrek displays all class-subclass relations starting from owl:Thing or BFO:0000001 entity.  OntoTrek doesn't draw other object relations. The program actually reads flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program).</p>
+
+              <p><b>To get started, select an ontology in upper right Search menu ...</b></p>
 
               <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
             </div>
@@ -154,10 +156,10 @@
                 <div class="grid-x grid-padding-x">
 
                   <div class="large-12 medium-12 cell">
-                    <i class="fi-info blue" data-tooltip class="top light-gray" tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and BFO terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select BFO domain to have edges colored by occurent, continuant, process, etc."></i>
+                    <i class="fi-info blue" data-tooltip tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and Basic Formal Ontology terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select BFO domain to have edges colored by occurent, continuant, process, etc."></i>
                     <label>Color edges by</label>
-                    <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">ontology</label> &nbsp; &nbsp; 
-                    <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO domain</label>
+                    <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">Term source</label> &nbsp; &nbsp; 
+                    <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO branch</label>
                   </div>
                   <!--
                   <div class="large-6 medium-6 cell">
@@ -253,7 +255,7 @@
 
             <!-- **************************** TRACE ************************ -->
             <div class="tabs-panel" id="panel_trace">
-              <p>Experimental: To visualize a disjoint axiom-related unsatisfiability error about a particular term in a given ontology that you have encountered, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command directly on that ontology to get the error explanation report. 
+              <p>Experimental tool: To visualize a disjoint axiom-related unsatisfiability error about a particular term in a given ontology that you have encountered, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command directly on that ontology to get the error explanation report. 
               <div class="callout secondary">
                 &gt; robot explain --input [YOUR ONTOLOGY FILE] --reasoner HermiT --axiom "'[PUT PROBLEM TERM'S rdfs:label HERE]' EquivalentTo owl:Nothing" --explanation output.md
               </div>

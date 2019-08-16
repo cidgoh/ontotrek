@@ -349,8 +349,9 @@ function init_geem_data(rawData) {
     if (!node.deprecated || RENDER_DEPRECATED) {
       node.children = [];
       var prefix = get_term_prefix(node.id);
-      if (!(prefix in legend)) 
-        legend[prefix] = null;
+      // Track counts of each prefix
+      legend[prefix] = prefix in legend ? legend[prefix]+1 : 1;
+
       if (prefix in edge_color_mapping){
         node.color = colors[edge_color_mapping[prefix].color];
 
@@ -414,7 +415,7 @@ function init_geem_data(rawData) {
     var color = edge_color_mapping[prefix] ? edge_color_mapping[prefix].color : null;
 
     $("#node_legend").append(`<div class="legend_color" style="background-color:${color}">&nbsp;</div>
-      <div class="legend_item">${prefix}</div>
+      <div class="legend_item">${prefix} (${legend[prefix]})</div>
       <br/>`)
   }
 
@@ -427,7 +428,8 @@ function init_geem_data(rawData) {
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
 
   $("#edge_legend").empty()
-
+  var legend = {}
+  
   // 2nd pass does LINKS according to depth:
   for (var item in data.nodes) {
     const node = data.nodes[item];
