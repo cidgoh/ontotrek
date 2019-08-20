@@ -257,7 +257,7 @@
             <div class="tabs-panel" id="panel_trace">
 
               <p>Experimental tool: Enter Markdown formatted links of form [link label](URL) [relation type] [link label](URL) here to see them highlighted in current ontology:
-              <textarea rows="4" id="trace_content" placeholder="enter robot markup here"># This is a fictional example pertaining to the GenEpiO ontology:
+              <textarea rows="4" id="trace_content" placeholder="enter robot markup here"># This is a fictional example pertaining to the GenEpiO ontology (it is also viewable in BFO ontology):
 
   - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234)
     - [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234) SubClassOf [geopolitical region](http://semanticscience.org/resource/SIO_000415)
@@ -269,12 +269,11 @@
               </textarea>
               <button type="button" class="success button" id="trace_button">Trace</button>
 
-
               <p>To visualize a disjoint axiom-related unsatisfiability error about a particular term in a given ontology that you have encountered, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command directly on that ontology to get the error explanation report. 
               <div class="callout secondary">
                 &gt; robot explain --input [YOUR ONTOLOGY FILE] --reasoner HermiT --axiom "'[PUT PROBLEM TERM'S rdfs:label HERE]' EquivalentTo owl:Nothing" --explanation output.md
               </div>
-              <p>Select the pertinent ontology, wait for it to be fully rendered, then enter the resulting explanation report text below, press Trace, and the paths of the conflicting items will be highlighted along with the node responsible for the disjoint axiom.</p>
+              <p>Select the pertinent ontology, wait for it to be fully rendered, then enter the resulting explanation report text above, press Trace, and the conflicting relations will be highlighted.</p>
 
             </div>
 
