@@ -241,15 +241,15 @@ function init_interface() {
                 // Find shared parent class/node of both those nodes 
                 // - that is where disjointness is defined?
                 //alert(source_id + " disjoint with " + target_id)
-                link = get_link(new_links, subject_node, object_node, result.relation, 0xFF0000, 10) // RED
+                link = get_link(new_links, subject_node, object_node, result.relation, 0xFF0000, 20) // RED
                 // Set Focus here
-                link.highlight = true
+                link.highlight = 0xFF0000
                 focus = subject_node
                 break;
 
               case 'SubClassOf': 
-                link = get_link(new_links, object_node, subject_node, result.relation, 0xFF0000, 5) // RED
-                link.highlight = true
+                link = get_link(new_links, object_node, subject_node, result.relation, 0xFFA500, 10) // Orange
+                link.highlight = 0xFFA500
                 break;                 
             }
         }
@@ -318,6 +318,7 @@ function get_node_from_url(new_nodes, url, label) {
     node_id = groups.namespace + ':' + groups.id
     var node = top.dataLookup[node_id]
     if (!node) {
+      // FUTURE: Code z-axis based on depth call.
       node = {
         'id':         node_id,
         'label':      label,
@@ -634,7 +635,7 @@ function set_link(links, source_id, target_id, label = '', color, width, other=f
     source: source_id, 
     target: target_id, 
     label: label,
-    color: color, 
+    color: color, // Hex or string
     width: width,
     other: other
   }

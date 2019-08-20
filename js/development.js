@@ -22,7 +22,7 @@ const GRAPH_BACKGROUND_COLOR = "#302020"
 // For BFO layout: -2000, .01, .011
 const GRAPH_CHARGE_STRENGTH = -30000 // negative=repulsion; positive=attraction // -2000 for BFO
 const GRAPH_NODE_DEPTH = 200
-const GRAPH_LINK_HIGHLIGHT_RADIUS = 10
+const GRAPH_LINK_HIGHLIGHT_RADIUS = 15
 const GRAPH_VELOCITY_DECAY = 0.4// default 0.4
 const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
 const GRAPH_NODE_RADIUS = 5
@@ -129,9 +129,11 @@ function init() {
       // 
       return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
     })
+    // It would be great if we could make it dashed instead
     .linkColor(function(link) {
-      return link.highlight ? '#F00' : link.color
+      return link.highlight ? link.highlight : link.color
     })
+
     .linkResolution(3) // 3 sided, i.e. triangular beam
     .linkOpacity(1)
 
@@ -143,7 +145,9 @@ function init() {
     // Note d.target is an object!
     /*.linkAutoColorBy(d => d.target.color})*/
 
-    .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) // Text shown on mouseover. //${node.definition}
+    // Text shown on mouseover. //${node.definition}
+    .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) 
+
     //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
     //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
     //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
