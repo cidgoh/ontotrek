@@ -576,7 +576,7 @@ function init_ontofetch_data(rawData) {
     if (parent_id && parent) {
       // Upper level ontology edge color takes cue from parent node
       if (RENDER_ULO_EDGE) {
-        var layout_node = layout[node.id]
+        var layout_node = layout[parent.id]
         if (layout_node && layout_node.color !== null) {
           var color = colors[layout_node.color]
           node.edge_color = color

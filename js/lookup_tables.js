@@ -420,7 +420,7 @@ layout = {
   "oboInOwl:ObsoleteClass": 
                  {"x": -2300, "y": -2300, "color": ""},
 
-  "BFO:0000001": {"x": -486,  "y": -116,  "color": null         }, // entity
+  "BFO:0000001": {"x": -486,  "y": -116,  "color": 'Gold'       }, // entity
   "BFO:0000002": {"x": 120,   "y": -264,  "color": "Green"      }, //  continuant
   "BFO:0000004": {"x": 146,   "y": 193,   "color": "Lime"       }, //    independent continuant
   "BFO:0000040": {"x": -3,    "y": 475,   "color": "GreenYellow"}, //      material entity
