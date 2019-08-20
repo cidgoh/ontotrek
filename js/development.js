@@ -21,7 +21,8 @@ const GRAPH_DOM_EL = $("#3d-graph");
 const GRAPH_BACKGROUND_COLOR = "#302020"
 // For BFO layout: -2000, .01, .011
 const GRAPH_CHARGE_STRENGTH = -30000 // negative=repulsion; positive=attraction // -2000 for BFO
-const GRAPH_NODE_DEPTH = 100
+const GRAPH_NODE_DEPTH = 200
+const GRAPH_LINK_HIGHLIGHT_RADIUS = 10
 const GRAPH_VELOCITY_DECAY = 0.4// default 0.4
 const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
 const GRAPH_NODE_RADIUS = 5
@@ -34,7 +35,7 @@ const CAMERA_DISTANCE = 300.0
 const NO_LABELS = false
 // Regular expression to match robot's markup triple explanation of unsatisfiable reasoning:
 const RE_MD_TRIPLE = /\[(?<subject_label>[^\]]+)\]\((?<subject_uri>[^)]+)\) (?<relation>\w+) \[(?<object_label>[^\]]+)\]\((?<object_uri>[^)]+)\)/;
-
+const RE_NAMESPACE_URL = /(?<prefix>https?:\/\/.+[\/#](?<namespace>\w+)(?<separator>[_:]))(?<id>\w+)/;
 
 function do_graph(rawData) {
   /*
@@ -48,7 +49,7 @@ function do_graph(rawData) {
   node_focus()
 
   // Usual case for GEEM ontofetch.py ontology term specification table:
-  data = init_geem_data(rawData)
+  data = init_ontofetch_data(rawData)
   init_search(data) 
 
   //Graph.linkDirectionalParticles(0)
@@ -123,8 +124,14 @@ function init() {
 
     // IS THERE A WAY TO FORCE CAMERA TO only pan, and rotate on x,y but not Z ?
     .cameraPosition({x:0, y:0, z: 3000 },{x:0, y:0, z: 0 })
-
-    .linkWidth(function(link) {return link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH})
+    //.linkWidth(link => link === highlightLink ? 4 : 1)
+    .linkWidth(function(link) {
+      // 
+      return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
+    })
+    .linkColor(function(link) {
+      return link.highlight ? '#F00' : link.color
+    })
     .linkResolution(3) // 3 sided, i.e. triangular beam
     .linkOpacity(1)
 
@@ -137,8 +144,12 @@ function init() {
     /*.linkAutoColorBy(d => d.target.color})*/
 
     .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) // Text shown on mouseover. //${node.definition}
-    //.nodeColor(node => node.color) //triggers refresh on each animation cycle
+    //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
     //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
+    //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
+    
+    // Not doing anything...
+    .nodeRelSize(node => node.highlight ? 18 : 4 ) // 4 is default
     .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
     .onLinkClick(link => {node_focus(link.target)})
     .onNodeClick(node => node_focus(node))

@@ -57,11 +57,13 @@ select.float-left {
 	min-width:90px;
 	}  
 .legend_color {
-	font-size:0.5rem;
+	font-size:0.7rem;
 	display: inline-block;
-	width:15px;
+	min-width:40px;
 	height:20px;
     background-color: Gold;
     border-radius: 3px;
     padding: 3px 10px 3px 10px;
     margin: 3px;}
+    
+#trace_content {font-size:.8rem;}
