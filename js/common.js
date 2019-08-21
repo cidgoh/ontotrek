@@ -188,7 +188,7 @@ function init_interface() {
       let { nodes, links } = Graph.graphData();
       for (item in nodes) {
         var node = nodes[item]
-        if (!layout[node.id]) {
+        if (!top.layout[node.id]) {
           if (RENDER_GALAXY) { // release z position.
             node.fz = null  
           }
@@ -318,21 +318,7 @@ function get_node_from_url(new_nodes, url, label) {
     node_id = groups.namespace + ':' + groups.id
     var node = top.dataLookup[node_id]
     if (!node) {
-      // FUTURE: Code z-axis based on depth call.
-      node = {
-        'id':         node_id,
-        'label':      label,
-        'short_label': label,
-        'color':      '#FFF', 
-        'depth':      4, // This just gives them a bigger but not giant label
-        'parent_id':  '',
-        'synonyms':   '',
-        'definition': '',
-        'children':   []
-      }
-      new_nodes.push(node)
-      top.dataLookup[node.id] = node
-
+      node = make_node(new_nodes, node_id, label)
     }
     node.highlight = true;
     return node
@@ -342,6 +328,22 @@ function get_node_from_url(new_nodes, url, label) {
   return node
 }
 
+function make_node(new_nodes, node_id, label) {
+  // FUTURE: Code z-axis based on depth call.
+  node = {
+    'id':         node_id,
+    'label':      label,
+    'short_label': label,
+    'color':      '#FFF', 
+    'depth':      4, // This just gives them a bigger but not giant label
+    'parent_id':  '',
+    'synonyms':   '',
+    'definition': '',
+    'children':   []
+  }
+  new_nodes.push(node)
+  top.dataLookup[node.id] = node
+}
 
 function get_link(new_links, source, target, label, hex_color, width) {
   /* Highlights link between source_id node and target_id node.
@@ -485,8 +487,8 @@ function init_ontofetch_data(rawData) {
       // Stores a count of each prefix
       legend[prefix] = prefix in legend ? legend[prefix]+1 : 1;
 
-      if (prefix in edge_color_mapping){
-        node.color = colors[edge_color_mapping[prefix].color];
+      if (prefix in prefix_color_mapping){
+        node.color = colors[prefix_color_mapping[prefix].color];
 
       }
       else {
@@ -540,16 +542,17 @@ function init_ontofetch_data(rawData) {
   }
 
   // Render legend for node coloring
-  $("#node_legend").empty()
-  var legend_sorted = Object.keys(legend).sort()
-  if (legend_sorted.length) $("#node_legend").append('Node coloring<br/>')
+  $("#node_legend").empty();
+  var legend_sorted = Object.keys(legend).sort();
+  if (legend_sorted.length) 
+    $("#node_legend").append('Node colouring<br/>');
   for (var ptr in legend_sorted) {
-    var prefix = legend_sorted[ptr]
-    var color = edge_color_mapping[prefix] ? edge_color_mapping[prefix].color : null;
+    var prefix = legend_sorted[ptr];
+    var color = prefix_color_mapping[prefix] ? prefix_color_mapping[prefix].color : null;
 
     $("#node_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[prefix]}</div>
       <div class="legend_item">${prefix}</div>
-      <br/>`)
+      <br/>`);
   }
 
   // To support the idea that graph can work on top-level nodes first
@@ -561,41 +564,63 @@ function init_ontofetch_data(rawData) {
   // Establish lookup table for all nodes
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
 
-  $("#edge_legend").empty()
-  var legend = {}
+  var legend = {};
 
   // 2nd pass does LINKS organized by depth, i.e. allowing inheritance of properties:
   for (var item in data.nodes) {
-    const node = data.nodes[item];
-
+    var node = data.nodes[item];
     // Size node according to proximity to depth 0.
     node.radius = Math.pow(2, 7-node.depth); // # of levels
+
+    // Any node which has a layout record including custom color, gets group_id = itself.
+    if (RENDER_ULO_EDGE) {
+      if (top.layout[node.id] && top.layout[node.id].color) {
+        node.group_id = node.id;
+        legend[node.group_id] = 0;
+      }
+    }
+
     const parent_id = node.parent_id;
-    //const parent = node_lookup[parent_id];
     const parent = top.dataLookup[parent_id];
-    if (parent_id && parent) {
+    if (parent) {
       // Upper level ontology edge color takes cue from parent node
       if (RENDER_ULO_EDGE) {
-        var layout_node = layout[parent.id]
-        if (layout_node && layout_node.color !== null) {
-          var color = colors[layout_node.color]
-          node.edge_color = color
-          $("#edge_legend").append(`<div class="legend_color" style="background-color:${layout_node.color}">&nbsp;</div>
-            <div class="legend_item">${node.label}</div>
-            <br/>`)
+        if (!node.group_id && parent.group_id) {
+          node.group_id = parent.group_id
         }
-        else {
-          var color = parent.edge_color
-          node.edge_color = color
-        }
+        legend[parent.group_id] += 1 // This node only counts in parent's category
+        var group = top.layout[parent.group_id]
+        var color = group ? group.color : node.color;
       }
       else 
+        // Color of edge leading to node is color of node's ontology prefix.
         var color = node.color;
 
       set_link(data.links, parent_id, node.id, '', color, node.radius)
 
     }
 
+  }
+
+  // Render legend for edge coloring
+  $("#edge_legend").empty()
+  if (RENDER_ULO_EDGE) {
+    var legend_sorted = Object.keys(legend).sort()
+    if (legend_sorted.length) 
+      $("#edge_legend").append('Edge colouring<br/>')
+    for (var ptr in legend_sorted) {
+      var group_id = legend_sorted[ptr];
+      var group = top.dataLookup[group_id];
+      if (group && legend[group_id] > 0) {
+        var layout_group = top.layout[parent.group_id]
+        var color = top.colors[top.layout[group_id].color];
+        $("#edge_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[group_id]}</div>
+          <div class="legend_item">${group.label}</div>
+          <br/>`
+        )
+      }
+
+    }
   }
 
   // Experimental: show 2ndary parents in ORANGE
@@ -608,15 +633,15 @@ function init_ontofetch_data(rawData) {
     // Establish 2ndary (multihomed) to other parents
     for (var ptr in node.other_parents) {
       const parent_id = node.other_parents[ptr]
-
-      // "other: true" Signals that this needs to be handled by final pass in
-      // depth_iterate() 
-      set_link(data.links, parent_id, node.id, '', '#FFA500', node.radius, true )
+      if (top.dataLookup[parent_id]) // other_parent hasn't any 
+        // Not sure why creating a node here causes layout to go wonky.
+        //make_node(data.nodes, parent_id, 'Unknown label')
+        //
+        // "other: true" Signals that this needs to be handled by final pass in
+        // depth_iterate() 
+        set_link(data.links, parent_id, node.id, '', '#FFA500', node.radius, true )
     }
   }
-
-  if ($("#edge_legend").children().length)
-    $("#edge_legend").prepend('Edge coloring<br/>')
 
 
   if (RENDER_DEPTH != 50)
@@ -672,7 +697,7 @@ function preposition_nodes(nodes) {
       node.fz = node_depth(node)
 
     // Give initial x,y hint based on parents
-    var layout_node = layout[node.id]
+    var layout_node = top.layout[node.id]
     if (layout_node) {
       node.fz = node_depth(node)
       node.fx = layout_node.x;
@@ -711,8 +736,7 @@ function render_node(node) {
   // Displays semi-sphere, then overlays with label text
   var group = new THREE.Group();
   var fancyLayout = layout[node.id] || !RENDER_QUICKER
-
-  nodeRadius = get_node_radius(node, fancyLayout)
+  var nodeRadius = get_node_radius(node, fancyLayout);
 
   if (fancyLayout || node.depth < 4) {
     //var geometry = new THREE.CircleGeometry(nodeRadius); // Doesn't provide 3d orientation

@@ -186,7 +186,7 @@ var colors = {
   "YellowGreen":"#9ACD32"
 }
 
-var edge_color_mapping = {
+var prefix_color_mapping = {
   "owl":  {"color":"Gold"},
   "oboInOwl": {"color":"Gold"},
 
@@ -374,6 +374,7 @@ var edge_color_mapping = {
   "RXNO":       {"color":"Sienna"},
   "SAO":        {"color":"Silver"},
   "SBO":        {"color":"SkyBlue"},
+  "SDGIO":       {"color":"SkyBlue"},
   "SEP":        {"color":"SpringGreen"},
   "SEPIO":      {"color":"SteelBlue"},
   "SIBO":       {"color":"Tan"},
@@ -411,7 +412,10 @@ var edge_color_mapping = {
   "ZEA":        {"color":"DodgerBlue"},
   "ZECO":       {"color":"FireBrick"},
   "ZFA":        {"color":"Gold"},
-  "ZFS":        {"color":"YellowGreen"}
+  "ZFS":        {"color":"YellowGreen"},
+  //Problem cases:
+  "http":       {"color":"Blue"},
+  "https":       {"color":"Blue"},
 }
 
 layout = {
@@ -420,7 +424,7 @@ layout = {
   "oboInOwl:ObsoleteClass": 
                  {"x": -2300, "y": -2300, "color": ""},
 
-  "BFO:0000001": {"x": -486,  "y": -116,  "color": 'Gold'       }, // entity
+  "BFO:0000001": {"x": -486,  "y": -116,  "color": "Gold"       }, // entity
   "BFO:0000002": {"x": 120,   "y": -264,  "color": "Green"      }, //  continuant
   "BFO:0000004": {"x": 146,   "y": 193,   "color": "Lime"       }, //    independent continuant
   "BFO:0000040": {"x": -3,    "y": 475,   "color": "GreenYellow"}, //      material entity

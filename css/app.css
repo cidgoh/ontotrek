@@ -58,8 +58,9 @@ select.float-left {
 	}  
 .legend_color {
 	font-size:0.7rem;
+	text-align: right;
 	display: inline-block;
-	min-width:40px;
+	min-width:50px;
 	height:20px;
     background-color: Gold;
     border-radius: 3px;
