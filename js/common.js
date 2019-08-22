@@ -343,6 +343,7 @@ function make_node(new_nodes, node_id, label) {
   }
   new_nodes.push(node)
   top.dataLookup[node.id] = node
+  return node
 }
 
 function get_link(new_links, source, target, label, hex_color, width) {
@@ -900,8 +901,14 @@ function node_focus(node = {}) {
 
     // This sets visual color directly in rendering engine so we don't have to
     // rerender graph as a whole!
-    if (node.marker.material)
+    if (node.marker.material) {
       node.marker.material.color.setHex(0xFF0000); 
+      if (node.depth > 2) {
+        node.marker.scale.x = 3
+        node.marker.scale.y = 3
+        //node.marker.scale.z = 3
+      }
+    }
 
     Graph.cameraPosition(
       {x: node.x+500, y: node.y, z: node.z+50}, // new position  + CAMERA_DISTANCE/2 
