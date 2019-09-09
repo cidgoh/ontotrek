@@ -36,6 +36,7 @@ const NO_LABELS = false
 // Regular expression to match robot's markup triple explanation of unsatisfiable reasoning:
 const RE_MD_TRIPLE = /\[(?<subject_label>[^\]]+)\]\((?<subject_uri>[^)]+)\) (?<relation>\w+) \[(?<object_label>[^\]]+)\]\((?<object_uri>[^)]+)\)/;
 const RE_NAMESPACE_URL = /(?<prefix>https?:\/\/.+[\/#](?<namespace>\w+)(?<separator>[_:]))(?<id>\w+)/;
+const SYNONYM_FIELD = ["synonyms", "oboInOwl:hasSynonym", "oboInOwl:hasExactSynonym", "oboInOwl:hasBroadSynonym", "oboInOwl:hasNarrowSynonym", "oboInOwl:hasRelatedSynonym"]
 
 function do_graph(rawData) {
   /*

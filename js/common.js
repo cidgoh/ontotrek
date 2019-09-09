@@ -43,7 +43,7 @@ from an OWL ontology file.  Nothing very special about the json format:
     },
     "IAO:0000317": {
         "parent_id": "IAO:0000314",
-        "synonyms": "experimental;methods;experimental section;experimental procedures",
+        "oboInOwl:hasExactSynonym": "experimental;methods;experimental section;experimental procedures",
         "definition": "A part of a publication about an investigation that is about the study design of the investigation",
         "id": "IAO:0000317",
         "label": "methods section"
@@ -337,7 +337,7 @@ function make_node(new_nodes, node_id, label) {
     'color':      '#FFF', 
     'depth':      4, // This just gives them a bigger but not giant label
     'parent_id':  '',
-    'synonyms':   '',
+    'synonyms':   '', // Pools oboInOwl:hasExactSynonym, hasSynonym, hasBroadSynonym, hasNarrowSynonym
     'definition': '',
     'children':   []
   }
@@ -431,8 +431,16 @@ function init_search(data) {
       var node = sorted_data[item]
       var option = $(`<option value="${node.id}">${node.label}</option>`);
  
-      // Search by node id + custom addition of synonym data
-      option.attr('synonyms', node.id + ' ' + (node.synonyms ? ';' + node.synonyms : '')) ;
+      // Search by any of the terms related synonyms
+      var synonyms = []
+      SYNONYM_FIELD.forEach(function(synonym) {
+        if (node[synonym])
+          synonyms.push(node[synonym])
+      });
+      var synonym_str = synonyms.length ? ';' + synonyms.join(';') : '';
+
+      // Allows searching by node id as well.
+      option.attr('synonyms', node.id + synonym_str); 
 
       label_search.append(option);
     }
