@@ -97,6 +97,13 @@ a single root.
   python ontofetch.py https://raw.githubusercontent.com/evidenceontology/evidenceontology/master/eco.owl -o test -r http://purl.obolibrary.org/obo/BFO_0000001
   python ~/GitHub/GEEM/scripts/ontofetch.py https://raw.githubusercontent.com/biobanking/biobanking/master/ontology/obib.owl
 
+  python3 ../ontofetch/ontofetch.py http://www.onto-med.de/ontologies/gfo.owl -o data/ -r http://www.onto-med.de/ontologies/gfo.owl#Entity,http://www.onto-med.de/ontologies/gfo.owl#Material_persistant
+
+  python3 ../ontofetch/ontofetch.py http://purl.obolibrary.org/obo/ma.owl -o data/ -r http://purl.obolibrary.org/obo/MA_0000001
+
+  PROBLEM CASE: Many terms, little class/subclass structure
+  python3 ../ontofetch/ontofetch.py https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/emapa.owl -o data/ -r http://purl.obolibrary.org/obo/EMAPA_0
+  
 ******************************************************************************/
 
 init_search() 
@@ -174,14 +181,27 @@ function init_interface() {
   })
 
   $("#render_dimensions").on('change', function(item) {
-    GRAPH_DIMENSIONS = this.value
+    GRAPH_DIMENSIONS = parseInt(this.value)
     if (top.Graph) {
-      Graph.numDimensions(GRAPH_DIMENSIONS)
-      refresh_graph();
+      // It appears iterative algorithm doesn't work with num dimensions
+      // because it fixes x,y,z of parent nodes.  Must switch to alternate
+      // rendering algorithm, or relax x,y,z for nodes below a certain depth.
+      //Graph.numDimensions(GRAPH_DIMENSIONS)
+      
+      //do_graph (top.rawData)
+      //For rsome re
+
     }
   })
 
-  // Galaxy or hierarchic view
+  $("#render_layer_depth").on('change', function(item) {
+    GRAPH_NODE_DEPTH = parseInt(this.value)
+    if (top.Graph) {
+      do_graph (top.rawData)
+    }
+  })
+
+  /* / Galaxy or hierarchic view
   $("#render_galaxy").on('change', function(item) {
     RENDER_GALAXY = this.checked
     if (top.Graph) {
@@ -198,7 +218,7 @@ function init_interface() {
       }
       Graph.graphData({"nodes":nodes, "links":links})
     }
-  })
+    })*/
 
   // Controls depth of nodes being rendered.
   $("#depth_control").on('change', function(item) {

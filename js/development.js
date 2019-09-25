@@ -15,13 +15,15 @@ GRAPH_LINK_WIDTH = 2
 EXIT_DEPTH = 26;
 dataLookup = {}
 
+var GRAPH_NODE_DEPTH = 100 // 100 
+
 const LABEL_MAX_LINE_LENGTH = 30  // label text is cut after first word ending before this character limit.
 const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
 const GRAPH_DOM_EL = $("#3d-graph");
 const GRAPH_BACKGROUND_COLOR = "#302020"
 // For BFO layout: -2000, .01, .011
-const GRAPH_CHARGE_STRENGTH = -30000 // negative=repulsion; positive=attraction // -2000 for BFO
-const GRAPH_NODE_DEPTH = 200
+const GRAPH_CHARGE_STRENGTH = -10000 // -30000 = normal.  negative=repulsion; positive=attraction // -2000 for BFO
+
 const GRAPH_LINK_HIGHLIGHT_RADIUS = 15
 const GRAPH_VELOCITY_DECAY = 0.4// default 0.4
 const GRAPH_ALPHA_DECAY = 0.0228 // default 0.0228
@@ -64,7 +66,6 @@ function do_graph(rawData) {
   top.RENDER_LABELS = false
 
   top.Graph
-    //.numDimensions(2) // Can we downsize it temporarily?
     //.linkDirectionalParticles(0)
     .d3Force('center', null)
     .d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
@@ -74,10 +75,16 @@ function do_graph(rawData) {
 
       top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
       top.NEW_NODES = []; // global so depth_iterate can see it
-      top.ITERATE = 1;
-      Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
-      Graph.graphData({nodes:[],links:[]})
 
+      if (true) {
+        top.ITERATE = 1;
+        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
+        Graph.graphData({nodes:[],links:[]})
+      }
+      else {
+        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS*10) // initial setting
+        Graph.graphData({nodes:data.nodes,links:data.links})
+      }
   }
   
   /*
@@ -98,6 +105,9 @@ function refresh_graph() {
   if (top.Graph) {
     Graph.nodeRelSize(4); 
     // new command Graph.refresh() ????
+
+    // Some user commands require this complete restart?
+    //  top.Graph = init()
   }
 }
 
@@ -106,7 +116,7 @@ function init() {
   return ForceGraph3D()(document.getElementById('3d-graph'))
 
     // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
-    .forceEngine('d3')  
+    .forceEngine('d3')
     .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
     //.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
     .width(GRAPH_DOM_EL.width())
@@ -138,10 +148,6 @@ function init() {
     .linkResolution(3) // 3 sided, i.e. triangular beam
     .linkOpacity(1)
 
-    //.linkDirectionalParticles( ..) // done in do_graph
-    //.linkDirectionalParticleWidth(4)
-    //.linkDirectionalParticleSpeed(.002)
-    
     //.nodeAutoColorBy('color')
     // Note d.target is an object!
     /*.linkAutoColorBy(d => d.target.color})*/
@@ -160,6 +166,7 @@ function init() {
     .onNodeClick(node => node_focus(node))
     .nodeThreeObject(node => render_node(node))
 
+    // Do this only for 3d iterated version
     .onEngineStop(stuff => {
       depth_iterate()
     })
@@ -168,118 +175,190 @@ function init() {
 
 
 function depth_iterate() {
+  /*
+  Handles one iteration at depth n at a time.
+  On each iteration, adds all nodes at that depth, and any connections to
+  parents that they have.
+  Only on top.EXIT_DEPTH iteration are labels rendered, thicker edges,
+  and switch to given dimension.
 
+  */
   if (top.ITERATE > top.EXIT_DEPTH) {
-    //Graph.stopAnimation()
-    var refresh = false
-    var flag = $("#render_labels:checked").length == 1
-    if (top.RENDER_LABELS != flag) {
-      top.RENDER_LABELS = flag
-      refresh = true
-    }
-    var flag = $("#render_quicker:checked").length == 1
-    if (top.RENDER_QUICKER != flag) {
-      top.RENDER_QUICKER = flag
-      // set_directional_particles()
-      refresh = true
-    }
-    if (refresh) 
-      Graph.nodeRelSize(4); //Triggers redraw of everything
+    Graph.stopAnimation()
+    top.NEW_NODES = []
 
-    return; // End of it all.
+
+    // WHERE SHOULD THIS GO????
+    //top.GRAPH = null
+    return
   }
 
   // Convert all parent node flex coordinates to fixed ones.
+
+  // ADD LOOSE OPTION FOR THIS!!!!
+
   for (item in top.NEW_NODES) {
     var node = top.NEW_NODES[item]
-    node.fx = node.x;
-    node.fy = node.y;
+    const parent = top.dataLookup[node.parent_id];
+    if (parent) {
+      parent.fx = parent.x;
+      parent.fy = parent.y;
+      // fix parent z
+
+    }
+    // If it doesn't have to move any more because it has no kids,
+    // then fix its position; it therefore get taken out of "cooldown" list
+    // Thus speeding calculation
+    if (node.children.length == 0) {
+      node.fy = node.y;
+      node.fx = node.x;
+    }
+
+    //if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout))
+    //    node.fz = lookup_2d_z(node)+ 30
+
   }
 
   if (top.ITERATE < top.EXIT_DEPTH && top.ITERATE != top.MAX_DEPTH && top.ITERATE < top.RENDER_DEPTH) {
 
     top.Graph.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH/(top.ITERATE*top.ITERATE) )
-    //top.Graph.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH + (GRAPH_CHARGE_STRENGTH/top.EXIT_DEPTH)*top.ITERATE)
 
     top.NEW_NODES = top.builtData.nodes.filter(n => n.depth == top.ITERATE)
 
+    if (top.NEW_NODES.length) {
 
-    // freez z coordinate
-    for (item in top.NEW_NODES) {
-      node = top.NEW_NODES[item]
-      // depth temporarily set close to parent so that it temporarily acts as antagonist 
-      node.fz = node_depth(node)
-      /* can't set node.x, y on new nodes. */
+      // freeze z coordinate
+      for (item in top.NEW_NODES) {
+        node = top.NEW_NODES[item]
+
+        const parent = top.dataLookup[node.parent_id];
+
+        // depth temporarily set close to parent so that it temporarily acts as antagonist 
+
+        if (parent && GRAPH_DIMENSIONS == 2 && !(node.id in top.layout)) {
+         // node.fz = lookup_2d_z(node) - 100
+          node.fz = node_depth(node)
+        }
+        else
+          node.fz = node_depth(node)
+        /* can't set node.x, y on new nodes. */
+      }
+
+      // Issue: link with otherparent getting added by target depth BUT other parent not in nodes yet.
+      var newLinks = top.builtData.links.filter(
+        l => top.dataLookup[l.target] 
+        && top.dataLookup[l.target].depth == top.ITERATE
+        && l.other === false
+        );
+      
+      Graph.cooldownTicks((top.NEW_NODES.length+30))
+      //Graph.cooldownTicks((top.NEW_NODES.length+30))
+
+      const { nodes, links } = Graph.graphData();
+
+      $("#status").html('Rendering ' + (nodes.length + newLinks.length) + ' of ' + top.builtData.nodes.length + " terms, depth " + top.ITERATE);
+
+      Graph.graphData({
+        nodes: nodes.concat(top.NEW_NODES), // [...nodes, ...newNodes],
+        links: links.concat(newLinks) //  [...links, ...newLinks]
+      });
     }
-
-    // Issue: link with otherparent getting added by target depth BUT other parent not in nodes yet.
-    var newLinks = top.builtData.links.filter(
-      l => top.dataLookup[l.target] 
-      && top.dataLookup[l.target].depth == top.ITERATE
-      && l.other === false
-      );
-    
-    Graph.cooldownTicks((top.NEW_NODES.length+30)/6)
-
-    const { nodes, links } = Graph.graphData();
-
-    $("#status").html('Rendering ' + (nodes.length + newLinks.length) + ' of ' + top.builtData.nodes.length + " terms, depth " + top.ITERATE);
-
-    Graph.graphData({
-      nodes: nodes.concat(top.NEW_NODES), // [...nodes, ...newNodes],
-      links: links.concat(newLinks) //  [...links, ...newLinks]
-    });
-
+    top.ITERATE ++;
   }
+
+  else
+    depth_iterate_exit()
+
+}
+
+function depth_iterate_exit() {
 
   // Final step: Flip into requested (2 or 3) dimensions, with parents fixed by their 2d (x, y) 
-  else {
-    //alert('here' + top.ITERATE + ',' + top.MAX_DEPTH)
-    $(document.body).css({'cursor' : 'default'});
-    Graph.numDimensions(GRAPH_DIMENSIONS)
-   // Graph.d3Force('charge').strength(-100 ) // 
-    // z coordinate reset to standard hierarchy
-    for (item in top.builtData.nodes) {
-      node = top.builtData.nodes[item]
-      node.fz = node_depth(node) + Math.random() * 20 - 10
+  console.log(' Ending with' + GRAPH_DIMENSIONS + ',' + top.ITERATE + ',' + top.MAX_DEPTH + top.RENDER_DEPTH)
+
+  // Restores these settings after quick positional render without them.
+  var flag = $("#render_labels:checked").length == 1
+  if (top.RENDER_LABELS != flag) {
+    top.RENDER_LABELS = flag
+  }
+  var flag = $("#render_quicker:checked").length == 1
+  if (top.RENDER_QUICKER != flag) {
+    top.RENDER_QUICKER = flag
+  }
+  //Graph.numDimensions(GRAPH_DIMENSIONS)
+
+  $(document.body).css({'cursor' : 'default'});
+
+ // Graph.d3Force('charge').strength(-100 ) // 
+  // z coordinate reset to standard hierarchy
+  for (item in top.builtData.nodes) {
+    node = top.builtData.nodes[item]
+    // This rerduces crowdedness of labelling, otherwise labels are all on
+    // same plane.
+
+    //if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout)) {
+    //  node.fz = 0  //lookup_2d_z(node)
+    //}
+    //else {
+      const z_randomizer = Math.random() * 20 - 10
+      node.fz = node_depth(node) + z_randomizer
+    //}
+
+    // No need to have this note parrticipate in force directed graph now.
+    if (node.children.length == 0) {
+      node.fy = node.y;
+      node.fx = node.x;
     }
-    // don't make below var newNodes / var newLinks?
-    var newNodes = top.builtData.nodes.filter(n => n.depth.within(top.ITERATE, top.RENDER_DEPTH))
-
-    // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
-    var newLinks = top.builtData.links.filter(
-      l => top.dataLookup[l.target] && ((RENDER_OTHER_PARENTS && l.other === true) 
-        || (l.other === false && top.dataLookup[l.target].depth.within(top.ITERATE, top.RENDER_DEPTH))
-      )
-    );    
-    /*
-    // For some reason, can't code abovce as  .filter(l => function(l){...}) ?
-    var newLinks = top.builtData.links.filter( l => function(l){
-      target = top.dataLookup[l.target]
-      // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
-      // 
-      return (RENDER_OTHER_PARENTS && l.other ===true) || ((l.other === false) && target.depth >= top.ITERATE && target.depth <= top.RENDER_DEPTH)
-    });
-    */
-   
-    // Fetches existing tuple of nodes and links
-    const { nodes, links } = Graph.graphData();
-
-    const total_nodes = nodes.length + newNodes.length
-    $("#status").html('Rendering ' + total_nodes + ' of ' + top.builtData.nodes.length + " terms, depth >= " + top.ITERATE);
-
-    Graph.cooldownTicks(total_nodes)  // GRAPH_COOLDOWN_TICKS * 3
-
-    Graph.graphData({
-      nodes: nodes.concat(newNodes),
-      links: links.concat(newLinks)
-    });
 
   }
+  // don't make below var newNodes / var newLinks?
+  var newNodes = top.builtData.nodes.filter(n => n.depth.within(top.ITERATE, top.RENDER_DEPTH))
 
+  // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
+  var newLinks = top.builtData.links.filter(
+    l => top.dataLookup[l.target] && ((RENDER_OTHER_PARENTS && l.other === true) 
+      || (l.other === false && top.dataLookup[l.target].depth.within(top.ITERATE, top.RENDER_DEPTH))
+    )
+  );    
+  /*
+  // For some reason, can't code abovce as  .filter(l => function(l){...}) ?
+  var newLinks = top.builtData.links.filter( l => function(l){
+    target = top.dataLookup[l.target]
+    // Return link if target is within depth, or link is one of the "other, i.e. secondary links.
+    // 
+    return (RENDER_OTHER_PARENTS && l.other ===true) || ((l.other === false) && target.depth >= top.ITERATE && target.depth <= top.RENDER_DEPTH)
+  });
+  */
+ 
+  // Fetches existing tuple of nodes and links
+  const { nodes, links } = Graph.graphData();
 
-  top.ITERATE ++;
+  const new_length = nodes.length + newNodes.length
+  $("#status").html('Rendering ' + new_length + ' of ' + top.builtData.nodes.length + " terms, depth >= " + top.ITERATE);
 
+  //Graph.cooldownTicks(new_length)  // GRAPH_COOLDOWN_TICKS * 3
+
+  Graph.graphData({
+    nodes: nodes.concat(newNodes),
+    links: links.concat(newLinks)
+  });
+
+  top.ITERATE = top.EXIT_DEPTH+1;
+
+  return; // End of it all.
+
+} 
+
+function lookup_2d_z(node) {
+  // apply this to parent, not to a node that is being calculated.
+  var parent = top.dataLookup[node.parent_id];
+  // ISSUE: fixing node to parent z is causing pythagorean distance in force directed graph to screw up,
+  // causing points to contract to centre.
+  if (parent) {
+    console.log ("z", parent.z)
+    return (parent.z - 10.0)
+  }
+  return node_depth(node)
 }
 
 Number.prototype.within = function(a, b) {

@@ -84,13 +84,17 @@
                     <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
                     <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
                     <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
+                    <option value="data/dolce-inferred.json">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option>
                     <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
                     <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
                     <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
                     <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
                     <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
+                    <option value="data/gfo.json">GFO: General Formal Ontology</option> 
+                    <option value="data/gfo-basic.json">GFO: General Formal Ontology (basic)</option> 
                     <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
                     <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
+                    <option value="data/ma.json">MA: Mouse Adult Gross Anatomy</option>                    
                     <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
                     <option value="data/obi.json">OBI: Ontology for Biomedical Investigations</option>
                     <option value="data/obib.json">OBIB: Ontology for Biobanking</option>           
@@ -213,9 +217,8 @@
               <select id="render_dimensions" class="float-left">
                 <option value = "3" selected="selected">3D</option>
                 <option value = "2">2D</option>
-                <option value = "1">1D</option>
               </select>
-              <label>3D view is shown by default; a 2D or 1D view is possible too</label>
+              <label>3D view is shown by default; a 2D view is possible too</label>
               <br clear="both"/>
               <!--
               <input type="checkbox" id="render_galaxy">
@@ -244,7 +247,20 @@
                 <option value="15">15</option>
               </select>
               <label for="depth_control" class="middle">Render from top down to this node depth.</label>
+
+              <select id="render_layer_depth" class="float-left" style="width:130px">
+                <option value="200">200 - tall</option>
+                <option value="100" selected="selected">100 (default)</option>
+                <option value="50">50 - shallow</option>
+              </select>
+              <label for="render_layer_depth" class="middle">depth of each layer</label>
+
+
+              
+
             </div>
+
+
 
             <!-- **************************** LEGEND ************************ -->
             <div class="tabs-panel" id="panel_legend">

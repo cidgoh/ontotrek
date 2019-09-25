@@ -1,0 +1,1693 @@
+{
+    "@context": {
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
+        "xmls": "http://www.w3.org/2001/XMLSchema#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "vcf": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#",
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "terms": "http://purl.org/dc/terms/",
+        "NDF-RT": "http://evs.nci.nih.gov/ftp1/NDF-RT/NDF-RT.owl#",
+        "MA": "http://purl.obolibrary.org/obo/MA_"
+    },
+    "metadata": {
+        "resource": "http://purl.obolibrary.org/obo/ma.owl",
+        "versionIRI": "http://purl.obolibrary.org/obo/ma/releases/2017-02-07/ma.owl",
+        "prefix": "adult_mouse_anatomy.gxd",
+        "type": "ontology",
+        "status": "release"
+    },
+    "specifications": {
+        "MA:0003000": {
+            "id": "MA:0003000",
+            "label": "anatomical structure",
+            "parent_id": "MA:0000001",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000010": {
+            "id": "MA:0000010",
+            "label": "cardiovascular system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000012": {
+            "id": "MA:0000012",
+            "label": "endocrine system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002411": {
+            "id": "MA:0002411",
+            "label": "exocrine system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000013": {
+            "id": "MA:0000013",
+            "label": "hemolymphoid system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002711": {
+            "id": "MA:0002711",
+            "label": "immune system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000014": {
+            "id": "MA:0000014",
+            "label": "integumental system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002418": {
+            "id": "MA:0002418",
+            "label": "musculoskeletal system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000016": {
+            "id": "MA:0000016",
+            "label": "nervous system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002442": {
+            "id": "MA:0002442",
+            "label": "sensory organ system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002887": {
+            "id": "MA:0002887",
+            "label": "set of connective tissues",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000019": {
+            "id": "MA:0000019",
+            "label": "visceral organ system",
+            "parent_id": "MA:0000003",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002447": {
+            "id": "MA:0002447",
+            "label": "body cavity",
+            "parent_id": "MA:0000005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002448": {
+            "id": "MA:0002448",
+            "label": "cavity lining",
+            "parent_id": "MA:0000005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001904": {
+            "id": "MA:0001904",
+            "label": "diaphragm",
+            "parent_id": "MA:0000005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000565": {
+            "id": "MA:0000565",
+            "label": "mesothelium",
+            "parent_id": "MA:0000005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000025": {
+            "id": "MA:0000025",
+            "label": "forelimb",
+            "parent_id": "MA:0000007",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000026": {
+            "id": "MA:0000026",
+            "label": "hindlimb",
+            "parent_id": "MA:0000007",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000057": {
+            "id": "MA:0000057",
+            "label": "brown adipose tissue",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002481": {
+            "id": "MA:0002481",
+            "label": "fat pad",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002911": {
+            "id": "MA:0002911",
+            "label": "mammary gland fat",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003077": {
+            "id": "MA:0003077",
+            "label": "mesenteric adipose tissue",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002974": {
+            "id": "MA:0002974",
+            "label": "pararenal fat",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002975": {
+            "id": "MA:0002975",
+            "label": "perirenal fat",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000473": {
+            "id": "MA:0000473",
+            "label": "subcutaneous adipose tissue",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000058": {
+            "id": "MA:0000058",
+            "label": "white adipose tissue",
+            "parent_id": "MA:0000009",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000009": {
+            "id": "MA:0000009",
+            "label": "adipose tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "oboInOwl:hasExactSynonym": [
+                "fat"
+            ]
+        },
+        "MA:0000104": {
+            "id": "MA:0000104",
+            "label": "cartilage tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002853": {
+            "id": "MA:0002853",
+            "label": "elastic tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000570": {
+            "id": "MA:0000570",
+            "label": "head or neck connective tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000110": {
+            "id": "MA:0000110",
+            "label": "intervertebral disc",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000113": {
+            "id": "MA:0000113",
+            "label": "ligament",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000689": {
+            "id": "MA:0000689",
+            "label": "limb connective tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003008": {
+            "id": "MA:0003008",
+            "label": "perichondrium",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000114": {
+            "id": "MA:0000114",
+            "label": "synovium",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000697": {
+            "id": "MA:0000697",
+            "label": "tail connective tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000115": {
+            "id": "MA:0000115",
+            "label": "tendon",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000513": {
+            "id": "MA:0000513",
+            "label": "trunk connective tissue",
+            "parent_id": "MA:0000011",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002431": {
+            "id": "MA:0002431",
+            "label": "digestive system",
+            "parent_id": "MA:0000019",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000326": {
+            "id": "MA:0000326",
+            "label": "reproductive system",
+            "parent_id": "MA:0000019",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000327": {
+            "id": "MA:0000327",
+            "label": "respiratory system",
+            "parent_id": "MA:0000019",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000325": {
+            "id": "MA:0000325",
+            "label": "urinary system",
+            "parent_id": "MA:0000019",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003062": {
+            "id": "MA:0003062",
+            "label": "interscapular brown adipose tissue",
+            "parent_id": "MA:0000057",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002738": {
+            "id": "MA:0002738",
+            "label": "fibrous pericardium",
+            "parent_id": "MA:0000099",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002739": {
+            "id": "MA:0002739",
+            "label": "serous pericardium",
+            "parent_id": "MA:0000099",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000105": {
+            "id": "MA:0000105",
+            "label": "cellular cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000106": {
+            "id": "MA:0000106",
+            "label": "costal cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000107": {
+            "id": "MA:0000107",
+            "label": "elastic cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000108": {
+            "id": "MA:0000108",
+            "label": "fibrocartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000109": {
+            "id": "MA:0000109",
+            "label": "hyaline cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001758": {
+            "id": "MA:0001758",
+            "label": "larynx cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "other_parents": [
+                "MA:0000586"
+            ]
+        },
+        "MA:0001883": {
+            "id": "MA:0001883",
+            "label": "nasal cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001857": {
+            "id": "MA:0001857",
+            "label": "trachea cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "other_parents": [
+                "MA:0000586"
+            ]
+        },
+        "MA:0001884": {
+            "id": "MA:0001884",
+            "label": "xiphoid cartilage",
+            "parent_id": "MA:0000104",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000485": {
+            "id": "MA:0000485",
+            "label": "yellow elastic cartilage",
+            "parent_id": "MA:0000107",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000486": {
+            "id": "MA:0000486",
+            "label": "white fibrocartilage",
+            "parent_id": "MA:0000108",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000487": {
+            "id": "MA:0000487",
+            "label": "articular cartilage",
+            "parent_id": "MA:0000109",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001761": {
+            "id": "MA:0001761",
+            "label": "base of arytenoid",
+            "parent_id": "MA:0000109",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003004": {
+            "id": "MA:0003004",
+            "label": "nonskeletal ligament",
+            "parent_id": "MA:0000113",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003005": {
+            "id": "MA:0003005",
+            "label": "skeletal ligament",
+            "parent_id": "MA:0000113",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002993": {
+            "id": "MA:0002993",
+            "label": "tendo calcaneus",
+            "parent_id": "MA:0000115",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000718": {
+            "id": "MA:0000718",
+            "label": "left adrenal gland",
+            "parent_id": "MA:0000116",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000719": {
+            "id": "MA:0000719",
+            "label": "right adrenal gland",
+            "parent_id": "MA:0000116",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000787": {
+            "id": "MA:0000787",
+            "label": "abdominal mammary gland",
+            "parent_id": "MA:0000145",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000789": {
+            "id": "MA:0000789",
+            "label": "cervical mammary gland",
+            "parent_id": "MA:0000145",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000790": {
+            "id": "MA:0000790",
+            "label": "inguinal mammary gland",
+            "parent_id": "MA:0000145",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000797": {
+            "id": "MA:0000797",
+            "label": "thoracic mammary gland",
+            "parent_id": "MA:0000145",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000381": {
+            "id": "MA:0000381",
+            "label": "female reproductive system",
+            "parent_id": "MA:0000326",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000396": {
+            "id": "MA:0000396",
+            "label": "male reproductive system",
+            "parent_id": "MA:0000326",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002478": {
+            "id": "MA:0002478",
+            "label": "major salivary gland",
+            "parent_id": "MA:0000346",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002479": {
+            "id": "MA:0002479",
+            "label": "minor salivary gland",
+            "parent_id": "MA:0000346",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002488": {
+            "id": "MA:0002488",
+            "label": "parietal pleura",
+            "parent_id": "MA:0000433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002489": {
+            "id": "MA:0002489",
+            "label": "visceral pleura",
+            "parent_id": "MA:0000433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002956": {
+            "id": "MA:0002956",
+            "label": "omental fat pad",
+            "parent_id": "MA:0000472",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001760": {
+            "id": "MA:0001760",
+            "label": "apex of arytenoid",
+            "parent_id": "MA:0000485",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001885": {
+            "id": "MA:0001885",
+            "label": "corniculate cartilage",
+            "parent_id": "MA:0000485",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001763": {
+            "id": "MA:0001763",
+            "label": "epiglottic cartilage",
+            "parent_id": "MA:0000485",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "other_parents": [
+                "MA:0001758"
+            ]
+        },
+        "MA:0001886": {
+            "id": "MA:0001886",
+            "label": "external ear cartilage",
+            "parent_id": "MA:0000485",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000501": {
+            "id": "MA:0000501",
+            "label": "lower back connective tissue",
+            "parent_id": "MA:0000495",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "other_parents": [
+                "MA:0000526"
+            ]
+        },
+        "MA:0000507": {
+            "id": "MA:0000507",
+            "label": "upper back connective tissue",
+            "parent_id": "MA:0000495",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "other_parents": [
+                "MA:0000560"
+            ]
+        },
+        "MA:0000526": {
+            "id": "MA:0000526",
+            "label": "abdominal segment connective tissue",
+            "parent_id": "MA:0000513",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000495": {
+            "id": "MA:0000495",
+            "label": "back connective tissue",
+            "parent_id": "MA:0000513",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000560": {
+            "id": "MA:0000560",
+            "label": "thoracic segment connective tissue",
+            "parent_id": "MA:0000513",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000519": {
+            "id": "MA:0000519",
+            "label": "abdomen connective tissue",
+            "parent_id": "MA:0000526",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000533": {
+            "id": "MA:0000533",
+            "label": "pelvis connective tissue",
+            "parent_id": "MA:0000526",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002948": {
+            "id": "MA:0002948",
+            "label": "pelvis ligament",
+            "parent_id": "MA:0000533",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000550": {
+            "id": "MA:0000550",
+            "label": "chest connective tissue",
+            "parent_id": "MA:0000560",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000555": {
+            "id": "MA:0000555",
+            "label": "thoracic cavity connective tissue",
+            "parent_id": "MA:0000560",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000566": {
+            "id": "MA:0000566",
+            "label": "parietal mesothelium",
+            "parent_id": "MA:0000565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000567": {
+            "id": "MA:0000567",
+            "label": "visceral mesothelium",
+            "parent_id": "MA:0000565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000577": {
+            "id": "MA:0000577",
+            "label": "head connective tissue",
+            "parent_id": "MA:0000570",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000585": {
+            "id": "MA:0000585",
+            "label": "neck connective tissue",
+            "parent_id": "MA:0000570",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000586": {
+            "id": "MA:0000586",
+            "label": "neck cartilage",
+            "parent_id": "MA:0000585",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000609": {
+            "id": "MA:0000609",
+            "label": "elbow connective tissue",
+            "parent_id": "MA:0000593",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000599": {
+            "id": "MA:0000599",
+            "label": "lower arm connective tissue",
+            "parent_id": "MA:0000593",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000605": {
+            "id": "MA:0000605",
+            "label": "upper arm connective tissue",
+            "parent_id": "MA:0000593",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000593": {
+            "id": "MA:0000593",
+            "label": "arm connective tissue",
+            "parent_id": "MA:0000613",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000620": {
+            "id": "MA:0000620",
+            "label": "hand connective tissue",
+            "parent_id": "MA:0000613",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000632": {
+            "id": "MA:0000632",
+            "label": "shoulder connective tissue",
+            "parent_id": "MA:0000613",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000636": {
+            "id": "MA:0000636",
+            "label": "wrist connective tissue",
+            "parent_id": "MA:0000613",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000639": {
+            "id": "MA:0000639",
+            "label": "ankle connective tissue",
+            "parent_id": "MA:0000661",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000644": {
+            "id": "MA:0000644",
+            "label": "foot connective tissue",
+            "parent_id": "MA:0000661",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000656": {
+            "id": "MA:0000656",
+            "label": "hip connective tissue",
+            "parent_id": "MA:0000661",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000671": {
+            "id": "MA:0000671",
+            "label": "leg connective tissue",
+            "parent_id": "MA:0000661",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000667": {
+            "id": "MA:0000667",
+            "label": "knee connective tissue",
+            "parent_id": "MA:0000671",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000677": {
+            "id": "MA:0000677",
+            "label": "lower leg connective tissue",
+            "parent_id": "MA:0000671",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000683": {
+            "id": "MA:0000683",
+            "label": "upper leg connective tissue",
+            "parent_id": "MA:0000671",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000613": {
+            "id": "MA:0000613",
+            "label": "forelimb connective tissue",
+            "parent_id": "MA:0000689",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000661": {
+            "id": "MA:0000661",
+            "label": "hindlimb connective tissue",
+            "parent_id": "MA:0000689",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000698": {
+            "id": "MA:0000698",
+            "label": "tail intervertebral disc",
+            "parent_id": "MA:0000697",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002943": {
+            "id": "MA:0002943",
+            "label": "secretory circumventricular organ",
+            "parent_id": "MA:0000720",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003110": {
+            "id": "MA:0003110",
+            "label": "exorbital lacrimal gland",
+            "parent_id": "MA:0001296",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003109": {
+            "id": "MA:0003109",
+            "label": "intraorbital lacrimal gland",
+            "parent_id": "MA:0001296",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001756": {
+            "id": "MA:0001756",
+            "label": "laryngeal extrinsic ligament",
+            "parent_id": "MA:0001755",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001757": {
+            "id": "MA:0001757",
+            "label": "laryngeal intrinsic ligament",
+            "parent_id": "MA:0001755",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001759": {
+            "id": "MA:0001759",
+            "label": "arytenoid cartilage",
+            "parent_id": "MA:0001758",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001762": {
+            "id": "MA:0001762",
+            "label": "cricoid cartilage",
+            "parent_id": "MA:0001758",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001764": {
+            "id": "MA:0001764",
+            "label": "thyroid cartilage",
+            "parent_id": "MA:0001758",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002860": {
+            "id": "MA:0002860",
+            "label": "lung elastic tissue",
+            "parent_id": "MA:0001820",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001861": {
+            "id": "MA:0001861",
+            "label": "trachea elastic tissue",
+            "parent_id": "MA:0001820",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001236": {
+            "id": "MA:0001236",
+            "label": "aqueous humour",
+            "parent_id": "MA:0001911",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001286": {
+            "id": "MA:0001286",
+            "label": "vitreous humor",
+            "parent_id": "MA:0001911",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000005": {
+            "id": "MA:0000005",
+            "label": "body cavity or lining",
+            "parent_id": "MA:0002433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000006": {
+            "id": "MA:0000006",
+            "label": "head and neck",
+            "parent_id": "MA:0002433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000007": {
+            "id": "MA:0000007",
+            "label": "limb",
+            "parent_id": "MA:0002433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000008": {
+            "id": "MA:0000008",
+            "label": "tail",
+            "parent_id": "MA:0002433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000004": {
+            "id": "MA:0000004",
+            "label": "trunk",
+            "parent_id": "MA:0002433",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000166": {
+            "id": "MA:0000166",
+            "label": "smooth muscle tissue",
+            "parent_id": "MA:0002437",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002438": {
+            "id": "MA:0002438",
+            "label": "striated muscle tissue",
+            "parent_id": "MA:0002437",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002441": {
+            "id": "MA:0002441",
+            "label": "cardiac muscle tissue",
+            "parent_id": "MA:0002438",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002439": {
+            "id": "MA:0002439",
+            "label": "skeletal muscle tissue",
+            "parent_id": "MA:0002438",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002443": {
+            "id": "MA:0002443",
+            "label": "auditory system",
+            "parent_id": "MA:0002442",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002446": {
+            "id": "MA:0002446",
+            "label": "gustatory system",
+            "parent_id": "MA:0002442",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002445": {
+            "id": "MA:0002445",
+            "label": "olfactory system",
+            "parent_id": "MA:0002442",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002444": {
+            "id": "MA:0002444",
+            "label": "visual system",
+            "parent_id": "MA:0002442",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003057": {
+            "id": "MA:0003057",
+            "label": "abdominal cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003061": {
+            "id": "MA:0003061",
+            "label": "cranial cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003089": {
+            "id": "MA:0003089",
+            "label": "pelvic cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000053": {
+            "id": "MA:0000053",
+            "label": "pericardial cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000054": {
+            "id": "MA:0000054",
+            "label": "peritoneal cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000055": {
+            "id": "MA:0000055",
+            "label": "pleural cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000032": {
+            "id": "MA:0000032",
+            "label": "thoracic cavity",
+            "parent_id": "MA:0002447",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000099": {
+            "id": "MA:0000099",
+            "label": "pericardium",
+            "parent_id": "MA:0002448",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000449": {
+            "id": "MA:0000449",
+            "label": "peritoneum",
+            "parent_id": "MA:0002448",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000433": {
+            "id": "MA:0000433",
+            "label": "pleura",
+            "parent_id": "MA:0002448",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002893": {
+            "id": "MA:0002893",
+            "label": "amniotic fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000059": {
+            "id": "MA:0000059",
+            "label": "blood",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002503": {
+            "id": "MA:0002503",
+            "label": "cerebrospinal fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002512": {
+            "id": "MA:0002512",
+            "label": "digestive system fluid or secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002504": {
+            "id": "MA:0002504",
+            "label": "exocrine gland fluid/secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002509": {
+            "id": "MA:0002509",
+            "label": "feces",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002510": {
+            "id": "MA:0002510",
+            "label": "female reproductive system fluid/secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002520": {
+            "id": "MA:0002520",
+            "label": "lymph",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002521": {
+            "id": "MA:0002521",
+            "label": "male reproductive system fluid/secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001911": {
+            "id": "MA:0001911",
+            "label": "ocular refractive media",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002527": {
+            "id": "MA:0002527",
+            "label": "otolymph",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002530": {
+            "id": "MA:0002530",
+            "label": "pericardial fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002531": {
+            "id": "MA:0002531",
+            "label": "peritoneal fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002532": {
+            "id": "MA:0002532",
+            "label": "pleural fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002533": {
+            "id": "MA:0002533",
+            "label": "respiratory system fluid/secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002537": {
+            "id": "MA:0002537",
+            "label": "skin fluid/secretion",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002544": {
+            "id": "MA:0002544",
+            "label": "synovial fluid",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002540": {
+            "id": "MA:0002540",
+            "label": "tooth substance",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002545": {
+            "id": "MA:0002545",
+            "label": "urine",
+            "parent_id": "MA:0002450",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001585": {
+            "id": "MA:0001585",
+            "label": "parotid gland",
+            "parent_id": "MA:0002478",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001588": {
+            "id": "MA:0001588",
+            "label": "sublingual gland",
+            "parent_id": "MA:0002478",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001589": {
+            "id": "MA:0001589",
+            "label": "submandibular gland",
+            "parent_id": "MA:0002478",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002700": {
+            "id": "MA:0002700",
+            "label": "anterior buccal gland",
+            "parent_id": "MA:0002479",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002701": {
+            "id": "MA:0002701",
+            "label": "anterior lingual gland",
+            "parent_id": "MA:0002479",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001584": {
+            "id": "MA:0001584",
+            "label": "palatine gland",
+            "parent_id": "MA:0002479",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000472": {
+            "id": "MA:0000472",
+            "label": "abdominal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003091": {
+            "id": "MA:0003091",
+            "label": "axillary fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002550": {
+            "id": "MA:0002550",
+            "label": "epididymal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002547": {
+            "id": "MA:0002547",
+            "label": "gonadal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002548": {
+            "id": "MA:0002548",
+            "label": "inguinal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003063": {
+            "id": "MA:0003063",
+            "label": "mediastinal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003029": {
+            "id": "MA:0003029",
+            "label": "pancreatic fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002953": {
+            "id": "MA:0002953",
+            "label": "parametrial fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003064": {
+            "id": "MA:0003064",
+            "label": "periovarian fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002549": {
+            "id": "MA:0002549",
+            "label": "retroperitoneal fat pad",
+            "parent_id": "MA:0002481",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002506": {
+            "id": "MA:0002506",
+            "label": "cerumen",
+            "parent_id": "MA:0002504",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002505": {
+            "id": "MA:0002505",
+            "label": "mammary gland fluid/secretion",
+            "parent_id": "MA:0002504",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002507": {
+            "id": "MA:0002507",
+            "label": "saliva",
+            "parent_id": "MA:0002504",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002508": {
+            "id": "MA:0002508",
+            "label": "tear",
+            "parent_id": "MA:0002504",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002551": {
+            "id": "MA:0002551",
+            "label": "colostrum",
+            "parent_id": "MA:0002505",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002552": {
+            "id": "MA:0002552",
+            "label": "mammary gland milk",
+            "parent_id": "MA:0002505",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002511": {
+            "id": "MA:0002511",
+            "label": "ovary follicle fluid",
+            "parent_id": "MA:0002510",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002513": {
+            "id": "MA:0002513",
+            "label": "bile",
+            "parent_id": "MA:0002512",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002514": {
+            "id": "MA:0002514",
+            "label": "esophagus secretion",
+            "parent_id": "MA:0002512",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002515": {
+            "id": "MA:0002515",
+            "label": "intestine secretion",
+            "parent_id": "MA:0002512",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002516": {
+            "id": "MA:0002516",
+            "label": "pancreas secretion",
+            "parent_id": "MA:0002512",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002519": {
+            "id": "MA:0002519",
+            "label": "stomach secretion",
+            "parent_id": "MA:0002512",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002517": {
+            "id": "MA:0002517",
+            "label": "endocrine pancreas secretion",
+            "parent_id": "MA:0002516",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002518": {
+            "id": "MA:0002518",
+            "label": "exocrine pancreas secretion",
+            "parent_id": "MA:0002516",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002522": {
+            "id": "MA:0002522",
+            "label": "semen",
+            "parent_id": "MA:0002521",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002528": {
+            "id": "MA:0002528",
+            "label": "endolymph",
+            "parent_id": "MA:0002527",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002529": {
+            "id": "MA:0002529",
+            "label": "perilymph",
+            "parent_id": "MA:0002527",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002534": {
+            "id": "MA:0002534",
+            "label": "lung surfactant",
+            "parent_id": "MA:0002533",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002535": {
+            "id": "MA:0002535",
+            "label": "nasal mucus",
+            "parent_id": "MA:0002533",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002536": {
+            "id": "MA:0002536",
+            "label": "sputum",
+            "parent_id": "MA:0002533",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002538": {
+            "id": "MA:0002538",
+            "label": "sebum",
+            "parent_id": "MA:0002537",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002539": {
+            "id": "MA:0002539",
+            "label": "sweat",
+            "parent_id": "MA:0002537",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002541": {
+            "id": "MA:0002541",
+            "label": "cementum",
+            "parent_id": "MA:0002540",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002542": {
+            "id": "MA:0002542",
+            "label": "dentin",
+            "parent_id": "MA:0002540",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002543": {
+            "id": "MA:0002543",
+            "label": "enamel",
+            "parent_id": "MA:0002540",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000116": {
+            "id": "MA:0000116",
+            "label": "adrenal gland",
+            "parent_id": "MA:0002563",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001582": {
+            "id": "MA:0001582",
+            "label": "endocrine pancreas",
+            "parent_id": "MA:0002563",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000720": {
+            "id": "MA:0000720",
+            "label": "neuroendocrine gland",
+            "parent_id": "MA:0002563",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000128": {
+            "id": "MA:0000128",
+            "label": "parathyroid gland",
+            "parent_id": "MA:0002563",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000129": {
+            "id": "MA:0000129",
+            "label": "thyroid gland",
+            "parent_id": "MA:0002563",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003040": {
+            "id": "MA:0003040",
+            "label": "apocrine gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001551": {
+            "id": "MA:0001551",
+            "label": "brunner's gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000401": {
+            "id": "MA:0000401",
+            "label": "bulbourethral gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002415": {
+            "id": "MA:0002415",
+            "label": "exocrine pancreas",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003042": {
+            "id": "MA:0003042",
+            "label": "holocrine gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001296": {
+            "id": "MA:0001296",
+            "label": "lacrimal gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000145": {
+            "id": "MA:0000145",
+            "label": "mammary gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003041": {
+            "id": "MA:0003041",
+            "label": "merocrine gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000404": {
+            "id": "MA:0000404",
+            "label": "prostate gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000346": {
+            "id": "MA:0000346",
+            "label": "salivary gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000150": {
+            "id": "MA:0000150",
+            "label": "sweat gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001688": {
+            "id": "MA:0001688",
+            "label": "urethra gland",
+            "parent_id": "MA:0002564",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000794": {
+            "id": "MA:0000794",
+            "label": "mammary gland sebaceous gland",
+            "parent_id": "MA:0002565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003043": {
+            "id": "MA:0003043",
+            "label": "modified sebaceous gland",
+            "parent_id": "MA:0002565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000149": {
+            "id": "MA:0000149",
+            "label": "pilosebaceous gland",
+            "parent_id": "MA:0002565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002452": {
+            "id": "MA:0002452",
+            "label": "sebaceous gland of eye",
+            "parent_id": "MA:0002565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001732": {
+            "id": "MA:0001732",
+            "label": "vagina sebaceous gland",
+            "parent_id": "MA:0002565",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000483": {
+            "id": "MA:0000483",
+            "label": "parietal serous pericardium",
+            "parent_id": "MA:0002739",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000484": {
+            "id": "MA:0000484",
+            "label": "visceral serous pericardium",
+            "parent_id": "MA:0002739",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001461": {
+            "id": "MA:0001461",
+            "label": "compact bone",
+            "parent_id": "MA:0002780",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002836": {
+            "id": "MA:0002836",
+            "label": "endochondral bone",
+            "parent_id": "MA:0002780",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002837": {
+            "id": "MA:0002837",
+            "label": "intramembranous bone",
+            "parent_id": "MA:0002780",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002781": {
+            "id": "MA:0002781",
+            "label": "lamellar bone",
+            "parent_id": "MA:0002780",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002782": {
+            "id": "MA:0002782",
+            "label": "trabecular bone",
+            "parent_id": "MA:0002780",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002857": {
+            "id": "MA:0002857",
+            "label": "cardiovascular system elastic tissue",
+            "parent_id": "MA:0002853",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001820": {
+            "id": "MA:0001820",
+            "label": "respiratory system elastic tissue",
+            "parent_id": "MA:0002853",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002859": {
+            "id": "MA:0002859",
+            "label": "aorta elastic tissue",
+            "parent_id": "MA:0002856",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002862": {
+            "id": "MA:0002862",
+            "label": "external elastic membrane",
+            "parent_id": "MA:0002856",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002863": {
+            "id": "MA:0002863",
+            "label": "internal elastic membrane",
+            "parent_id": "MA:0002856",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002856": {
+            "id": "MA:0002856",
+            "label": "blood vessel elastic tissue",
+            "parent_id": "MA:0002857",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002858": {
+            "id": "MA:0002858",
+            "label": "heart elastic tissue",
+            "parent_id": "MA:0002857",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000178": {
+            "id": "MA:0000178",
+            "label": "neurohypophysis",
+            "parent_id": "MA:0002943",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000175": {
+            "id": "MA:0000175",
+            "label": "pineal gland",
+            "parent_id": "MA:0002943",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002941": {
+            "id": "MA:0002941",
+            "label": "subcommissural organ",
+            "parent_id": "MA:0002943",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002433": {
+            "id": "MA:0002433",
+            "label": "anatomic region",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002450": {
+            "id": "MA:0002450",
+            "label": "body fluid or substance",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003001": {
+            "id": "MA:0003001",
+            "label": "organ",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000003": {
+            "id": "MA:0000003",
+            "label": "organ system",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002405": {
+            "id": "MA:0002405",
+            "label": "postnatal mouse",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003002": {
+            "id": "MA:0003002",
+            "label": "tissue",
+            "parent_id": "MA:0003000",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003038": {
+            "id": "MA:0003038",
+            "label": "gland",
+            "parent_id": "MA:0003001",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000011": {
+            "id": "MA:0000011",
+            "label": "connective tissue",
+            "parent_id": "MA:0003002",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003060": {
+            "id": "MA:0003060",
+            "label": "epithelium",
+            "parent_id": "MA:0003002",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002437": {
+            "id": "MA:0002437",
+            "label": "muscle tissue",
+            "parent_id": "MA:0003002",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003047": {
+            "id": "MA:0003047",
+            "label": "skeletal tissue",
+            "parent_id": "MA:0003002",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001622": {
+            "id": "MA:0001622",
+            "label": "falciform ligament",
+            "parent_id": "MA:0003004",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001619": {
+            "id": "MA:0001619",
+            "label": "gastro-splenic ligament",
+            "parent_id": "MA:0003004",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001755": {
+            "id": "MA:0001755",
+            "label": "larynx ligament",
+            "parent_id": "MA:0003004",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001620": {
+            "id": "MA:0001620",
+            "label": "lieno-renal ligament",
+            "parent_id": "MA:0003004",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001258": {
+            "id": "MA:0001258",
+            "label": "medial palpebral ligament",
+            "parent_id": "MA:0003004",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001228": {
+            "id": "MA:0001228",
+            "label": "auricular ligament",
+            "parent_id": "MA:0003005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002467": {
+            "id": "MA:0002467",
+            "label": "periodontal ligament",
+            "parent_id": "MA:0003005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002957": {
+            "id": "MA:0002957",
+            "label": "stylohyoid ligament",
+            "parent_id": "MA:0003005",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002563": {
+            "id": "MA:0002563",
+            "label": "endocrine gland",
+            "parent_id": "MA:0003038",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002564": {
+            "id": "MA:0002564",
+            "label": "exocrine gland",
+            "parent_id": "MA:0003038",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000147": {
+            "id": "MA:0000147",
+            "label": "apocrine sweat gland",
+            "parent_id": "MA:0003040",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003039": {
+            "id": "MA:0003039",
+            "label": "eccrine sweat gland",
+            "parent_id": "MA:0003041",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002565": {
+            "id": "MA:0002565",
+            "label": "sebaceous gland",
+            "parent_id": "MA:0003042",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0003044": {
+            "id": "MA:0003044",
+            "label": "clitoral/preputial gland",
+            "parent_id": "MA:0003043",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001249": {
+            "id": "MA:0001249",
+            "label": "meibomian gland",
+            "parent_id": "MA:0003043",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002900": {
+            "id": "MA:0002900",
+            "label": "zymbal gland",
+            "parent_id": "MA:0003043",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0001702": {
+            "id": "MA:0001702",
+            "label": "clitoral gland",
+            "parent_id": "MA:0003044",
+            "ontology": "adult_mouse_anatomy.gxd",
+            "oboInOwl:hasExactSynonym": [
+                "female preputial gland"
+            ]
+        },
+        "MA:0000403": {
+            "id": "MA:0000403",
+            "label": "preputial gland of male",
+            "parent_id": "MA:0003044",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0002780": {
+            "id": "MA:0002780",
+            "label": "bone tissue",
+            "parent_id": "MA:0003047",
+            "ontology": "adult_mouse_anatomy.gxd"
+        },
+        "MA:0000001": {
+            "id": "MA:0000001",
+            "datatype": "entity"
+        }
+    }
+}

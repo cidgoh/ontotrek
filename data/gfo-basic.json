@@ -1,0 +1,250 @@
+{
+    "@context": {
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "oboInOwl": "http://www.geneontology.org/formats/oboInOwl#",
+        "xmls": "http://www.w3.org/2001/XMLSchema#",
+        "vcard": "http://www.w3.org/2006/vcard/ns#",
+        "vcf": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#",
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "terms": "http://purl.org/dc/terms/",
+        "NDF-RT": "http://evs.nci.nih.gov/ftp1/NDF-RT/NDF-RT.owl#",
+        "gfo.owl": "http://www.onto-med.de/ontologies/gfo.owl#"
+    },
+    "metadata": {
+        "resource": "http://www.onto-med.de/ontologies/gfo-basic.owl",
+        "description": "This file belongs to the OWL distribution of GFO, cf. http://www.onto-med.de/ontologies/gfo.\n-----------------\n\nIt comprises a set of selected major and rather stable GFO categories, with the intention to serve as a comprehensible starting point which\n\n1. should be useful for immediate modeling purposes,\n2. covers GFO's areas and exhibits outstanding GFO features\n3. omits categories of more theoretical character or those which are easily definable\n\nCategories of the third kind will be provided in separate extensions.\n\n-----------------\n\nIn some comments, references to documents are used. These refer to several versions of the following report:\n\nHerre, H.; Heller, B.; Burek, P.; Hoehndorf, R.; Loebe, F. & Michalek, H.. General Formal Ontology (GFO): A Foundational Ontology Integrating Objects and Processes. Part I: Basic Principles. Research Group Ontologies in Medicine (Onto-Med), University of Leipzig.\n\n[herre-h-2006--a]: Version 1.0, Onto-Med Report Nr. 8, 01.07.2006\n[part1-v1.0.1] Version 1.0.1., Draft, 14.02.2007",
+        "type": "ontology",
+        "status": "release"
+    },
+    "specifications": {
+        "gfo.owl:Concept": {
+            "id": "gfo.owl:Concept",
+            "label": "Concept",
+            "parent_id": "gfo.owl:Category"
+        },
+        "gfo.owl:Symbol_structure": {
+            "id": "gfo.owl:Symbol_structure",
+            "label": "Symbol structure",
+            "parent_id": "gfo.owl:Category"
+        },
+        "gfo.owl:Universal": {
+            "id": "gfo.owl:Universal",
+            "label": "Universal",
+            "parent_id": "gfo.owl:Category"
+        },
+        "gfo.owl:Category": {
+            "id": "gfo.owl:Category",
+            "datatype": "entity"
+        },
+        "gfo.owl:Continuous_change": {
+            "id": "gfo.owl:Continuous_change",
+            "label": "Continuous change",
+            "parent_id": "gfo.owl:Change"
+        },
+        "gfo.owl:Discrete_change": {
+            "id": "gfo.owl:Discrete_change",
+            "label": "Discrete change",
+            "parent_id": "gfo.owl:Change"
+        },
+        "gfo.owl:Perpetuant": {
+            "id": "gfo.owl:Perpetuant",
+            "label": "Perpetuant",
+            "parent_id": "gfo.owl:Concrete"
+        },
+        "gfo.owl:Presential": {
+            "id": "gfo.owl:Presential",
+            "label": "Presential",
+            "parent_id": "gfo.owl:Concrete"
+        },
+        "gfo.owl:Processual_Structure": {
+            "id": "gfo.owl:Processual_Structure",
+            "label": "Processual Structure",
+            "parent_id": "gfo.owl:Concrete"
+        },
+        "gfo.owl:Abstract": {
+            "id": "gfo.owl:Abstract",
+            "label": "Abstract",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Concrete": {
+            "id": "gfo.owl:Concrete",
+            "label": "Concrete",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Property": {
+            "id": "gfo.owl:Property",
+            "label": "Property",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Relator": {
+            "id": "gfo.owl:Relator",
+            "label": "Relator",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Role": {
+            "id": "gfo.owl:Role",
+            "label": "Role",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Space_time": {
+            "id": "gfo.owl:Space_time",
+            "label": "Space time entity",
+            "parent_id": "gfo.owl:Individual"
+        },
+        "gfo.owl:Change": {
+            "id": "gfo.owl:Change",
+            "label": "Change",
+            "parent_id": "gfo.owl:Occurrent"
+        },
+        "gfo.owl:Event": {
+            "id": "gfo.owl:Event",
+            "label": "Event",
+            "parent_id": "gfo.owl:Occurrent"
+        },
+        "gfo.owl:History": {
+            "id": "gfo.owl:History",
+            "label": "History",
+            "parent_id": "gfo.owl:Occurrent"
+        },
+        "N0cca3c6d4ae04625b73b8be0c9a45b8f": {
+            "expression": {
+                "datatype": "disjunction",
+                "data": []
+            },
+            "id": "N0cca3c6d4ae04625b73b8be0c9a45b8f",
+            "parent_id": "gfo.owl:Presential"
+        },
+        "gfo.owl:Amount_of_substrate": {
+            "id": "gfo.owl:Amount_of_substrate",
+            "label": "Amount of substrate",
+            "parent_id": "gfo.owl:Presential"
+        },
+        "gfo.owl:Material_boundary": {
+            "id": "gfo.owl:Material_boundary",
+            "label": "Material boundary",
+            "parent_id": "gfo.owl:Presential"
+        },
+        "gfo.owl:Material_object": {
+            "id": "gfo.owl:Material_object",
+            "label": "Material object",
+            "parent_id": "gfo.owl:Presential"
+        },
+        "gfo.owl:Continuous_process": {
+            "id": "gfo.owl:Continuous_process",
+            "label": "Continuous process",
+            "parent_id": "gfo.owl:Process"
+        },
+        "gfo.owl:Discrete_process": {
+            "id": "gfo.owl:Discrete_process",
+            "label": "Discrete process",
+            "parent_id": "gfo.owl:Process"
+        },
+        "gfo.owl:Processual_role": {
+            "id": "gfo.owl:Processual_role",
+            "label": "Processual role",
+            "parent_id": "gfo.owl:Process",
+            "other_parents": [
+                "gfo.owl:Role"
+            ]
+        },
+        "gfo.owl:State": {
+            "id": "gfo.owl:State",
+            "label": "State",
+            "parent_id": "gfo.owl:Process"
+        },
+        "gfo.owl:Occurrent": {
+            "id": "gfo.owl:Occurrent",
+            "label": "Occurrent",
+            "parent_id": "gfo.owl:Processual_Structure"
+        },
+        "gfo.owl:Process": {
+            "id": "gfo.owl:Process",
+            "label": "Process",
+            "parent_id": "gfo.owl:Processual_Structure"
+        },
+        "gfo.owl:Relational_role": {
+            "id": "gfo.owl:Relational_role",
+            "label": "Relational role",
+            "parent_id": "gfo.owl:Property",
+            "other_parents": [
+                "gfo.owl:Role"
+            ]
+        },
+        "gfo.owl:Social_role": {
+            "id": "gfo.owl:Social_role",
+            "label": "Social role",
+            "parent_id": "gfo.owl:Role"
+        },
+        "gfo.owl:Spatial_boundary": {
+            "id": "gfo.owl:Spatial_boundary",
+            "label": "Spatial boundary",
+            "parent_id": "gfo.owl:Space"
+        },
+        "gfo.owl:Spatial_region": {
+            "id": "gfo.owl:Spatial_region",
+            "label": "Spatial region",
+            "parent_id": "gfo.owl:Space"
+        },
+        "gfo.owl:Space": {
+            "id": "gfo.owl:Space",
+            "label": "Space entity",
+            "parent_id": "gfo.owl:Space_time"
+        },
+        "gfo.owl:Time": {
+            "id": "gfo.owl:Time",
+            "label": "Time entity",
+            "parent_id": "gfo.owl:Space_time"
+        },
+        "gfo.owl:Line": {
+            "id": "gfo.owl:Line",
+            "label": "Line",
+            "parent_id": "gfo.owl:Spatial_boundary"
+        },
+        "gfo.owl:Point": {
+            "id": "gfo.owl:Point",
+            "label": "Point",
+            "parent_id": "gfo.owl:Spatial_boundary"
+        },
+        "gfo.owl:Surface": {
+            "id": "gfo.owl:Surface",
+            "label": "Surface",
+            "parent_id": "gfo.owl:Spatial_boundary"
+        },
+        "gfo.owl:Topoid": {
+            "id": "gfo.owl:Topoid",
+            "label": "Topoid",
+            "parent_id": "gfo.owl:Spatial_region"
+        },
+        "gfo.owl:Chronoid": {
+            "id": "gfo.owl:Chronoid",
+            "label": "Chronoid",
+            "parent_id": "gfo.owl:Temporal_region"
+        },
+        "gfo.owl:Temporal_region": {
+            "id": "gfo.owl:Temporal_region",
+            "label": "Temporal region",
+            "parent_id": "gfo.owl:Time"
+        },
+        "gfo.owl:Time_boundary": {
+            "id": "gfo.owl:Time_boundary",
+            "label": "Time boundary",
+            "parent_id": "gfo.owl:Time"
+        },
+        "gfo.owl:Left_time_boundary": {
+            "id": "gfo.owl:Left_time_boundary",
+            "label": "Left time boundary",
+            "parent_id": "gfo.owl:Time_boundary"
+        },
+        "gfo.owl:Right_time_boundary": {
+            "id": "gfo.owl:Right_time_boundary",
+            "label": "Right time boundary",
+            "parent_id": "gfo.owl:Time_boundary"
+        },
+        "gfo.owl:Individual": {
+            "id": "gfo.owl:Individual",
+            "datatype": "entity"
+        }
+    }
+}
