@@ -16,6 +16,7 @@ EXIT_DEPTH = 26;
 dataLookup = {}
 
 var GRAPH_NODE_DEPTH = 100 // 100 
+var RENDER_SLICES = false
 
 const LABEL_MAX_LINE_LENGTH = 30  // label text is cut after first word ending before this character limit.
 const LABEL_RE = new RegExp('(?![^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '}$)([^\\n]{1,' + LABEL_MAX_LINE_LENGTH + '})\\s', 'g');
@@ -189,7 +190,7 @@ function depth_iterate() {
 
 
     // WHERE SHOULD THIS GO????
-    //top.GRAPH = null
+    top.GRAPH = null
     return
   }
 
@@ -199,19 +200,22 @@ function depth_iterate() {
 
   for (item in top.NEW_NODES) {
     var node = top.NEW_NODES[item]
-    const parent = top.dataLookup[node.parent_id];
-    if (parent) {
-      parent.fx = parent.x;
-      parent.fy = parent.y;
-      // fix parent z
 
-    }
     // If it doesn't have to move any more because it has no kids,
     // then fix its position; it therefore get taken out of "cooldown" list
     // Thus speeding calculation
     if (node.children.length == 0) {
       node.fy = node.y;
       node.fx = node.x;
+    }
+
+    const parent = top.dataLookup[node.parent_id];
+    if (parent) {
+      parent.fx = parent.x;
+      parent.fy = parent.y;
+      // fix parent z
+      if (RENDER_SLICES && !(node.id in top.layout))
+        node.fx = parent.fx;
     }
 
     //if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout))
@@ -309,6 +313,10 @@ function depth_iterate_exit() {
       node.fy = node.y;
       node.fx = node.x;
     }
+
+    const parent = top.dataLookup[node.parent_id];
+    if (parent && RENDER_SLICES && !(node.id in top.layout))
+      node.fx = parent.fx;
 
   }
   // don't make below var newNodes / var newLinks?

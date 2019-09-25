@@ -103,7 +103,7 @@ a single root.
 
   PROBLEM CASE: Many terms, little class/subclass structure
   python3 ../ontofetch/ontofetch.py https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/emapa.owl -o data/ -r http://purl.obolibrary.org/obo/EMAPA_0
-  
+
 ******************************************************************************/
 
 init_search() 
@@ -153,6 +153,11 @@ function init_interface() {
     }
   })
 
+  // Top level setting controls whether shortcuts on rendering speed things up
+  $("#render_slices").on('change', function(item) {
+    RENDER_SLICES = this.checked
+    if (top.Graph) do_graph (top.rawData) // Recalculate dataset with deprecated terms
+  })
 
   $("#thickness_control").on('change', function(item) {
     GRAPH_LINK_WIDTH = parseFloat(this.value)

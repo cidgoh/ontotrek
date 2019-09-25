@@ -1687,7 +1687,8 @@
         },
         "MA:0000001": {
             "id": "MA:0000001",
-            "datatype": "entity"
+            "datatype": "entity",
+            "label": "mouse anatomical entity"
         }
     }
 }

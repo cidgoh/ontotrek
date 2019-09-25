@@ -2,13 +2,12 @@
 <html class="no-js" lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link rel="icon" sizes="16x16 32x32 64x64" href="/img/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-    <!-- link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" -->
-    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
-    <link rel="shortcut icon" sizes="64x64" href="/img/favicon-64.png">
-    <link rel="apple-touch-icon" href="/img/icon-64x64.png">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="shortcut icon" sizes="64x64" href="img/favicon-64.png">
+    <link rel="apple-touch-icon" href="img/icon-64x64.png">
 
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/foundation-icons.css">
@@ -39,7 +38,9 @@
 
               <p> OntoTrek displays all class-subclass relations starting from owl:Thing or BFO:0000001 entity.  OntoTrek doesn't draw other object relations. The program actually reads flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program.</p>
 
-              <p><b>To get started, select an ontology in upper right Search menu ...</b></p>
+              <p><b>To get started, select an ontology in upper right Search menu and it will be displayed above.</b></p> 
+
+              <p>Note a current subtle bug is that settings applied to a graph yield successively slower redraws. To play with settings, reload the app in the browser, select settings, and then select an ontology.</p>
 
               <p>This software is being developed at the Hsiao Lab which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. The project's GitHub is  <a href="https://github.com/GenEpiO/ontotrek" target="_blank">here</a>.  Contact <a href="mailto:damion.dooley@bccdc.ca">Damion Dooley</a> for more information.</p>
             </div>
@@ -78,20 +79,24 @@
 
                 <select id="ontology">
                     <option value="">Select an ontology to view</option>
+
                     <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
+                    <option value="data/dolce-inferred.json">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option>
+                    <option value="data/gfo.json">GFO: General Formal Ontology</option> 
+                    <option disabled="disabled">__________________________________________</option>
+
                     <option value="data/agro.json">AGRO: Agronomy Ontology</option>
                     <option value="data/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
                     <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
                     <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
                     <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
-                    <option value="data/dolce-inferred.json">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option>
+
                     <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
                     <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
                     <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
                     <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
                     <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
-                    <option value="data/gfo.json">GFO: General Formal Ontology</option> 
-                    <option value="data/gfo-basic.json">GFO: General Formal Ontology (basic)</option> 
+
                     <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
                     <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
                     <option value="data/ma.json">MA: Mouse Adult Gross Anatomy</option>                    
@@ -256,6 +261,14 @@
               <label for="render_layer_depth" class="middle">depth of each layer</label>
 
 
+              <div class="switch float-left">
+                <input class="switch-input" id="render_slices" type="checkbox" name="render_slices">
+                <label class="switch-paddle" for="render_slices">
+                  <span class="show-for-sr">render slices</span>
+                </label>
+              </div>
+              <label for="render_slices"> Ontology branches rendered as vertical slice(s). Nice in ULO context.</label>
+              <br clear="both"/>
               
 
             </div>
@@ -274,14 +287,14 @@
             <div class="tabs-panel" id="panel_trace">
 
               <p>Experimental tool: Enter Markdown formatted links of form [link label](URL) [relation type] [link label](URL) here to see them highlighted in current ontology:
-              <textarea rows="4" id="trace_content" placeholder="enter robot markup here"># This is a fictional example pertaining to the GenEpiO ontology (it is also viewable in BFO ontology):
+              <textarea rows="4" id="trace_content" placeholder="enter robot markup here"># This is a fictional example pertaining to the ECOCORE ontology (it is also viewable in BFO ontology):
+## [ecozone](http://purl.obolibrary.org/obo/ENVO_01000280) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
 
-  - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234)
-    - [Municipality](http://purl.obolibrary.org/obo/NCIT_C80234) SubClassOf [geopolitical region](http://semanticscience.org/resource/SIO_000415)
-      - [geopolitical region](http://semanticscience.org/resource/SIO_000415) SubClassOf [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886)
-        - [designated area on Earth](http://purl.obolibrary.org/obo/GENEPIO_0001886) SubClassOf [site](http://purl.obolibrary.org/obo/BFO_0000029)
-          - [site](http://purl.obolibrary.org/obo/BFO_0000029) SubClassOf [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
-  - [populated place, Alaska](http://purl.obolibrary.org/obo/GAZ_00004040) SubClassOf [material entity](http://purl.obolibrary.org/obo/BFO_0000040)
+  - [ecozone](http://purl.obolibrary.org/obo/ENVO_01000280) SubClassOf [site](http://purl.obolibrary.org/obo/BFO_0000029)
+    - [site](http://purl.obolibrary.org/obo/BFO_0000029) SubClassOf [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
+  - [ecozone](http://purl.obolibrary.org/obo/ENVO_01000280) SubClassOf [environmental zone](http://purl.obolibrary.org/obo/ENVO_01000408)
+    - [environmental zone](http://purl.obolibrary.org/obo/ENVO_01000408) SubClassOf [environmental feature](http://purl.obolibrary.org/obo/ENVO_00002297)
+      - [environmental feature](http://purl.obolibrary.org/obo/ENVO_00002297) SubClassOf [material entity](http://purl.obolibrary.org/obo/BFO_0000040)
   - [material entity](http://purl.obolibrary.org/obo/BFO_0000040) DisjointWith [immaterial entity](http://purl.obolibrary.org/obo/BFO_0000141)
               </textarea>
               <button type="button" class="success button" id="trace_button">Trace</button>
