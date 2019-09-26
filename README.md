@@ -1,12 +1,29 @@
-OntoTrek is an OBOFoundry.org ontology terminology viewer that takes advantage of 3d graph rendering software. Currently it displays all classes and subclasses but no axioms. We have a few ontologies to choose from during this alpha/beta phase. OntoTrek color codes terms by their ontology prefix so that one can visually see which ontologies are at play.  (A future version could involve adding other relations besides class-subclass).
+OntoTrek is an ontology terminology viewer that takes advantage of 3d graph rendering software. Currently it displays all classes and subclasses but no axioms. We have a variety of ontologies to choose from, mainly from OBOFoundry.org, but also provide a python script below for getting OntoTrek to display your own ontology.  It produces a .json representation of your OWL rdf/xml format file.  The software currently supports rdfs:label, IAO definition, and gene ontology oboInOwl#hasSynonym etc. - but we will extend it to work with other popular description and synonym annotations soon. OntoTrek color codes terms by their ontology prefix, or by branches of an upper level ontology they conform to, so that one can visually see which ontologies are at play.
+<img src="docs/images/bfo.png"/>
 
-OntoTrek is under development at Hsiao Labs which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control.
+<img src="docs/images/bfo-eco.png"/>
 
-Contact [Damion Dooley](mailto:damion.dooley@bccdc.ca) for more information on the project.
+See it in action at **[http://genepio.org/ontotrek](http://genepio.org/ontotrek)**.
 
-See it in action at [http://genepio.org/ontotrek](http://genepio.org/ontotrek).
+OntoTrek is under development at Hsiao Labs which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. Contact [Damion Dooley](mailto:damion.dooley@bccdc.ca) for more information on the project.
 
-Details of javascript and file generation are in /js/common.js. To summarise:
+<hr />
+
+## Running this on your computer
+
+OntoTrek can be run immediately in your browser if you have cloned this repo.  Since the index.html app page script fetches the selected ontology file in .json format from the data/ subfolder, it requires running a local webserver from the folder it is located in, e.g. 
+    
+> python -m http.server
+
+If you want to look at a particular ontology file that is not in the list, currently you need to do two things:
+
+1) Run the ontofetch.py program (downloadable from https://github.com/Public-Health-Bioinformatics/ontofetch) on a local .owl file in rdf/xml format, (or a remote URL of the same format) to produce a simplified .json version of your ontology.  
+
+2) adjust the index.html menu of ontology files to include your desired ontology.  Then run the application.
+
+## Building this from scratch
+
+This application for the mostpart relies only on javascript in your browser.  However, to update the 3d-force-graph code to the latest version, which one might want to do for development reasons, requires activating the node.js npm environment.  Details of javascript and file generation are in /js/common.js. To summarise:
 
   To update 3d-force-graph run this in ontotrek root folder:
   

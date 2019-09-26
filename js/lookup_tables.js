@@ -1,100 +1,6 @@
 /*
-// MUST BE X11 colors for THREE.js
-var colorTable = [
-      
-  {"color":"AntiqueWhite",  "code":"#FAEBD7"},
-  {"color":"Aquamarine",  "code":"#7FFFD4"},
-  {"color":"Blue",  "code":"#0000FF"},
-  {"color":"BlueViolet",  "code":"#8A2BE2"},
-  {"color":"Brown", "code":"#A52A2A"},
-  {"color":"CadetBlue", "code":"#5F9EA0"},
-  {"color":"Chartreuse",  "code":"#7FFF00"},
-  {"color":"Chocolate", "code":"#D2691E"},
-  {"color":"Coral", "code":"#FF7F50"},
-  {"color":"CornflowerBlue",  "code":"#6495ED"},
-  {"color":"Crimson", "code":"#DC143C"},
-  {"color":"Cyan",  "code":"#00FFFF"},
-  {"color":"DarkGoldenrod", "code":"#B8860B"},
-  {"color":"DarkGray",  "code":"#A9A9A9"},
-  {"color":"DarkKhaki", "code":"#BDB76B"},
-  {"color":"DarkOliveGreen",  "code":"#556B2F"},
-  {"color":"DarkOrange",  "code":"#FF8C00"},
-  {"color":"DarkOrchid",  "code":"#9932CC"},
-  {"color":"DarkRed", "code":"#8B0000"},
-  {"color":"DarkSeaGreen",  "code":"#8FBC8F"},
-  {"color":"DarkTurquoise", "code":"#00CED1"},
-  {"color":"DeepPink",  "code":"#FF1493"},
-  {"color":"DeepSkyBlue", "code":"#00BFFF"},
-  {"color":"DodgerBlue",  "code":"#1E90FF"},
-  {"color":"FireBrick", "code":"#B22222"},
-  {"color":"Gold",  "code":"#FFD700"},
-  {"color":"Goldenrod", "code":"#DAA520"},
-  {"color":"Green", "code":"#008000"},
-  {"color":"GreenYellow", "code":"#ADFF2F"},
-  {"color":"HotPink", "code":"#FF69B4"},
-  {"color":"IndianRed", "code":"#CD5C5C"},
-  {"color":"Ivory", "code":"#FFFFF0"},
-  {"color":"Khaki", "code":"#F0E68C"},
-  {"color":"Lavender",  "code":"#E6E6FA"},
-  {"color":"LawnGreen", "code":"#7CFC00"},
-  {"color":"LemonChiffon",  "code":"#FFFACD"},
-  {"color":"LightCyan", "code":"#E0FFFF"},
-  {"color":"LightGoldenrodYellow",  "code":"#FAFAD2"},
-  {"color":"LightGreen",  "code":"#90EE90"},
-  {"color":"LightPink", "code":"#FFB6C1"},
-  {"color":"LightSalmon", "code":"#FFA07A"},
-  {"color":"LightSeaGreen", "code":"#20B2AA"},
-  {"color":"LightSteelBlue",  "code":"#B0C4DE"},
-  {"color":"Lime",  "code":"#00FF00"},
-  {"color":"LimeGreen", "code":"#32CD32"},
-  {"color":"Magenta", "code":"#FF00FF"},
-  {"color":"Maroon",  "code":"#800000"},
-  {"color":"MediumAquamarine",  "code":"#66CDAA"},
-  {"color":"MediumPurple",  "code":"#9370DB"},
-  {"color":"MediumSeaGreen",  "code":"#3CB371"},
-  {"color":"MediumSlateBlue", "code":"#7B68EE"},
-  {"color":"MediumSpringGreen", "code":"#00FA9A"},
-  {"color":"MediumTurquoise", "code":"#48D1CC"},
-  {"color":"NavajoWhite", "code":"#FFDEAD"},
-  {"color":"Olive", "code":"#808000"},
-  {"color":"OliveDrab", "code":"#6B8E23"},
-  {"color":"Orange",  "code":"#FFA500"},
-  {"color":"OrangeRed", "code":"#FF4500"},
-  {"color":"Orchid",  "code":"#DA70D6"},
-  {"color":"PaleGoldenrod", "code":"#EEE8AA"},
-  {"color":"PaleGreen", "code":"#98FB98"},
-  {"color":"PaleTurquoise", "code":"#AFEEEE"},
-  {"color":"PaleVioletRed", "code":"#DB7093"},
-  {"color":"PeachPuff", "code":"#FFDAB9"},
-  {"color":"Peru",  "code":"#CD853F"},
-  {"color":"Pink",  "code":"#FFC0CB"},
-  {"color":"PowderBlue",  "code":"#B0E0E6"},
-  {"color":"Purple",  "code":"#800080"},
-  {"color":"Red", "code":"#FF0000"},
-  {"color":"RosyBrown", "code":"#BC8F8F"},
-  {"color":"RoyalBlue", "code":"#4169E1"},
-  {"color":"Salmon",  "code":"#FA8072"},
-  {"color":"SandyBrown",  "code":"#F4A460"},
-  {"color":"SeaGreen",  "code":"#2E8B57"},
-  {"color":"Sienna",  "code":"#A0522D"},
-  {"color":"Silver",  "code":"#C0C0C0"},
-  {"color":"SkyBlue", "code":"#87CEEB"},
-  {"color":"SpringGreen", "code":"#00FF7F"},
-  {"color":"SteelBlue", "code":"#4682B4"},
-  {"color":"Tan", "code":"#D2B48C"},
-  {"color":"Teal",  "code":"#008080"},
-  {"color":"Tomato",  "code":"#FF6347"},
-  {"color":"Turquoise", "code":"#40E0D0"},
-  {"color":"Violet",  "code":"#EE82EE"},
-  {"color":"Wheat", "code":"#F5DEB3"},
-  {"color":"WhiteSmoke",  "code":"#F5F5F5"},
-  {"color":"Yellow",  "code":"#FFFF00"},
-  {"color":"YellowGreen", "code":"#9ACD32"}
-]
+MUST BE X11 colors for THREE.js
 */
-
-// https://github.com/OBOFoundry/OBOFoundry.github.io/blob/master/registry/obo_context.jsonld
-
 var colors = {
   "AntiqueWhite":"#FAEBD7",
   "Aquamarine":"#7FFFD4",
@@ -186,12 +92,15 @@ var colors = {
   "YellowGreen":"#9ACD32"
 }
 
+// A running list of OBOFoundry ontology prefixes and their URLS.
+// https://github.com/OBOFoundry/OBOFoundry.github.io/blob/master/registry/obo_context.jsonld
+
 var prefix_color_mapping = {
   "owl":  {"color":"Gold"},
-  "oboInOwl": {"color":"Gold"},
+  "BFO": {"color":"Gold"},
   "gfo.owl": {"color":"Gold"},
   "DOLCE-Lite.owl": {"color":"Gold"},
-  
+
   // Miscellaneous ontologies
   "SIO":        {"color":"AntiqueWhite"},
   "NDF-RT":     {"color":"Aquamarine"},
@@ -208,6 +117,7 @@ var prefix_color_mapping = {
   "hancestro":  {"color":"SandyBrown"},
   
   // OBOFOUNDRY ONTOLOOGIES
+  "oboInOwl":   {"color":"Gold"},
   "AAO":        {"color":"AntiqueWhite"},
   "ADW":        {"color":"Aquamarine"},
   "AEO":        {"color":"BlueViolet"},
@@ -218,7 +128,6 @@ var prefix_color_mapping = {
   "ATO":        {"color":"Chocolate"},
   "BCGO":       {"color":"Coral"},
   "BCO":        {"color":"CornflowerBlue"},
-  "BFO":        {"color":"Gold"},
   "BILA":       {"color":"Cyan"},
   "BOOTSTREP":  {"color":"DarkGoldenrod"},
   "BSPO":       {"color":"DarkGray"},
@@ -420,6 +329,8 @@ var prefix_color_mapping = {
   "https":       {"color":"Blue"},
 }
 
+// This is a table of fixed coordinates for upper level ontologies.
+// Currently one issue is viewport is initially focused on just the BFO one.
 layout = {
 
   "owl:Thing": {"x": -1600,    "y": -1600,  "color": ""},
