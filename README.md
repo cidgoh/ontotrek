@@ -1,7 +1,7 @@
 OntoTrek is an ontology terminology viewer that takes advantage of 3d graph rendering software. Currently it displays all classes and subclasses but no axioms. We have a variety of ontologies to choose from, mainly from OBOFoundry.org, but also provide a python script below for getting OntoTrek to display your own ontology.  It produces a .json representation of your OWL rdf/xml format file.  The software currently supports rdfs:label, IAO definition, and gene ontology oboInOwl#hasSynonym etc. - but we will extend it to work with other popular description and synonym annotations soon. OntoTrek color codes terms by their ontology prefix, or by branches of an upper level ontology they conform to, so that one can visually see which ontologies are at play.
 <img src="docs/images/bfo.png"/>
 
-<img src="docs/images/bfo-eco.png"/>
+<img src="docs/images/bfo_eco.png"/>
 
 See it in action at **[http://genepio.org/ontotrek](http://genepio.org/ontotrek)**.
 
