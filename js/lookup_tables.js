@@ -189,7 +189,9 @@ var colors = {
 var prefix_color_mapping = {
   "owl":  {"color":"Gold"},
   "oboInOwl": {"color":"Gold"},
-
+  "gfo.owl": {"color":"Gold"},
+  "DOLCE-Lite.owl": {"color":"Gold"},
+  
   // Miscellaneous ontologies
   "SIO":        {"color":"AntiqueWhite"},
   "NDF-RT":     {"color":"Aquamarine"},
