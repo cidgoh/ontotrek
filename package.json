@@ -4,7 +4,9 @@
   },
   "dependencies": {
     "3d-force-graph": "^1.46.3",
+    "build": "^0.1.4",
     "build-bundle": "^2.0.8",
+    "rdflib": "^1.0.4",
     "three": "^0.86.0",
     "three-spritetext": "^1.0.6"
   },

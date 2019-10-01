@@ -6,6 +6,9 @@ Functions to drive 3d-force-graph that are core.  More experimental stuff is
 in other files like development.js .  These files are loaded in addition to
 /js/bundle.js , which is created by node.js's browserify command.
 
+Work with rdflib.js is documented via:
+  https://solid.inrupt.com/docs/manipulating-ld-with-rdflib
+
 _____________________________
 Node.js NPM Management:
 
@@ -138,6 +141,20 @@ function init_interface() {
       node_focus(top.dataLookup[this.value])
   })
 
+  //$("#ontology_url").on('change', function(item) {
+  //  alert("Fetching: " + this.value)
+  //  get_ontology(this.value)
+  //})
+
+  $("#ontology_url_button").on('click', function(item) {
+    const url = $("#ontology_url").val()
+    const url_ok = RE_URL.exec(url)
+    if (url_ok)
+      get_ontology(url) //load_data(url)
+    else
+      alert(`The ontology URL: "${url}" is not valid`)
+  })
+
   // Top level setting controls whether shortcuts on rendering speed things up
   $("#render_deprecated").on('change', function(item) {
     RENDER_DEPRECATED = this.checked
@@ -266,15 +283,15 @@ function init_interface() {
                 // Find shared parent class/node of both those nodes 
                 // - that is where disjointness is defined?
                 //alert(source_id + " disjoint with " + target_id)
-                link = get_link(new_links, subject_node, object_node, result.relation, 0xFF0000, 20) // RED
+                link = get_link(new_links, subject_node, object_node, result.relation, 0xFF0000, 20); // RED
                 // Set Focus here
-                link.highlight = 0xFF0000
-                focus = subject_node
+                link.highlight = 0xFF0000;
+                focus = subject_node;
                 break;
 
               case 'SubClassOf': 
-                link = get_link(new_links, object_node, subject_node, result.relation, 0xFFA500, 10) // Orange
-                link.highlight = 0xFFA500
+                link = get_link(new_links, object_node, subject_node, result.relation, 0xFFA500, 10); // Orange
+                link.highlight = 0xFFA500;
                 break;                 
             }
         }
@@ -283,8 +300,8 @@ function init_interface() {
       // There are new node or links to add
       if (new_nodes.length || new_links.length) {
         const { nodes, links } = top.Graph.graphData();
-        nodes.push(...new_nodes) //
-        links.push(...new_links)
+        nodes.push(...new_nodes);
+        links.push(...new_links);
         Graph.graphData({
           'nodes': nodes,
           'links': links
@@ -300,9 +317,213 @@ function init_interface() {
   })
 }
 
+function get_ontology(url) {
+  /* Dynamically load OWL file from a web URL, parse its subclasses, labels,
+  definitions, synonyms, etc. 
+
+  Local test url can be: http://localhost:8000/data/bfo.owl
+  */
+  var store = $rdf.graph()
+  var timeout = 5000 // 5000 ms timeout
+  var fetcher = new $rdf.Fetcher(store, timeout)
+
+  try {
+    fetcher.nowOrWhenFetched(url, function(ok, body, xhr) {
+      if (!ok) {
+          alert(`The ontology URL "${url}" was not able to be retrieved. Please verify that the URL works.`);
+      } else {
+        process_ontology(store)
+      }
+    })
+  }
+  catch(err) {
+    alert(err.message);
+  }
+
+}
+
+function process_ontology(store) {
+
+  const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+  const RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#")
+  const OWL = $rdf.Namespace("http://www.w3.org/2002/07/owl#")
+  const DC = $rdf.Namespace("http://purl.org/dc/elements/1.1/")
+  const XSD = $rdf.Namespace("http://www.w3.org/2001/XMLSchema#")
+  const IAO = $rdf.Namespace("http://purl.obolibrary.org/obo/IAO_")
+  const OBO = $rdf.Namespace("http://purl.obolibrary.org/obo/") //http://purl.obolibrary.org/obo/
+  const OBOINOWL = $rdf.Namespace("http://www.geneontology.org/formats/oboInOwl#")
+  const BFO = $rdf.Namespace("http://purl.obolibrary.org/obo/BFO_")
+
+  var resource = {
+    '@context': {
+      'rdfs': 'http://www.w3.org/2000/01/rdf-schema#'
+    },
+    'reverse_c': {
+      'http://www.w3.org/2000/01/rdf-schema#': 'rdfs'
+    },
+    'term': {},
+    'metadata': {}
+  }
+
+  //Define constants
+  const root = OWL("Thing");
+  const subClassOf = RDFS("subClassOf"); // http://www.w3.org/2002/07/owl#subClassOf
+
+  // These are stored as data property values. For now, label,
+  // definition etc. are not multilingual. 
+  // ISSUE: need language variants.
+  const singular_annotation = {
+    label: RDFS("label"),
+    definition: OBO('IAO_0000115')
+  }
+
+  // Can expect several properties/annotations of same kind added to a term.
+  const multi_property = {
+    subClassOf: RDFS('subClassOf'),
+    hasSynonym: OBOINOWL('hasSynonym'),
+    hasBroadSynonym: OBOINOWL('hasBroadSynonym'),
+    hasNarrowSynonym: OBOINOWL('hasNarrowSynonym'),
+    hasExactSynonym: OBOINOWL('hasExactSynonym')
+    // ... add other synonyms here.
+  }
+
+  // Begin search with root node
+  stack = []
+  stack_done = {}
+
+
+  //stack.push(store.sym(OWL("Thing") ))
+  stack.push(store.sym(OBO("BFO_0000001")) )
+  i=0;
+  while (stack.length) {
+    subject = stack.shift();
+    stack_done[subject] = true;
+
+    // Prevent polyhierarchic classes getting processed twice.
+    // stack.push(...store.each(undefined, subClassOf, subject))
+    store.each(undefined, subClassOf, subject).forEach(
+      function(subclass) {
+        if (!stack_done[subclass])
+          stack.push(subclass)
+      }
+    );
+
+    // var t_label =       store.each(item, label)
+    // console.log('label', t_label[0].value )
+    //const t_label: get_value(store, item, label)
+    var node = {
+      'id': namespace(resource, subject.uri),
+    };
+
+    Object.keys(singular_annotation).forEach(function(property) {
+      get_value(resource, node, store, subject, singular_annotation[property]) //store.each(item, synonym)
+    });
+
+    set_node_label(node) // adds shortened label
+
+    Object.keys(multi_property).forEach(function(property) {
+      get_properties(resource, node, store, subject, multi_property[property]) //store.each(item, synonym)
+    });
+
+    resource.term[node.id] = node;
+    // Testing: cut loop short
+    if (i == 3) {
+     //break
+    }
+    i++
+  }
+
+  console.log(resource);
+}
+const splitAt = index => x => [x.slice(0, index), x.slice(index)]
+// e.g.     const splited = splitAt(split_ptr)(uri);
+
+function namespace (resource, uri) {
+  if (uri && uri.indexOf('http') == 0) {
+
+    var separator;
+    var prefix;
+
+    const separators = ['#','_','/'];
+    for (ptr in separators) {
+      separator = separators[ptr]
+      var split_ptr = uri.lastIndexOf(separator);
+      if (split_ptr > 0) {
+        break;
+      }
+    }
+
+    const path = uri.slice(0, split_ptr); // e.g. http://purl.obolibrary.org/obo/BFO
+    const fragment = uri.slice(split_ptr+1); // e.g. 0000003
+    const full_path = path + separator; // e.g. http://purl.obolibrary.org/obo/BFO_
+
+    // NEED REVERSE LOOKUP TABLE HERE.
+    prefix = resource.reverse_c[full_path]
+    if (prefix) {
+      return prefix + ":" + fragment;
+    }
+    
+    // At this point path not recognized in @context lookup
+    // table, so add it to @context
+    prefix = path.slice(uri.lastIndexOf('/')+1);
+    // At least 2 characters in @context prefix required to avoid
+    // exception to rule below, as no namespace begins with number
+    // and following is a URI but not an ontology term reference.
+    // <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/obi/2018-05-23/obi.owl"/>
+    const minimal_prefix = prefix.substr(0,2);
+    // Some alphanumeric name acting as prefix 
+    if (minimal_prefix.match(/[a-z][a-z]/i )) {
+      resource['@context'][prefix] = full_path;
+      resource.reverse_c[full_path] = prefix;
+      return prefix + ":" + fragment;
+    }
+  }
+  return uri;    // Returns untouched string
+
+}
+
+function get_value(resource, node, store, subject, predicate) {
+  // store.any just returns one sample value.
+  var triple = store.any(subject, predicate);
+  if (triple) {
+    //console.log(predicate.value, triple.value );
+    node[namespace(resource, predicate.uri)] = triple.value
+  }
+}
+
+function get_properties(resource, node, store, subject, predicate) {
+  // This form ONLLY returns OBJECT!!!!
+  var triples = store.each(subject, predicate); 
+  if (triples.length) {
+    output = [];
+    // If triple is a data property (literal value)
+    if (triples[0].uri) {
+      triples.forEach(function(triple) {
+        //console.log(predicate.value, triple.value );
+        output.push(namespace(resource, triple.uri)); // WHY?
+      })
+    }
+
+    // NEVER GETTING HERE!!!!
+    /* If triple is a non-anonymous object property, ...
+    else {
+      console.log ('here')
+      triples.forEach(function(triple) {
+        // CONVERT OBJECT TO SHORT @context name
+        //console.log(predicate.value, triple.object );
+        output.push(namespace(resource, triple.object.uri)) ;
+      })
+    }
+    */ 
+
+    node[namespace(resource, predicate.uri)] = output
+  }
+}
+
 
 function triple_parse (line) {
-  /* Find markdown expression of [subject relation object] tripe and return
+  /* This is for the superimposition of robot unsatisfiability explanations.
+  Find markdown expression of [subject relation object] tripe and return
   a dictionary of each element.
   
   INPUT: a text line hopefully of Markdown format representation of a triple
@@ -354,11 +575,12 @@ function get_node_from_url(new_nodes, url, label) {
 }
 
 function make_node(new_nodes, node_id, label) {
+  // Used in Markdown to triple conversion
   // FUTURE: Code z-axis based on depth call.
   node = {
     'id':         node_id,
     'label':      label,
-    'short_label': label,
+//    'short_label': label,
     'color':      '#FFF', 
     'depth':      4, // This just gives them a bigger but not giant label
     'parent_id':  '',
@@ -420,11 +642,19 @@ function load_data(URL, callback) {
     Fetch json data file that represents simplified .owl ontology
   */
   var xhttp = new XMLHttpRequest();
-  xhttp.overrideMimeType("application/json");
+  var json_file_type = URL.toLowerCase().indexOf('json')
+  if (json_file_type)
+    xhttp.overrideMimeType("application/json");
+  else
+    xhttp.overrideMimeType("rdf/xml");
+
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       try {
-        var data = JSON.parse(this.responseText)
+        if (json_file_type)
+          var data = JSON.parse(this.responseText)
+        else
+          alert ('got OWL file!' + URL)
       }
       catch(err) {
         alert(err.message);
@@ -529,19 +759,9 @@ function init_ontofetch_data(rawData) {
         console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
         node.color = '#F00'
       }
-      node.depth = 0
-      
-      if (node.label) {
-        // label derived from node's first few words ...
-        node.short_label = node.label.replace(LABEL_RE, '$1*');
-        if (node.short_label.indexOf('*') > 0) 
-          node.short_label = node.short_label.split('*',1)[0] + ' ...'
-      }
-      else {
-        node.label = node.id
-        node.short_label = node.id
-      }
-      data.nodes.push(node)
+      node.depth = 0;
+      set_node_label(node);
+      data.nodes.push(node);
       //node_lookup[node.id] = node
       top.dataLookup[node.id] = node
 
@@ -686,6 +906,25 @@ function init_ontofetch_data(rawData) {
   data.nodes = preposition_nodes(data.nodes)
   top.builtData = data
   return data
+}
+
+
+function set_node_label(node) {
+  /* Makes a clipped short_label for long labels.
+  Also ensures id is shown if term has no rdfs:label
+  */
+  var label = node.label //node['rdfs:label']
+  if (label) {
+    // label derived from node's first few words ...
+    node.short_label = label.replace(LABEL_RE, '$1*');
+    if (node.short_label.indexOf('*') > 0) 
+      node.short_label = node.short_label.split('*',1)[0] + ' ...'
+  }
+  else {
+    node.label = node.id
+    //node['rdfs:label'] = node.id
+    node.short_label = node.id
+  }
 }
 
 
@@ -897,6 +1136,7 @@ function node_focus(node = {}) {
   $("#parents").html(parents || '<span class="placeholder">parent(s)</span>');
   $("#label").html(label || '<span class="placeholder">label</span>');
   $("#definition").html(node.definition || '<span class="placeholder">definition</span>');
+
   $("#synonyms").html(node.synonyms || '<span class="placeholder">synonyms</span>');
   
   if (node.ui_label)

@@ -14,7 +14,7 @@ OntoTrek is under development at Hsiao Labs which is associated with the Univers
 
 OntoTrek can be run immediately in your browser if you have cloned the github repo to your computer.  Since the index.html app page script fetches the selected ontology file in .json format from the data/ subfolder, it requires running a local webserver from the folder it is located in, e.g. 
     
-> python -m http.server
+    > python -m http.server
 
 This enables one to open a web browser, usually with URL http://localhost:8000/index.html to run the application.
 
@@ -22,7 +22,7 @@ If you want to look at a particular ontology file that is not in the list, curre
 
 1) Run the ontofetch.py program (downloadable from https://github.com/Public-Health-Bioinformatics/ontofetch) on a local .owl file in rdf/xml format, (or a remote URL of the same format) to produce a simplified .json version of your ontology, like so:
 
-> python ontofetch.py http://purl.obolibrary.org/obo/bfo/2.0/bfo.owl -o data -r http://purl.obolibrary.org/obo/BFO_0000001
+    > python ontofetch.py http://purl.obolibrary.org/obo/bfo/2.0/bfo.owl -o data -r http://purl.obolibrary.org/obo/BFO_0000001
 
 This produces a .json representation of your OWL rdf/xml format file.  By default all terms that are explicit owl:subClass of owl:Thing are retrieved.  If you want to retrieve another root term (or more than one particular branch), use the "-r" parameter and include a comma-separated list of term URL's.  
 
