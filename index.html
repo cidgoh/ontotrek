@@ -36,9 +36,9 @@
             <div style="padding:20px;">
               <p>OntoTrek is an <a href="http://OBOFoundry.org" target="_blank">OBOFoundry.org</a> ontology terminology viewer that takes advantage of <a href="https://github.com/vasturiano/3d-force-graph/" target="_blank">WebGL 3d graph rendering software</a>. We have a few ontologies to choose from during this beta phase, some easy to load like AGRO and ECOCORE, and some big ones like CLO which can only be rendered by applying filters like "wireframe", no "labels", and limiting node depth.  Some ontologies demonstrate nice organization under the Basic Formal Ontology (BFO, whose 34 nodes are big, sunny, and always in the same position), and others show an independent streak which may illustrate the difference between reference and application ontologies. </p>
 
-              <p> OntoTrek displays all class-subclass relations starting from owl:Thing or BFO:0000001 entity.  OntoTrek doesn't draw other object relations. The program actually reads flat JSON versions of the given ontologies, generated using the <a href="https://github.com/GenEpiO/geem/blob/master/scripts/ontofetch.py" target="_blank">ontofetch.py</a> program.</p>
+              <p> OntoTrek displays all class-subclass relations starting from the first top-level entity it finds (usually owl:Thing or BFO:0000001 entity).  OntoTrek doesn't draw other object relations. </p>
 
-              <p><b>To begin, select an ontology, or enter an ontology URL in upper right "Search" tab and it will be displayed above.</b></p> 
+              <p><b>To begin, select an ontology, or enter an ontology URL in upper right "Search" tab and it will be displayed above.</b>  Alternately, enter a .owl file URL directly (it must be in rdf/xml format).</p> 
 
               <p>Note a current subtle bug is that settings applied to a graph yield successively slower redraws. To play with settings, reload the app in the browser, select settings, and then select an ontology.</p>
 
@@ -91,26 +91,26 @@
 
                       <option value="data/agro.owl">AGRO: Agronomy Ontology</option>
                       <option value="data/aro.owl">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
-                      <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
-                      <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
+                      <option value="//raw.githubusercontent.com/CLO-ontology/CLO/master/src/ontology/clo_merged.owl">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
+                      <option value="data/cmo.owl">CMO: Clinical Measurements Ontology</option>  
                       <option value="data/doid-merged.owl">DOID: Human Disease Ontology</option>
 
                       <option value="data/eco.owl">ECO: Evidence & Conclusion Ontology</option>  
-                      <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
-                      <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
+                      <option value="//raw.githubusercontent.com/EcologicalSemantics/ecocore/master/ecocore.owl">ECOCORE: Ontology of Core Ecological Entities</option>  
+                      <option value="//raw.githubusercontent.com/FoodOntology/foodon/master/src/ontology/foodon-merged.owl">FOODON: Food Ontology (needs filtering! 28K)</option> 
                       <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
-                      <option value="data/genepio-merged.json">GENEPIO: Genomic Epidemiology Ontology</option> 
+                      <option value="data/genepio-merged.owl">GENEPIO: Genomic Epidemiology Ontology</option> 
 
-                      <option value="data/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
-                      <option value="data/hp.json">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
-                      <option value="data/ma.json">MA: Mouse Adult Gross Anatomy</option>                    
-                      <option value="data/ido.json">IDO: Infectious Disease Ontology</option>
-                      <option value="data/obi.json">OBI: Ontology for Biomedical Investigations</option>
-                      <option value="data/obib.json">OBIB: Ontology for Biobanking</option>           
-                      <option value="data/pato.json">PATO: Phenotype and Trait Ontology</option>          
-                      <option value="data/pco.json">PCO: Population and Community Ontology</option>   
-                      <option value="data/po.json">PO: Plant Ontology (anatomical branch)</option> 
-                      <option value="data/zfa.json">ZFA: Zebrafish anatomy and development ontology</option> 
+                      <option value="//raw.githubusercontent.com/EBISPOT/ancestro/master/hancestro.owl">HANCESTRO: Human Ancestry Ontology</option>
+                      <option value="//raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.owl">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
+                      <option value="//purl.obolibrary.org/obo/ma.owl">MA: Mouse Adult Gross Anatomy</option>                    
+                      <option value="//raw.githubusercontent.com/infectious-disease-ontology/infectious-disease-ontology/2017-11-03/ido.owl">IDO: Infectious Disease Ontology</option>
+                      <option value="//raw.githubusercontent.com/obi-ontology/obi/master/obi.owl">OBI: Ontology for Biomedical Investigations</option>
+                      <option value="//raw.githubusercontent.com/biobanking/biobanking/master/ontology/obib.owl">OBIB: Ontology for Biobanking</option>           
+                      <option value="//raw.githubusercontent.com/pato-ontology/pato/master/pato.owl">PATO: Phenotype and Trait Ontology</option>          
+                      <option value="//raw.githubusercontent.com/PopulationAndCommunityOntology/pco/master/pco.owl">PCO: Population and Community Ontology</option>   
+                      <option value="//raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl">PO: Plant Ontology (anatomical branch)</option> 
+                      <option value="//purl.obolibrary.org/obo/zfa.owl">ZFA: Zebrafish anatomy and development ontology</option> 
 
                     </select>
                   </div>
@@ -120,7 +120,7 @@
 
                 <div class="grid-x grid-padding-x">
                   <div class="large-10 medium-10">
-                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl">
+                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="">
                   </div>
                   <div class="large-2 medium-2">
                     <button id="ontology_url_button" class="button fi-web blue small" style="font-size:1.5rem;padding:.4rem 1rem;"></button>
