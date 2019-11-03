@@ -37,7 +37,7 @@ from an OWL ontology file.  Nothing very special about the json format:
         "terms": "http://purl.org/dc/terms/",
         ...
   },
-  "specifications": {
+  "term": {
     "OBI:0000011": {
         "parent_id": "BFO:0000015",
         "definition": "A processual entity that realizes a plan which is the concretization of a plan specification.",
@@ -129,7 +129,7 @@ function init_interface() {
   $("#ontology")
     .on('change', function(item){
       if (this.value > '') {
-        load_data(this.value, do_graph)
+          load_data(this.value, do_graph)
       }
     })
 
@@ -150,7 +150,7 @@ function init_interface() {
     const url = $("#ontology_url").val()
     const url_ok = RE_URL.exec(url)
     if (url_ok)
-      get_ontology(url) //load_data(url)
+      load_data(url, do_graph)
     else
       alert(`The ontology URL: "${url}" is not valid`)
   })
@@ -317,209 +317,8 @@ function init_interface() {
   })
 }
 
-function get_ontology(url) {
-  /* Dynamically load OWL file from a web URL, parse its subclasses, labels,
-  definitions, synonyms, etc. 
 
-  Local test url can be: http://localhost:8000/data/bfo.owl
-  */
-  var store = $rdf.graph()
-  var timeout = 5000 // 5000 ms timeout
-  var fetcher = new $rdf.Fetcher(store, timeout)
-
-  try {
-    fetcher.nowOrWhenFetched(url, function(ok, body, xhr) {
-      if (!ok) {
-          alert(`The ontology URL "${url}" was not able to be retrieved. Please verify that the URL works.`);
-      } else {
-        process_ontology(store)
-      }
-    })
-  }
-  catch(err) {
-    alert(err.message);
-  }
-
-}
-
-function process_ontology(store) {
-
-  const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-  const RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#")
-  const OWL = $rdf.Namespace("http://www.w3.org/2002/07/owl#")
-  const DC = $rdf.Namespace("http://purl.org/dc/elements/1.1/")
-  const XSD = $rdf.Namespace("http://www.w3.org/2001/XMLSchema#")
-  const IAO = $rdf.Namespace("http://purl.obolibrary.org/obo/IAO_")
-  const OBO = $rdf.Namespace("http://purl.obolibrary.org/obo/") //http://purl.obolibrary.org/obo/
-  const OBOINOWL = $rdf.Namespace("http://www.geneontology.org/formats/oboInOwl#")
-  const BFO = $rdf.Namespace("http://purl.obolibrary.org/obo/BFO_")
-
-  var resource = {
-    '@context': {
-      'rdfs': 'http://www.w3.org/2000/01/rdf-schema#'
-    },
-    'reverse_c': {
-      'http://www.w3.org/2000/01/rdf-schema#': 'rdfs'
-    },
-    'term': {},
-    'metadata': {}
-  }
-
-  //Define constants
-  const root = OWL("Thing");
-  const subClassOf = RDFS("subClassOf"); // http://www.w3.org/2002/07/owl#subClassOf
-
-  // These are stored as data property values. For now, label,
-  // definition etc. are not multilingual. 
-  // ISSUE: need language variants.
-  const singular_annotation = {
-    label: RDFS("label"),
-    definition: OBO('IAO_0000115')
-  }
-
-  // Can expect several properties/annotations of same kind added to a term.
-  const multi_property = {
-    subClassOf: RDFS('subClassOf'),
-    hasSynonym: OBOINOWL('hasSynonym'),
-    hasBroadSynonym: OBOINOWL('hasBroadSynonym'),
-    hasNarrowSynonym: OBOINOWL('hasNarrowSynonym'),
-    hasExactSynonym: OBOINOWL('hasExactSynonym')
-    // ... add other synonyms here.
-  }
-
-  // Begin search with root node
-  stack = []
-  stack_done = {}
-
-
-  //stack.push(store.sym(OWL("Thing") ))
-  stack.push(store.sym(OBO("BFO_0000001")) )
-  i=0;
-  while (stack.length) {
-    subject = stack.shift();
-    stack_done[subject] = true;
-
-    // Prevent polyhierarchic classes getting processed twice.
-    // stack.push(...store.each(undefined, subClassOf, subject))
-    store.each(undefined, subClassOf, subject).forEach(
-      function(subclass) {
-        if (!stack_done[subclass])
-          stack.push(subclass)
-      }
-    );
-
-    // var t_label =       store.each(item, label)
-    // console.log('label', t_label[0].value )
-    //const t_label: get_value(store, item, label)
-    var node = {
-      'id': namespace(resource, subject.uri),
-    };
-
-    Object.keys(singular_annotation).forEach(function(property) {
-      get_value(resource, node, store, subject, singular_annotation[property]) //store.each(item, synonym)
-    });
-
-    set_node_label(node) // adds shortened label
-
-    Object.keys(multi_property).forEach(function(property) {
-      get_properties(resource, node, store, subject, multi_property[property]) //store.each(item, synonym)
-    });
-
-    resource.term[node.id] = node;
-    // Testing: cut loop short
-    if (i == 3) {
-     //break
-    }
-    i++
-  }
-
-  console.log(resource);
-}
-const splitAt = index => x => [x.slice(0, index), x.slice(index)]
-// e.g.     const splited = splitAt(split_ptr)(uri);
-
-function namespace (resource, uri) {
-  if (uri && uri.indexOf('http') == 0) {
-
-    var separator;
-    var prefix;
-
-    const separators = ['#','_','/'];
-    for (ptr in separators) {
-      separator = separators[ptr]
-      var split_ptr = uri.lastIndexOf(separator);
-      if (split_ptr > 0) {
-        break;
-      }
-    }
-
-    const path = uri.slice(0, split_ptr); // e.g. http://purl.obolibrary.org/obo/BFO
-    const fragment = uri.slice(split_ptr+1); // e.g. 0000003
-    const full_path = path + separator; // e.g. http://purl.obolibrary.org/obo/BFO_
-
-    // NEED REVERSE LOOKUP TABLE HERE.
-    prefix = resource.reverse_c[full_path]
-    if (prefix) {
-      return prefix + ":" + fragment;
-    }
-    
-    // At this point path not recognized in @context lookup
-    // table, so add it to @context
-    prefix = path.slice(uri.lastIndexOf('/')+1);
-    // At least 2 characters in @context prefix required to avoid
-    // exception to rule below, as no namespace begins with number
-    // and following is a URI but not an ontology term reference.
-    // <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/obi/2018-05-23/obi.owl"/>
-    const minimal_prefix = prefix.substr(0,2);
-    // Some alphanumeric name acting as prefix 
-    if (minimal_prefix.match(/[a-z][a-z]/i )) {
-      resource['@context'][prefix] = full_path;
-      resource.reverse_c[full_path] = prefix;
-      return prefix + ":" + fragment;
-    }
-  }
-  return uri;    // Returns untouched string
-
-}
-
-function get_value(resource, node, store, subject, predicate) {
-  // store.any just returns one sample value.
-  var triple = store.any(subject, predicate);
-  if (triple) {
-    //console.log(predicate.value, triple.value );
-    node[namespace(resource, predicate.uri)] = triple.value
-  }
-}
-
-function get_properties(resource, node, store, subject, predicate) {
-  // This form ONLLY returns OBJECT!!!!
-  var triples = store.each(subject, predicate); 
-  if (triples.length) {
-    output = [];
-    // If triple is a data property (literal value)
-    if (triples[0].uri) {
-      triples.forEach(function(triple) {
-        //console.log(predicate.value, triple.value );
-        output.push(namespace(resource, triple.uri)); // WHY?
-      })
-    }
-
-    // NEVER GETTING HERE!!!!
-    /* If triple is a non-anonymous object property, ...
-    else {
-      console.log ('here')
-      triples.forEach(function(triple) {
-        // CONVERT OBJECT TO SHORT @context name
-        //console.log(predicate.value, triple.object );
-        output.push(namespace(resource, triple.object.uri)) ;
-      })
-    }
-    */ 
-
-    node[namespace(resource, predicate.uri)] = output
-  }
-}
-
+/************************** CONTRADICTION REPORTING ***************************/
 
 function triple_parse (line) {
   /* This is for the superimposition of robot unsatisfiability explanations.
@@ -547,7 +346,7 @@ function triple_parse (line) {
   if (matchObj)
     return matchObj.groups
 
-  console.log("line", line, "regex", matchObj)
+  //console.log("line", line, "regex", matchObj)
   return null
 }
 
@@ -578,14 +377,14 @@ function make_node(new_nodes, node_id, label) {
   // Used in Markdown to triple conversion
   // FUTURE: Code z-axis based on depth call.
   node = {
-    'id':         node_id,
-    'label':      label,
-//    'short_label': label,
+    'id': node_id,
+    'rdfs:label': label,
+    'rdfs:subClassOf': [],
+    'parent_id': null,
+    'IAO:0000115': '',
+
     'color':      '#FFF', 
     'depth':      4, // This just gives them a bigger but not giant label
-    'parent_id':  '',
-    'synonyms':   '', // Pools oboInOwl:hasExactSynonym, hasSynonym, hasBroadSynonym, hasNarrowSynonym
-    'definition': '',
     'children':   []
   }
   new_nodes.push(node)
@@ -640,9 +439,14 @@ function highlite_node(node, hex_color = 0xFF0000) {
 function load_data(URL, callback) {
   /*
     Fetch json data file that represents simplified .owl ontology
+    OR owl file in rdf/xml format 
   */
+
   var xhttp = new XMLHttpRequest();
-  var json_file_type = URL.toLowerCase().indexOf('json')
+  //Access-Control-Allow-Origin
+  //* header value 
+  // FOR WEBSERVER???
+  var json_file_type = URL.toLowerCase().indexOf('json') > 0
   if (json_file_type)
     xhttp.overrideMimeType("application/json");
   else
@@ -651,14 +455,50 @@ function load_data(URL, callback) {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       try {
-        if (json_file_type)
+        if (json_file_type) {
           var data = JSON.parse(this.responseText)
-        else
-          alert ('got OWL file!' + URL)
+
+          // CONVERSION JSON data to work with new OWL format
+          Object.keys(data.specifications).forEach(function(id) {
+            var node = data.specifications[id]
+            node['rdfs:subClassOf'] = [node.parent_id]
+            if (node.label) node['rdfs:label'] = node.label
+            if (node.definition) node['IAO:0000115'] = node.definition
+            if (node.deprecated) node['owl:deprecated'] = node.deprecated
+
+            if (node.other_parents) node['rdfs:subClassOf'].push(...node.other_parents)
+          })
+
+          data.term = data.specifications;
+          delete(data.specifications)
+
+        }
+        else {
+          var store = $rdf.graph();
+          // Give it a full URL so OWL has proper file address
+          if (URL.indexOf('http') != 0)
+            URL = RE_URL.exec(document.location) + URL;
+
+          try {
+            // Given url is used simply to identify ontology source.
+            // Good tips here: https://github.com/solid/solid-tutorial-rdflib.js/issues/4
+            $rdf.parse(this.responseText, store, URL, 'application/rdf+xml');
+            data = process_ontology(store);
+            var store = $rdf.graph();      
+          } 
+
+          catch (err) {
+              console.log(err)
+              alert("OWL couldn't parse" + err.message)
+              data = null;
+          }
+        }
       }
       catch(err) {
         alert(err.message);
+        data = null;
       }
+
       callback(data )
     }
   }
@@ -722,7 +562,7 @@ function init_ontofetch_data(rawData) {
   2nd pass: Establish links and adjust according to parent node depth.
 
   INPUT
-    rawData.specifications: Array of nodes
+    rawData.term: Array of nodes
 
   */
 
@@ -743,9 +583,9 @@ function init_ontofetch_data(rawData) {
   //var node_lookup = {}
   var legend = {}
   // 1st pass does all the nodes.
-  for (var item in rawData.specifications) {
-    var node = rawData.specifications[item];
-    if (!node.deprecated || RENDER_DEPRECATED) {
+  for (var item in rawData.term) {
+    var node = rawData.term[item];
+    if (!node['owl:deprecated'] || RENDER_DEPRECATED) { // node.deprecated
       node.children = [];
       var prefix = get_term_prefix(node.id);
       // Stores a count of each prefix
@@ -773,8 +613,14 @@ function init_ontofetch_data(rawData) {
           focus.depth = 1;
           break;
         }
-        focus = rawData.specifications[focus.parent_id]
-        if (focus.depth) {
+        if (!rawData.term[focus.parent_id]) {
+          focus.depth = 1
+          break;
+        }
+        
+        focus = rawData.term[focus.parent_id]
+
+        if (focus.depth) { // already calculated depth.
           break;
         }
         if (!focus.parent_id) {
@@ -834,26 +680,26 @@ function init_ontofetch_data(rawData) {
       }
     }
 
-    const parent_id = node.parent_id;
-    const parent = top.dataLookup[parent_id];
-    if (parent) {
-      // Upper level ontology edge color takes cue from parent node
-      if (RENDER_ULO_EDGE) {
-        if (!node.group_id && parent.group_id) {
-          node.group_id = parent.group_id
+    if (node.parent_id) {
+      const parent = top.dataLookup[node.parent_id];
+      if (parent) {
+        // Upper level ontology edge color takes cue from parent node
+        if (RENDER_ULO_EDGE) {
+          if (!node.group_id && parent.group_id) {
+            node.group_id = parent.group_id
+          }
+          legend[parent.group_id] += 1 // This node only counts in parent's category
+          var group = top.layout[parent.group_id]
+          var color = group ? group.color : node.color;
         }
-        legend[parent.group_id] += 1 // This node only counts in parent's category
-        var group = top.layout[parent.group_id]
-        var color = group ? group.color : node.color;
+        else 
+          // Color of edge leading to node is color of node's ontology prefix.
+          var color = node.color;
+
+        set_link(data.links, parent.id, node.id, '', color, node.radius)
+
       }
-      else 
-        // Color of edge leading to node is color of node's ontology prefix.
-        var color = node.color;
-
-      set_link(data.links, parent_id, node.id, '', color, node.radius)
-
     }
-
   }
 
   // Render legend for edge coloring
@@ -885,23 +731,25 @@ function init_ontofetch_data(rawData) {
     const node = data.nodes[item];
 
     // Establish 2ndary (multihomed) to other parents
-    for (var ptr in node.other_parents) {
-      const parent_id = node.other_parents[ptr]
-      if (top.dataLookup[parent_id]) // other_parent hasn't any 
-        // Not sure why creating a node here causes layout to go wonky.
-        //make_node(data.nodes, parent_id, 'Unknown label')
-        //
-        // "other: true" Signals that this needs to be handled by final pass in
-        // depth_iterate() 
-        set_link(data.links, parent_id, node.id, '', '#FFA500', node.radius, true )
-    }
+    if (node['rdfs:subClassOf']) 
+      for (var ptr = 1; ptr < node['rdfs:subClassOf'].length; ptr ++) {
+        const parent = top.dataLookup[node['rdfs:subClassOf'][ptr]];
+        if (parent)
+          // Not sure why creating a node here causes layout to go wonky.
+          //make_node(data.nodes, parent_id, 'Unknown label')
+          //
+          // "other: true" Signals that this needs to be handled by final pass in
+          // depth_iterate() 
+          set_link(data.links, parent.id, node.id, '', '#FFA500', node.radius, true );
+      }
   }
 
 
-  if (RENDER_DEPTH != 50)
+  if (RENDER_DEPTH != 50) {
     // Chop link content off by depth that user specified.
     // top.dataLookup only has nodes included in graph to given depth at this point.
     data.links = data.links.filter(l => top.dataLookup[l.source] && top.dataLookup[l.target]); 
+  }
 
   data.nodes = preposition_nodes(data.nodes)
   top.builtData = data
@@ -913,7 +761,7 @@ function set_node_label(node) {
   /* Makes a clipped short_label for long labels.
   Also ensures id is shown if term has no rdfs:label
   */
-  var label = node.label //node['rdfs:label']
+  var label = node['rdfs:label'] // was node.label
   if (label) {
     // label derived from node's first few words ...
     node.short_label = label.replace(LABEL_RE, '$1*');
@@ -1095,7 +943,7 @@ function get_term_id_urls(parent_list) {
   var parent_uris = []
   if (parent_list) {
     for (ptr in parent_list) {
-      parent_id = parent_list[ptr]
+      const parent_id = parent_list[ptr]
       var parent = top.dataLookup[parent_id]
       if (parent) {
         if (parent.label)
@@ -1119,23 +967,18 @@ function node_focus(node = {}) {
     node from same vertical level.
   */ 
 
-  var parents = null
-  if (node.parent_id) {
-    parents = [node.parent_id]
-    if (node.other_parents)
-      parents.push(node.other_parents)
-    parents = get_term_id_urls(parents)
-  }
+  parents = get_term_id_urls(node['rdfs:subClassOf'])
 
   // Label includes term id and links to 
   if (node.label)
-    label = node.label + (node.deprecated ? ' <span class="deprecated">deprecated</span>' : '') + '<span class="label_id"> (' + node.id + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
+    label = node['rdfs:label'] + (node['owl:deprecated'] ? ' <span class="deprecated">deprecated</span>' : '') + '<span class="label_id"> (' + node.id + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
   else
     label = null
   // <img src="img/link_out_20.png" border="0" width="16">
   $("#parents").html(parents || '<span class="placeholder">parent(s)</span>');
   $("#label").html(label || '<span class="placeholder">label</span>');
-  $("#definition").html(node.definition || '<span class="placeholder">definition</span>');
+  // was node.definition
+  $("#definition").html(node['IAO:0000115'] || '<span class="placeholder">definition</span>');
 
   $("#synonyms").html(node.synonyms || '<span class="placeholder">synonyms</span>');
   
@@ -1174,7 +1017,7 @@ function node_focus(node = {}) {
 
     // This sets visual color directly in rendering engine so we don't have to
     // rerender graph as a whole!
-    if (node.marker.material) {
+    if (node.marker && node.marker.material) {
       node.marker.material.color.setHex(0xFF0000); 
       if (node.depth > 2) {
         node.marker.scale.x = 3

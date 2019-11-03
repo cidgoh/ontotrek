@@ -39,8 +39,16 @@ const NO_LABELS = false
 // Regular expression to match robot's markup triple explanation of unsatisfiable reasoning:
 const RE_MD_TRIPLE = /\[(?<subject_label>[^\]]+)\]\((?<subject_uri>[^)]+)\) (?<relation>\w+) \[(?<object_label>[^\]]+)\]\((?<object_uri>[^)]+)\)/;
 const RE_URL = /^https?:\/\/.+/i;
+const RE_URL_ROOT = /^https?:\/\/[^#?]+/i;
 const RE_NAMESPACE_URL = /(?<prefix>https?:\/\/.+[\/#](?<namespace>\w+)(?<separator>[_:]))(?<id>\w+)/;
-const SYNONYM_FIELD = ["synonyms", "oboInOwl:hasSynonym", "oboInOwl:hasExactSynonym", "oboInOwl:hasBroadSynonym", "oboInOwl:hasNarrowSynonym", "oboInOwl:hasRelatedSynonym"]
+
+const SYNONYM_FIELD = ["synonyms", 
+  "oboInOwl:hasSynonym", 
+  "oboInOwl:hasExactSynonym", 
+  "oboInOwl:hasBroadSynonym", 
+  "oboInOwl:hasNarrowSynonym", 
+  "oboInOwl:hasRelatedSynonym"
+]
 
 function do_graph(rawData) {
   /*
@@ -154,8 +162,8 @@ function init() {
     // Note d.target is an object!
     /*.linkAutoColorBy(d => d.target.color})*/
 
-    // Text shown on mouseover. //${node.definition}
-    .nodeLabel(node => `<div>${node.label}<br/><span class="tooltip-id">${node.id}</span></div>`) 
+    // Text shown on mouseover.  WAS node.label
+    .nodeLabel(node => `<div>${node['rdfs:label']}<br/><span class="tooltip-id">${node.id}</span></div>`) 
 
     //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
     //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')

@@ -81,18 +81,21 @@
                     <select id="ontology" style="margin-bottom:10px">
                       <option value="">Select an ontology to view ...</option>
 
-                      <option value="data/bfo.json">BFO: Basic Formal Ontology</option>
-                      <option value="data/dolce-inferred.json">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option>
-                      <option value="data/gfo.json">GFO: General Formal Ontology</option> 
+                      <option value="data/bfo.owl">BFO: Basic Formal Ontology</option><!-- https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl -->
+
+                      <option value="data/dolche-inferred.owl">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option><!-- http://genepio.org/ontotrek/data/dolche-inferred.owl -->
+
+                      <option value="data/gfo.owl">GFO: General Formal Ontology</option><!-- http://www.onto-med.de/ontologies/gfo.owl -->
+
                       <option disabled="disabled">__________________________________________</option>
 
-                      <option value="data/agro.json">AGRO: Agronomy Ontology</option>
-                      <option value="data/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
+                      <option value="data/agro.owl">AGRO: Agronomy Ontology</option>
+                      <option value="data/aro.owl">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
                       <option value="data/clo_merged.json">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
                       <option value="data/cmo.json">CMO: Clinical Measurements Ontology</option>  
-                      <option value="data/doid-merged.json">DOID: Human Disease Ontology</option>
+                      <option value="data/doid-merged.owl">DOID: Human Disease Ontology</option>
 
-                      <option value="data/eco.json">ECO: Evidence & Conclusion Ontology</option>  
+                      <option value="data/eco.owl">ECO: Evidence & Conclusion Ontology</option>  
                       <option value="data/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
                       <option value="data/foodon.json">FOODON: Food Ontology (needs filtering! 28K)</option> 
                       <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
@@ -112,20 +115,20 @@
                     </select>
                   </div>
                 </div>
-                <!--
+               
                 <i class="fi-info blue" data-tooltip tabindex="1" title="Or provide your own ontology URL.  The ontology should be formatted as an OWL rdf/xml file. Currently all terms which are owl:subClassOf owl:Thing are retrieved.  If subclasses are inferred in your ontology, you will need to create an explicit version of it by using a reasoner and saving the output to an OWL file."></i>
 
                 <div class="grid-x grid-padding-x">
                   <div class="large-10 medium-10">
-                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="http://localhost:8000/data/genepio-merged.owl"> http://localhost:8000/data/bfo.owl 
+                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl">
                   </div>
                   <div class="large-2 medium-2">
                     <button id="ontology_url_button" class="button fi-web blue small" style="font-size:1.5rem;padding:.4rem 1rem;"></button>
                   </div>
                 </div>
-              -->
-                <div id="status" ><span class="placeholder">&nbsp;</span></div>
               
+                
+                <div id="status" ><span class="placeholder">&nbsp;</span></div>
               </div>
 
               <div class="callout primary">
@@ -355,10 +358,12 @@
     <script src="js/vendor/foundation.js"></script>
 
     <!-- <script src="js/jquery-3.3.1.slim.min.js"></script> -->
+    <!-- customized version of chosen.js that looks for synonyms too -->
     <script src="js/chosen/chosen.jquery.min.js"></script>
     <script src="js/bundle.js"></script>
     <script src="js/lookup_tables.js"></script>
     <script src="js/development.js"></script>
+    <script src="js/owl.js"></script>
     <script src="js/common.js"></script>
     <script src="js/rdflib.min.js"></script>
 
