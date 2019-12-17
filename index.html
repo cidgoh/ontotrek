@@ -38,7 +38,7 @@
 
               <p> OntoTrek displays all class-subclass relations starting from the first top-level entity it finds (usually owl:Thing or BFO:0000001 entity).  OntoTrek doesn't draw other object relations. </p>
 
-              <p><b>To begin, select an ontology, or enter an ontology URL in upper right "Search" tab and it will be displayed above.</b>  Alternately, enter a .owl file URL directly (it must be in rdf/xml format).</p> 
+              <p><b>To begin, select an ontology, or enter an ontology URL in upper right "Search" tab and it will be displayed above.</b>  Alternately, enter a .owl file URL directly (it must be in rdf/xml format, and can't be a URL that redirects, so for github-hosted ontologies use the "raw.githubusercontent.com/..." link, e.g. https://raw.githubusercontent.com/obi-ontology/obi/master/obi.owl).</p> 
 
               <p>Note a current subtle bug is that settings applied to a graph yield successively slower redraws. To play with settings, reload the app in the browser, select settings, and then select an ontology.</p>
 
@@ -73,7 +73,7 @@
             <div class="tabs-panel is-active" id="panel_search">
               <div class="callout primary">
 
-                <i class="fi-info blue" data-tooltip tabindex="1" title="The listed ontologies are mainly from http://obofoundry.org, and were downloaded and converted into a simpler json file format for this program to use."></i>
+                <a href="https://www.nature.com/articles/npre.2009.3574.1" target="_blank"><i class="fi-info blue" data-tooltip tabindex="1" title="The listed ontologies are mainly from http://obofoundry.org. Many illustrate the interleaved reuse of OBOFoundry ontology terms (MIEROT principle)."></i></a>
                 
                 <div class="grid-x grid-padding-x" style="margin-bottom:10px">
                   <div class="large-12 medium-12">
@@ -93,9 +93,9 @@
                       <option value="data/aro.owl">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
                       <option value="//raw.githubusercontent.com/CLO-ontology/CLO/master/src/ontology/clo_merged.owl">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
                       <option value="data/cmo.owl">CMO: Clinical Measurements Ontology</option>  
-                      <option value="data/doid-merged.owl">DOID: Human Disease Ontology</option>
+                      <option value="https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/doid.owl">DOID: Human Disease Ontology</option>
 
-                      <option value="data/eco.owl">ECO: Evidence & Conclusion Ontology</option>  
+                      <option value="https://raw.githubusercontent.com/evidenceontology/evidenceontology/master/eco.owl">ECO: Evidence & Conclusion Ontology</option>  
                       <option value="//raw.githubusercontent.com/EcologicalSemantics/ecocore/master/ecocore.owl">ECOCORE: Ontology of Core Ecological Entities</option>  
                       <option value="//raw.githubusercontent.com/FoodOntology/foodon/master/src/ontology/foodon-merged.owl">FOODON: Food Ontology (needs filtering! 28K)</option> 
                       <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
@@ -103,14 +103,14 @@
 
                       <option value="//raw.githubusercontent.com/EBISPOT/ancestro/master/hancestro.owl">HANCESTRO: Human Ancestry Ontology</option>
                       <option value="//raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.owl">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
-                      <option value="//purl.obolibrary.org/obo/ma.owl">MA: Mouse Adult Gross Anatomy</option>                    
+                      <option value="https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/emapa.owl">EMAPA: Ontologies for mouse anatomy and development</option>                    
                       <option value="//raw.githubusercontent.com/infectious-disease-ontology/infectious-disease-ontology/2017-11-03/ido.owl">IDO: Infectious Disease Ontology</option>
-                      <option value="//raw.githubusercontent.com/obi-ontology/obi/master/obi.owl">OBI: Ontology for Biomedical Investigations</option>
-                      <option value="//raw.githubusercontent.com/biobanking/biobanking/master/ontology/obib.owl">OBIB: Ontology for Biobanking</option>           
+                      <option value="//raw.githubusercontent.com/obi-ontology/obi/v2019-08-06/obi.owl">OBI: Ontology for Biomedical Investigations</option>
+                      <option value="//raw.githubusercontent.com/biobanking/ontology/20190620/obib.owl">OBIB: Ontology for Biobanking</option>           
                       <option value="//raw.githubusercontent.com/pato-ontology/pato/master/pato.owl">PATO: Phenotype and Trait Ontology</option>          
                       <option value="//raw.githubusercontent.com/PopulationAndCommunityOntology/pco/master/pco.owl">PCO: Population and Community Ontology</option>   
                       <option value="//raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl">PO: Plant Ontology (anatomical branch)</option> 
-                      <option value="//purl.obolibrary.org/obo/zfa.owl">ZFA: Zebrafish anatomy and development ontology</option> 
+                      <option value="data/zfa.owl">ZFA: Zebrafish anatomy and development ontology</option> 
 
                     </select>
                   </div>
@@ -123,7 +123,7 @@
                      <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="">
                   </div>
                   <div class="large-2 medium-2">
-                    <button id="ontology_url_button" class="button fi-web blue small" style="font-size:1.5rem;padding:.4rem 1rem;"></button>
+                    <button id="ontology_url_button" class="button" style="padding:.7rem .4rem;">Load</button>
                   </div>
                 </div>
               
@@ -140,7 +140,7 @@
               </div>
 
               <div class="callout primary">
-                <i class="fi-info blue" data-tooltip tabindex="2" title="Click on a listed parent or on a child listed in the pulldown menu to to focus on it."></i>
+                <i class="fi-info blue" data-tooltip tabindex="2" title="Click on a listed parent or on a child listed in the pulldown menu to focus on it."></i>
 
                 Navigate by term context
 

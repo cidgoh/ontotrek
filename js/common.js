@@ -122,7 +122,13 @@ function init_interface() {
     const url = $("#ontology_url").val()
     const url_ok = RE_URL.exec(url)
     if (url_ok)
-      load_data(url, do_graph)
+      try {
+        load_data(url, do_graph)
+      }
+      catch (err) {
+          alert("URL fetch didn't work. Note, URL must point directly to an owl rdf/xml file.  It can't be redirected to another location: " + err.message)
+          data = null;
+      }
     else
       alert(`The ontology URL: "${url}" is not valid`)
   })
@@ -425,53 +431,58 @@ function load_data(URL, callback) {
     xhttp.overrideMimeType("rdf/xml");
 
   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      try {
-        if (json_file_type) {
-          var data = JSON.parse(this.responseText)
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        try {
+          if (json_file_type) {
+            var data = JSON.parse(this.responseText)
 
-          // CONVERSION JSON data to work with new OWL format
-          Object.keys(data.specifications).forEach(function(id) {
-            var node = data.specifications[id]
-            node['rdfs:subClassOf'] = [node.parent_id]
-            if (node.label) node['rdfs:label'] = node.label
-            if (node.definition) node['IAO:0000115'] = node.definition
-            if (node.deprecated) node['owl:deprecated'] = node.deprecated
+            // CONVERSION JSON data to work with new OWL format
+            Object.keys(data.specifications).forEach(function(id) {
+              var node = data.specifications[id]
+              node['rdfs:subClassOf'] = [node.parent_id]
+              if (node.label) node['rdfs:label'] = node.label
+              if (node.definition) node['IAO:0000115'] = node.definition
+              if (node.deprecated) node['owl:deprecated'] = node.deprecated
 
-            if (node.other_parents) node['rdfs:subClassOf'].push(...node.other_parents)
-          })
+              if (node.other_parents) node['rdfs:subClassOf'].push(...node.other_parents)
+            })
 
-          data.term = data.specifications;
-          delete(data.specifications)
+            data.term = data.specifications;
+            delete(data.specifications)
 
-        }
-        else {
-          var store = $rdf.graph();
-          // Give it a full URL so OWL has proper file address
-          if (URL.indexOf('http') != 0)
-            URL = RE_URL.exec(document.location) + URL;
+          }
+          else {
+            var store = $rdf.graph();
+            // Give it a full URL so OWL has proper file address
+            if (URL.indexOf('http') != 0)
+              URL = RE_URL.exec(document.location) + URL;
 
-          try {
-            // Given url is used simply to identify ontology source.
-            // Good tips here: https://github.com/solid/solid-tutorial-rdflib.js/issues/4
-            $rdf.parse(this.responseText, store, URL, 'application/rdf+xml');
-            data = process_ontology(store);
-            var store = $rdf.graph();      
-          } 
+            try {
+              // Given url is used simply to identify ontology source.
+              // Good tips here: https://github.com/solid/solid-tutorial-rdflib.js/issues/4
+              $rdf.parse(this.responseText, store, URL, 'application/rdf+xml');
+              data = process_ontology(store);
+              var store = $rdf.graph();      
+            } 
 
-          catch (err) {
-              console.log(err)
-              alert("OWL couldn't parse" + err.message)
-              data = null;
+            catch (err) {
+                console.log(err)
+                alert("OWL couldn't parse" + err.message)
+                data = null;
+            }
           }
         }
-      }
-      catch(err) {
-        alert(err.message);
-        data = null;
-      }
+        catch(err) {
+          alert(err.message);
+          data = null;
+        }
 
-      callback(data )
+        callback(data )
+      }
+      else {
+        alert("There was a problem loading this URL! (If it redirects somewhere, that isn't allowed): " + URL)
+      }
     }
   }
   xhttp.open("GET", URL, true);
@@ -494,9 +505,10 @@ function init_search(data) {
       return (a.label === undefined || a.label.localeCompare(b.label))
     })
 
+    console.log(sorted_data)
     for (var item in sorted_data) {
       var node = sorted_data[item]
-      var option = $(`<option value="${node.id}">${node.label}</option>`);
+      var option = $(`<option value="${node.id}">${node['rdfs:label']}</option>`);
  
       // Search by any of the terms related synonyms
       var synonyms = []
@@ -918,15 +930,16 @@ function get_term_id_urls(parent_list) {
       const parent_id = parent_list[ptr]
       var parent = top.dataLookup[parent_id]
       if (parent) {
-        if (parent.label)
-          parent_label = parent.label
+        if (parent['rdfs:label'])
+          parent_label = parent['rdfs:label']
         else
           parent_label = parent_id
         parent_uris.push(`<span class="focus" onclick="node_focus(top.dataLookup['${parent_id}'])">${parent_label}</span>`)
       }
-      else {
+      // alternate parents may not be in current node graph
+      /* else {
         parent_uris.push('unrecognized: ' + parent_id)
-      }
+      } */
     }
   }
   return parent_uris.length ? parent_uris.join(', ') : null
@@ -942,7 +955,7 @@ function node_focus(node = {}) {
   parents = get_term_id_urls(node['rdfs:subClassOf'])
 
   // Label includes term id and links to 
-  if (node.label)
+  if (node['rdfs:label'])
     label = node['rdfs:label'] + (node['owl:deprecated'] ? ' <span class="deprecated">deprecated</span>' : '') + '<span class="label_id"> (' + node.id + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
   else
     label = null
@@ -974,7 +987,7 @@ function node_focus(node = {}) {
     for (var item in node.children) {
       const child = top.dataLookup[node.children[item]]
       if (child)
-        select_child.append(`<option value="${child.id}">${child.label}</option>`)
+        select_child.append(`<option value="${child.id}">${child['rdfs:label']}</option>`)
     }
   }
 
