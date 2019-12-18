@@ -505,7 +505,6 @@ function init_search(data) {
       return (a.label === undefined || a.label.localeCompare(b.label))
     })
 
-    console.log(sorted_data)
     for (var item in sorted_data) {
       var node = sorted_data[item]
       var option = $(`<option value="${node.id}">${node['rdfs:label']}</option>`);
