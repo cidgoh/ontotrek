@@ -192,6 +192,8 @@ function init() {
       depth_iterate();
     })
 
+  return graph;
+
 }
 
 
