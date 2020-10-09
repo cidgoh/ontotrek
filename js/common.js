@@ -96,7 +96,6 @@ if (auto_load) {
 
 
 function init_interface() {
-
   // Selection list of all node labels allows user to zoom in on one
   $("#ontology")
     .on('change', function(item){
@@ -186,9 +185,9 @@ function init_interface() {
       // It appears iterative algorithm doesn't work with num dimensions
       // because it fixes x,y,z of parent nodes.  Must switch to alternate
       // rendering algorithm, or relax x,y,z for nodes below a certain depth.
-      //Graph.numDimensions(GRAPH_DIMENSIONS)
+      Graph.numDimensions(GRAPH_DIMENSIONS)
       
-      //do_graph (top.rawData)
+      do_graph(top.rawData)
       //For rsome re
 
     }

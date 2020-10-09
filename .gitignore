@@ -105,3 +105,6 @@ venv.bak/
 
 # node compilation
 /node_modules/
+
+# vscode 
+.vscode/

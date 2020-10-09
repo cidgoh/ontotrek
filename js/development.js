@@ -123,7 +123,7 @@ function refresh_graph() {
 
 function init() {
 
-  return ForceGraph3D()(document.getElementById('3d-graph'))
+  var graph = ForceGraph3D({controlType: 'orbit'})(document.getElementById('3d-graph'))
 
     // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
     .forceEngine('d3')
@@ -180,6 +180,8 @@ function init() {
     .onEngineStop(stuff => {
       depth_iterate()
     })
+
+  return graph;
 
 }
 
@@ -302,22 +304,21 @@ function depth_iterate_exit() {
 
   $(document.body).css({'cursor' : 'default'});
 
- // Graph.d3Force('charge').strength(-100 ) // 
+  // Graph.d3Force('charge').strength(-100 ) // 
   // z coordinate reset to standard hierarchy
   for (item in top.builtData.nodes) {
     node = top.builtData.nodes[item]
-    // This rerduces crowdedness of labelling, otherwise labels are all on
+    // This reduces crowdedness of labelling, otherwise labels are all on
     // same plane.
-
-    //if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout)) {
-    //  node.fz = 0  //lookup_2d_z(node)
-    //}
-    //else {
+    if (GRAPH_DIMENSIONS == 2 && (node.id in top.layout)) {
+      node.fz = 0  //lookup_2d_z(node)
+    }
+    else {
       const z_randomizer = Math.random() * 20 - 10
       node.fz = node_depth(node) + z_randomizer
-    //}
+    }
 
-    // No need to have this note parrticipate in force directed graph now.
+    // No need to have this node participate in force directed graph now.
     if (node.children.length == 0) {
       node.fy = node.y;
       node.fx = node.x;
