@@ -234,8 +234,8 @@ function depth_iterate() {
         node.fx = parent.fx;
     }
 
-    //if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout))
-    //    node.fz = lookup_2d_z(node)+ 30
+    if (GRAPH_DIMENSIONS == 2 && !(node.id in top.layout))
+       node.fz = lookup_2d_z(node)+ 30
 
   }
 
@@ -331,7 +331,9 @@ function depth_iterate_exit() {
     node = top.BUILT_DATA.nodes[item]
     // This reduces crowdedness of labelling, otherwise labels are all on
     // same plane.
-    if (GRAPH_DIMENSIONS == 2 && (node.id in top.layout)) {
+    // if (GRAPH_DIMENSIONS == 2 && (node.id in top.layout)) {
+    if (GRAPH_DIMENSIONS == 2) {
+      console.log('test')
       node.fz = 0  //lookup_2d_z(node)
     }
     else {
