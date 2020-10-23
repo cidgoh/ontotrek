@@ -1619,6 +1619,28 @@ module.exports = _default;
 		if (magFilter === void 0) {
 			magFilter = LinearFilter;
 		}
+	}
+	return -1;
+};
+var $slice = callBound('String.prototype.slice');
+var toStrTags = {};
+var gOPD = require('es-abstract/helpers/getOwnPropertyDescriptor');
+var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
+if (hasToStringTag && gOPD && getPrototypeOf) {
+	forEach(typedArrays, function (typedArray) {
+		var arr = new global[typedArray]();
+		if (!(Symbol.toStringTag in arr)) {
+			throw new EvalError('this engine has support for Symbol.toStringTag, but ' + typedArray + ' does not have the property! Please report this.');
+		}
+		var proto = getPrototypeOf(arr);
+		var descriptor = gOPD(proto, Symbol.toStringTag);
+		if (!descriptor) {
+			var superProto = getPrototypeOf(proto);
+			descriptor = gOPD(superProto, Symbol.toStringTag);
+		}
+		toStrTags[typedArray] = descriptor.get;
+	});
+}
 
 		if (minFilter === void 0) {
 			minFilter = LinearMipmapLinearFilter;
@@ -2850,7 +2872,12 @@ module.exports = _default;
 					z = this._z,
 					w = this._w; // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
 
-			var cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
+if (debugUtil && debugUtil.debuglog) {
+  debug = debugUtil.debuglog('stream');
+} else {
+  debug = function debug() {};
+}
+/*</replacement>*/
 
 			if (cosHalfTheta < 0) {
 				this._w = -qb._w;
@@ -2870,7 +2897,8 @@ module.exports = _default;
 				return this;
 			}
 
-			var sqrSinHalfTheta = 1.0 - cosHalfTheta * cosHalfTheta;
+  if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (Array.isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
+}
 
 			if (sqrSinHalfTheta <= Number.EPSILON) {
 				var s = 1 - t;

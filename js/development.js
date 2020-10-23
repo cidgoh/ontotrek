@@ -55,7 +55,56 @@ const SYNONYM_FIELD = ["synonyms",
   "oboInOwl:hasBroadSynonym", 
   "oboInOwl:hasNarrowSynonym", 
   "oboInOwl:hasRelatedSynonym"
-];
+]
+
+function save(blob, filename) {
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+
+function saveString(text, filename) {
+
+  save(new Blob([text], { type: 'text/plain' }), filename);
+
+}
+
+function exportGLTF(input) {
+
+  var gltfExporter = new THREE.GLTFExporter();
+
+  var options = {
+    onlyVisible: true
+  };
+  gltfExporter.parse(input, function (result) {
+
+    if (result instanceof ArrayBuffer) {
+
+      saveArrayBuffer(result, 'scene.glb');
+
+    } else {
+
+      var output = JSON.stringify(result, null, 2);
+      // console.log(output);
+      saveString(output, 'scene.gltf');
+
+    }
+
+  }, options);
+
+}
+
+function do_graph(rawData) {
+  /*
+  Main function for loading a new data file and rendering a graph of it.
+
+  */
+  $(document.body).css({'cursor' : 'wait'});
 
 // Lookup table from node_id to Graph node
 dataLookup = {};
@@ -65,8 +114,16 @@ linkLookup = {};
 /*
   Main method for loading a new data file and rendering a graph of it.
 
-*/
-function do_graph() {
+  //Graph.linkDirectionalParticles(0)
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/bfo_nodes.json", false);
+  request.send(null)
+  var nodes = JSON.parse(request.responseText);
+  
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/bfo_links.json", false);
+  request.send(null)
+  var links = JSON.parse(request.responseText);
 
   if (top.RAW_DATA) {
 
@@ -78,16 +135,32 @@ function do_graph() {
 
     $(document.body).css({'cursor' : 'wait'});
 
-    setNodeReport(); // Clear out sidebar info
+  Graph.graphData({nodes:nodes, links:links})
 
-    // Usual case for GEEM ontofetch.py ontology term specification table:
-    // This creates top.BUILT_DATA
-    top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA);
-    $("#status").html(top.BUILT_DATA.nodes.length + " terms");
-    top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
-    init_search(top.BUILT_DATA);
+  // Incrementally adds graph nodes in batches until maximum depth reached
+  // if (data.nodes.length) {
 
-    top.GRAPH = init();
+  //     top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
+  //     top.NEW_NODES = []; // global so depth_iterate can see it
+
+  //     if (true) {
+  //       top.ITERATE = 1;
+  //       Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
+  //       Graph.graphData({nodes:[],links:[]})
+  //     }
+  //     else {
+  //       Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS*10) // initial setting
+  //       Graph.graphData({nodes:data.nodes,links:data.links})
+  //     }
+  // }
+  
+  /*
+  // Navigate to root BFO node if there is one. Slight delay to enable
+  // engine to create reference points.  Ideally event for this.
+  if('BFO:0000001' in top.dataLookup) {
+    setTimeout(function(){
+      node_focus(top.dataLookup['BFO:0000001']) 
+    }, 2000)
   }
 
 };
@@ -207,9 +280,12 @@ function depth_iterate() {
 
   */
   if (top.ITERATE > top.EXIT_DEPTH) {
-    if (top.GRAPH) {
-      top.GRAPH.pauseAnimation();
-    }
+    Graph.pauseAnimation()
+    top.NEW_NODES = []
+
+
+    // WHERE SHOULD THIS GO????
+    top.GRAPH = null
     return
   }
 
@@ -333,7 +409,6 @@ function depth_iterate_exit() {
     // same plane.
     // if (GRAPH_DIMENSIONS == 2 && (node.id in top.layout)) {
     if (GRAPH_DIMENSIONS == 2) {
-      console.log('test')
       node.fz = 0  //lookup_2d_z(node)
     }
     else {
@@ -383,6 +458,13 @@ function depth_iterate_exit() {
     nodes: nodes.concat(newNodes),
     links: links.concat(newLinks)
   });
+  // console.log(JSON.stringify(Graph.scene()))
+  // exportGLTF(Graph.scene())
+
+  // console.log(nodes)
+  // console.log(JSON.stringify(nodes))
+  // saveString(JSON.stringify(nodes), 'nodes.json')
+  // saveString(JSON.stringify(links), 'links.json')
 
   // Ensures no more iterations
   top.ITERATE = top.EXIT_DEPTH+1;
