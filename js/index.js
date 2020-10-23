@@ -1,6 +1,6 @@
-// THREE = require('three');
-// SpriteText = require('three-spritetext');
-// ForceGraph3D = require('3d-force-graph')
+THREE = require('three');
+SpriteText = require('three-spritetext');
+ForceGraph3D = require('3d-force-graph')
 fs = require('browserify-fs')
 /*
 const Graph = ForceGraph3D()

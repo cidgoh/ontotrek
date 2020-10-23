@@ -101,6 +101,7 @@ function init_interface() {
     .on('change', function(item){
       if (this.value > '') {
           load_data(this.value, do_graph)
+          // load_data(this.value, load_graph)
       }
     })
 
@@ -992,6 +993,7 @@ function node_focus(node = {}) {
   // Aim viewport camera at node from z dimension
   // Unfortunately camera animations cause it to loose its "UP" position.  
   // Solution?
+  console.log(node)
   if (node.x) {
 
     // Color assigned here but rendered color isn't actually affected until 
