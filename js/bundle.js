@@ -8667,6 +8667,7 @@ if (debugUtil && debugUtil.debuglog) {
 				_box$2.getCenter(center); // second, try to find a boundingSphere with a radius smaller than the
 				// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
 
+			return low + Math.floor( Math.random() * ( high - low + 1 ) );
 
 				var maxRadiusSq = 0;
 
@@ -15804,7 +15805,9 @@ if (debugUtil && debugUtil.debuglog) {
 				if (lineWidthAvailable) gl.lineWidth(width);
 				currentLineWidth = width;
 			}
-		}
+		},
+		useQuaternion: {
+			get: function () {
 
 		function setPolygonOffset(polygonOffset, factor, units) {
 			if (polygonOffset) {
@@ -15828,6 +15831,8 @@ if (debugUtil && debugUtil.debuglog) {
 			}
 		} // texture
 
+			}
+		}
 
 		function activeTexture(webglSlot) {
 			if (webglSlot === undefined) webglSlot = 33984 + maxTextures - 1;
@@ -16090,6 +16095,10 @@ if (debugUtil && debugUtil.debuglog) {
 			return 9729;
 		} //
 
+			}
+		},
+		shadowDarkness: {
+			set: function () {
 
 		function onTextureDispose(event) {
 			var texture = event.target;
@@ -17442,6 +17451,8 @@ if (debugUtil && debugUtil.debuglog) {
 			return cameraVR;
 		}; // Animation Loop
 
+// Utility Functions
+// ---------------------
 
 		var onAnimationFrameCallback = null;
 

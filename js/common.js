@@ -1024,6 +1024,7 @@ function setNodeReport(node = {}) {
   // Aim viewport camera at node from z dimension
   // Unfortunately camera animations cause it to loose its "UP" position.  
   // Solution?
+  console.log(node)
   if (node.x) {
 
     // Color assigned here but rendered color isn't actually affected until 
