@@ -50,6 +50,48 @@ const SYNONYM_FIELD = ["synonyms",
   "oboInOwl:hasRelatedSynonym"
 ]
 
+function save(blob, filename) {
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+
+function saveString(text, filename) {
+
+  save(new Blob([text], { type: 'text/plain' }), filename);
+
+}
+
+function exportGLTF(input) {
+
+  var gltfExporter = new THREE.GLTFExporter();
+
+  var options = {
+    onlyVisible: true
+  };
+  gltfExporter.parse(input, function (result) {
+
+    if (result instanceof ArrayBuffer) {
+
+      saveArrayBuffer(result, 'scene.glb');
+
+    } else {
+
+      var output = JSON.stringify(result, null, 2);
+      // console.log(output);
+      saveString(output, 'scene.gltf');
+
+    }
+
+  }, options);
+
+}
+
 function do_graph(rawData) {
   /*
   Main function for loading a new data file and rendering a graph of it.
@@ -66,6 +108,15 @@ function do_graph(rawData) {
   init_search(data) 
 
   //Graph.linkDirectionalParticles(0)
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/bfo_nodes.json", false);
+  request.send(null)
+  var nodes = JSON.parse(request.responseText);
+  
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/bfo_links.json", false);
+  request.send(null)
+  var links = JSON.parse(request.responseText);
 
   $("#status").html(top.builtData.nodes.length + " terms");
 
@@ -80,22 +131,24 @@ function do_graph(rawData) {
     .d3Force('center', null)
     .d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
 
+  Graph.graphData({nodes:nodes, links:links})
+
   // Incrementally adds graph nodes in batches until maximum depth reached
-  if (data.nodes.length) {
+  // if (data.nodes.length) {
 
-      top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
-      top.NEW_NODES = []; // global so depth_iterate can see it
+  //     top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
+  //     top.NEW_NODES = []; // global so depth_iterate can see it
 
-      if (true) {
-        top.ITERATE = 1;
-        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
-        Graph.graphData({nodes:[],links:[]})
-      }
-      else {
-        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS*10) // initial setting
-        Graph.graphData({nodes:data.nodes,links:data.links})
-      }
-  }
+  //     if (true) {
+  //       top.ITERATE = 1;
+  //       Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
+  //       Graph.graphData({nodes:[],links:[]})
+  //     }
+  //     else {
+  //       Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS*10) // initial setting
+  //       Graph.graphData({nodes:data.nodes,links:data.links})
+  //     }
+  // }
   
   /*
   // Navigate to root BFO node if there is one. Slight delay to enable
@@ -196,7 +249,7 @@ function depth_iterate() {
 
   */
   if (top.ITERATE > top.EXIT_DEPTH) {
-    Graph.stopAnimation()
+    Graph.pauseAnimation()
     top.NEW_NODES = []
 
 
@@ -307,13 +360,11 @@ function depth_iterate_exit() {
   // Graph.d3Force('charge').strength(-100 ) // 
   // z coordinate reset to standard hierarchy
   for (item in top.builtData.nodes) {
-    console.log(top.builtData.nodes)
     node = top.builtData.nodes[item]
     // This reduces crowdedness of labelling, otherwise labels are all on
     // same plane.
     // if (GRAPH_DIMENSIONS == 2 && (node.id in top.layout)) {
     if (GRAPH_DIMENSIONS == 2) {
-      console.log('test')
       node.fz = 0  //lookup_2d_z(node)
     }
     else {
@@ -363,6 +414,13 @@ function depth_iterate_exit() {
     nodes: nodes.concat(newNodes),
     links: links.concat(newLinks)
   });
+  // console.log(JSON.stringify(Graph.scene()))
+  // exportGLTF(Graph.scene())
+
+  // console.log(nodes)
+  // console.log(JSON.stringify(nodes))
+  // saveString(JSON.stringify(nodes), 'nodes.json')
+  // saveString(JSON.stringify(links), 'links.json')
 
   top.ITERATE = top.EXIT_DEPTH+1;
 
