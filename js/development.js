@@ -308,6 +308,7 @@ function depth_iterate() {
 
   */
   if (top.ITERATE > top.EXIT_DEPTH) {
+    //Graph.stopAnimation()
     Graph.pauseAnimation()
     top.NEW_NODES = []
 
