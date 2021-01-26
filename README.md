@@ -32,7 +32,8 @@ To update /js/bundle.js which needs latest 3d-force-graph, need to run
   browserify.org's "browserify" command. To load it (may need sudo su):
 
   > npm install -g browserify
-  > npm install uniq 
+  > npm install three // might need this
+  > npm install three-spritetext
 
 Then in /js folder, regenerate bundle.js based on super-basic index.js
 
