@@ -22,18 +22,19 @@ If you want to look at a particular ontology file that is not in the list, in th
 
 ## Building this from scratch
 
-This application for the mostpart relies only on javascript in your browser.  However, it loads the 3d-force-graph script which is contained inside bundle.js.  If for development reasons you want to upgrade bundle.js to the latest versions of 3d-force-graph etc. you will need to install the node.js npm environment.  Details of javascript and file generation are in /js/common.js. To summarise:
+This application for the mostpart relies only on javascript in your browser.  
 
-To update 3d-force-graph etc. run this in OntoTrek root folder:
-  
-  > npm update 
+Issue is as of Jan 26 2020 that 3d-force-graph isn't compiling that simply, so currently in index.html we're including one of its files as a direct reference to a file downloaded from //unpkg.com/3d-force-graph
 
-To update /js/bundle.js which needs latest 3d-force-graph, need to run 
+1) Clone the 3d-force-graph repo separately, and npm install or update it.
+If that doesn't work that isn't a problem. The needed files are still there for browserify
+
+However, it loads the 3d-force-graph script which is contained inside bundle.js.  If for development reasons you want to upgrade bundle.js to the latest versions of 3d-force-graph etc. you will need to install the node.js npm environment.  Details of javascript and file generation are in /js/common.js. To summarise:
+
+To update /js/bundle.js which needs latest 3d-force-graph, you need to run 
   browserify.org's "browserify" command. To load it (may need sudo su):
 
   > npm install -g browserify
-  > npm install three // might need this
-  > npm install three-spritetext
 
 Then in /js folder, regenerate bundle.js based on super-basic index.js
 
