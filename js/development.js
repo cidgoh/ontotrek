@@ -4,7 +4,7 @@ development2.js interface for 3d-force-graph
 ******************************************************************************/
 
 var RENDER_QUICKER = false;
-var RENDER_DEPTH = 8;
+var RENDER_DEPTH = 50;
 var RENDER_GALAXY = false;
 var RENDER_DEPRECATED = false;
 var RENDER_LABELS = true;
