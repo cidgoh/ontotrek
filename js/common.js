@@ -81,8 +81,8 @@ a single root.
 
 ******************************************************************************/
 
-init_search() 
-init_interface()
+init_search();
+init_interface();
    
 $(document).foundation()
 
@@ -110,7 +110,7 @@ function init_interface() {
   // Selection list of all node labels allows user to zoom in on one
   $("#label_search").on('change', function(item){
     if (this.value != '')
-      node_focus(top.dataLookup[this.value])
+      setNodeReport(top.dataLookup[this.value])
   })
 
   //$("#ontology_url").on('change', function(item) {
@@ -123,7 +123,7 @@ function init_interface() {
     const url_ok = RE_URL.exec(url)
     if (url_ok)
       try {
-        load_data(url, do_graph)
+        load_data(url, do_graph);
       }
       catch (err) {
           alert("URL fetch didn't work. Note, URL must point directly to an owl rdf/xml file.  It can't be redirected to another location: " + err.message)
@@ -135,77 +135,73 @@ function init_interface() {
 
   // Top level setting controls whether shortcuts on rendering speed things up
   $("#render_deprecated").on('change', function(item) {
-    RENDER_DEPRECATED = this.checked
-    if (top.Graph) do_graph (top.rawData) // Recalculate dataset with deprecated terms
+    RENDER_DEPRECATED = this.checked;
+    do_graph(); // Recalculate dataset with deprecated terms
   })
 
   // upper level ontology edge coloring
-  $("input[name='ulo_edge_coloring']").on('change', function(item) {
-    RENDER_ULO_EDGE = (this.value == 'true')
-    if (top.Graph) {
-      //refresh_graph();
-      do_graph (top.rawData)
+  $("input[name='ulo_edge_coloring']").on('click', function(item) {
+    RENDER_ULO_EDGE = (this.value == 'true');
+    if (top.GRAPH) {
+      top.GRAPH.refresh();
+      console.log(RENDER_ULO_EDGE)
     }
   })
 
   // Top level setting controls whether shortcuts on rendering speed things up
   $("#render_slices").on('change', function(item) {
-    RENDER_SLICES = this.checked
-    if (top.Graph) do_graph (top.rawData) // Recalculate dataset with deprecated terms
+    RENDER_SLICES = this.checked;
+    do_graph(); // Recalculate dataset with deprecated terms
   })
 
   $("#thickness_control").on('change', function(item) {
     GRAPH_LINK_WIDTH = parseFloat(this.value)
-    if (top.Graph) {
-      refresh_graph();
+    if (top.GRAPH) {
+      top.GRAPH.refresh();
     }
   })
 
   // Top level setting controls whether shortcuts on rendering speed things up
   $("#render_quicker").on('change', function(item) {
     RENDER_QUICKER = this.checked
-    if (top.Graph) {
-      refresh_graph();
+    if (top.GRAPH) {
+      top.GRAPH.refresh();
     }
   })
 
   $("#render_labels").on('change', function(item) {
     RENDER_LABELS = this.checked
-    refresh_graph();
+    top.GRAPH.refresh();
   })
 
   $("#render_other_parents").on('change', function(item) {
-    RENDER_OTHER_PARENTS = this.checked
-    do_graph (top.rawData)
+    RENDER_OTHER_PARENTS = this.checked;
+    do_graph();
     // FUTURE: Just toggle visibility via WEBGL
   })
 
   $("#render_dimensions").on('change', function(item) {
     GRAPH_DIMENSIONS = parseInt(this.value)
-    if (top.Graph) {
+    if (top.GRAPH) {
       // It appears iterative algorithm doesn't work with num dimensions
       // because it fixes x,y,z of parent nodes.  Must switch to alternate
       // rendering algorithm, or relax x,y,z for nodes below a certain depth.
-      Graph.numDimensions(GRAPH_DIMENSIONS)
-      
-      do_graph(top.rawData)
-      //For rsome re
+      top.GRAPH.numDimensions(GRAPH_DIMENSIONS);
+      do_graph();
 
     }
   })
 
   $("#render_layer_depth").on('change', function(item) {
     GRAPH_NODE_DEPTH = parseInt(this.value)
-    if (top.Graph) {
-      do_graph (top.rawData)
-    }
+    do_graph();
   })
 
   /* / Galaxy or hierarchic view
   $("#render_galaxy").on('change', function(item) {
     RENDER_GALAXY = this.checked
-    if (top.Graph) {
-      let { nodes, links } = Graph.graphData();
+    if (top.GRAPH) {
+      let { nodes, links } = top.GRAPH.graphData();
       for (item in nodes) {
         var node = nodes[item]
         if (!top.layout[node.id]) {
@@ -216,20 +212,20 @@ function init_interface() {
             node.fz = node_depth(node);
         }
       }
-      Graph.graphData({"nodes":nodes, "links":links})
+      top.GRAPH.graphData({"nodes":nodes, "links":links})
     }
     })*/
 
   // Controls depth of nodes being rendered.
   $("#depth_control").on('change', function(item) {
     RENDER_DEPTH = parseInt(this.value)
-    if (top.Graph) do_graph (top.rawData)
+    do_graph();
   })
 
   // Selection list of all node labels allows user to zoom in on one
   $("#select_child").on('change', function(item){
     if (this.value != '')
-      node_focus(top.dataLookup[this.value])
+      setNodeReport(top.dataLookup[this.value])
   })
 
   // Trace works on ROBOT "explain" Markdown format report.
@@ -277,20 +273,17 @@ function init_interface() {
 
       // There are new node or links to add
       if (new_nodes.length || new_links.length) {
-        const { nodes, links } = top.Graph.graphData();
+        const { nodes, links } = top.GRAPH.graphData();
         nodes.push(...new_nodes);
         links.push(...new_links);
-        Graph.graphData({
-          'nodes': nodes,
-          'links': links
-        });
+        top.GRAPH.graphData({'nodes': nodes,'links': links});
 
       }
 
-      refresh_graph(); // Trigger update of 3d objects in scene
+      top.GRAPH.refresh();// Trigger update of 3d objects in scene
 
       if (focus)
-        node_focus()
+        setNodeReport()
     }
   })
 }
@@ -355,29 +348,29 @@ function make_node(new_nodes, node_id, label) {
   // Used in Markdown to triple conversion
   // FUTURE: Code z-axis based on depth call.
   node = {
-    'id': node_id,
-    'rdfs:label': label,
+    'id':             node_id,
+    'rdfs:label':     label,
     'rdfs:subClassOf': [],
-    'parent_id': null,
-    'IAO:0000115': '',
-
-    'color':      '#FFF', 
-    'depth':      4, // This just gives them a bigger but not giant label
-    'children':   []
-  }
-  new_nodes.push(node)
-  top.dataLookup[node.id] = node
+    'parent_id':      null,
+    'group_id':       null,
+    'IAO:0000115':    '',
+    'color':          '#FFF', // Default color by ontology
+    'depth':          4, // Initializes a bigger but not giant label
+    'children':       []
+  };
+  new_nodes.push(node);
+  top.dataLookup[node.id] = node;
   return node
 }
 
-function get_link(new_links, source, target, label, hex_color, width) {
+function get_link(new_links, source, target, radius, label, highlight_color) {
   /* Highlights link between source_id node and target_id node.
   Makes a link if one doesn't exist and adds to new_links.
   */
 
   var link = top.linkLookup[`${source.id}-${target.id}`]
   if (!link) {
-    link = set_link(new_links, source.id, target.id, label, hex_color, width) // + other=true ?
+    link = set_link(new_links, source, target, radius, label, highlight_color);
   }
   return link
   /* This is direct access code to link that has already been entered into
@@ -400,7 +393,7 @@ function highlite_node(node, hex_color = 0xFF0000) {
   build of graph.
   */
 
-  /* Works temporarily until next Graph.Refresh()
+  /* Works temporarily until next top.GRAPH.Refresh()
   if (node && node.marker.material) {
 
     node.marker.material.color.setHex(hex_color);  // e.g. 0xFF0000
@@ -424,7 +417,7 @@ function load_data(URL, callback) {
   //Access-Control-Allow-Origin
   //* header value 
   // FOR WEBSERVER???
-  var json_file_type = URL.toLowerCase().indexOf('json') > 0
+  var json_file_type = URL.toLowerCase().indexOf('json') > 0;
   if (json_file_type)
     xhttp.overrideMimeType("application/json");
   else
@@ -478,7 +471,8 @@ function load_data(URL, callback) {
           data = null;
         }
 
-        callback(data )
+        top.RAW_DATA = data;
+        callback()
       }
       else {
         alert("There was a problem loading this URL! (If it redirects somewhere, that isn't allowed): " + URL)
@@ -549,47 +543,29 @@ function init_ontofetch_data(rawData) {
 
   */
 
-  // Lookup table from node_id to Graph node
-  top.dataLookup = {}
-  // Lookup table from "[link source_id]-[link target_id]" to Graph link
-  top.linkLookup = {}
+  top.dataLookup = {};
+  top.linkLookup = {};
 
-  var data = {
-    'nodes':[], 
-    'links':[]
-  }
-  top.builtData = data
+  var data = {'nodes':[], 'links':[]};
 
   if (!rawData)
     return data;
 
-  //var node_lookup = {}
-  var legend = {}
   // 1st pass does all the nodes.
   for (var item in rawData.term) {
     var node = rawData.term[item];
-    if (!node['owl:deprecated'] || RENDER_DEPRECATED) { // node.deprecated
+    if (!node['owl:deprecated'] || RENDER_DEPRECATED) {
       node.children = [];
-      var prefix = get_term_prefix(node.id);
-      // Stores a count of each prefix
-      legend[prefix] = prefix in legend ? legend[prefix]+1 : 1;
-
-      if (prefix in prefix_color_mapping){
-        node.color = colors[prefix_color_mapping[prefix].color];
-
-      }
-      else {
-        console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id)
-        node.color = '#F00'
-      }
-      node.depth = 0;
+      node.color =    null;
+      node.depth =    0;
+      node.group_id = null;
+      node.prefix = get_term_prefix(node.id);
       set_node_label(node);
       data.nodes.push(node);
-      //node_lookup[node.id] = node
-      top.dataLookup[node.id] = node
+      top.dataLookup[node.id] = node;
 
-      var ancestors = [node]
-      var focus = node
+      var ancestors = [node];
+      var focus = node;
       while (focus.parent_id) {
         if (focus.id == focus.parent_id) {
           console.log('ERROR: ontology term has itself as parent:' + focus.id)
@@ -597,57 +573,43 @@ function init_ontofetch_data(rawData) {
           break;
         }
         if (!rawData.term[focus.parent_id]) {
-          focus.depth = 1
+          focus.depth = 1;
           break;
         }
         
-        focus = rawData.term[focus.parent_id]
+        focus = rawData.term[focus.parent_id];
 
         if (focus.depth) { // already calculated depth.
           break;
         }
         if (!focus.parent_id) {
-          focus.depth = 1
+          focus.depth = 1;
           break;
         }
-        ancestors.push(focus)
+        ancestors.push(focus);
       }
       // focus now has depth to convey to all ancestors
       // Ancestors are in reverse order, from shallowest to deepest.
       // Bizarrely, ptr is a string if using "(ptr in ancestors)" !
       for (var ptr = 0; ptr < ancestors.length; ptr ++) {
         // Don't use ancestor = ancestors.pop(); seems to intefere with data.nodes ???
-        var ancestor = ancestors[ancestors.length - ptr - 1] 
-        ancestor.depth = focus.depth + ptr + 1
+        var ancestor = ancestors[ancestors.length - ptr - 1];
+        ancestor.depth = focus.depth + ptr + 1;
       }
     }
 
   }
 
-  // Render legend for node coloring
-  $("#node_legend").empty();
-  var legend_sorted = Object.keys(legend).sort();
-  if (legend_sorted.length) 
-    $("#node_legend").append('Node colouring<br/>');
-  for (var ptr in legend_sorted) {
-    var prefix = legend_sorted[ptr];
-    var color = prefix_color_mapping[prefix] ? prefix_color_mapping[prefix].color : null;
-
-    $("#node_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[prefix]}</div>
-      <div class="legend_item">${prefix}</div>
-      <br/>`);
-  }
-
   // To support the idea that graph can work on top-level nodes first
   data.nodes.sort(function(a,b) { return (a.depth - b.depth) })
 
-  if (RENDER_DEPTH != 50) 
-    data.nodes = data.nodes.filter(n => (n.depth <= RENDER_DEPTH)) ; // Remove deeper nodes
+  // If custom render depth chosen, chop nodes deeper than that. 
+  if (RENDER_DEPTH != 50) {
+    data.nodes = data.nodes.filter(n => (n.depth <= RENDER_DEPTH)) ; 
+  }
 
   // Establish lookup table for all nodes
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
-
-  var legend = {};
 
   // 2nd pass does LINKS organized by depth, i.e. allowing inheritance of properties:
   for (var item in data.nodes) {
@@ -656,77 +618,59 @@ function init_ontofetch_data(rawData) {
     node.radius = Math.pow(2, 7-node.depth); // # of levels
 
     // Any node which has a layout record including custom color, gets group_id = itself.
-    if (RENDER_ULO_EDGE) {
-      if (top.layout[node.id] && top.layout[node.id].color) {
-        node.group_id = node.id;
-        legend[node.group_id] = 0;
-      }
-    }
+    if (top.layout[node.id]) {
+      node.group_id = node.id;
 
+      // Color by layout overrides all
+      var layout_group = top.layout[node.id];
+      if (layout_group.color) {
+        node.color = top.colors[layout_group.color];
+      }
+    };
+
+    // Otherwise node.group is inherited from parent 
     if (node.parent_id) {
       const parent = top.dataLookup[node.parent_id];
       if (parent) {
-        // Upper level ontology edge color takes cue from parent node
-        if (RENDER_ULO_EDGE) {
-          if (!node.group_id && parent.group_id) {
-            node.group_id = parent.group_id
-          }
-          legend[parent.group_id] += 1 // This node only counts in parent's category
-          var group = top.layout[parent.group_id]
-          var color = group ? group.color : node.color;
+        set_link(data.links, parent, node, node.radius);
+
+        if (!node.group_id  && parent.group_id) {
+          node.group_id = parent.group_id;
         }
-        else 
-          // Color of edge leading to node is color of node's ontology prefix.
-          var color = node.color;
-
-        set_link(data.links, parent.id, node.id, '', color, node.radius)
-
       }
     }
-  }
 
-  // Render legend for edge coloring
-  $("#edge_legend").empty()
-  if (RENDER_ULO_EDGE) {
-    var legend_sorted = Object.keys(legend).sort()
-    if (legend_sorted.length) 
-      $("#edge_legend").append('Edge colouring<br/>')
-    for (var ptr in legend_sorted) {
-      var group_id = legend_sorted[ptr];
-      var group = top.dataLookup[group_id];
-      if (group && legend[group_id] > 0) {
-        var layout_group = top.layout[parent.group_id]
-        var color = top.colors[top.layout[group_id].color];
-        $("#edge_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[group_id]}</div>
-          <div class="legend_item">${group.label}</div>
-          <br/>`
-        )
-      }
-
+    // Color by ontology
+    if (node.color === null) {
+      node.color = getOntologyColor(node);
     }
+
   }
+
 
   // Experimental: show 2ndary parents in ORANGE
   // 3rd pass does secondary parent LINKS which could be to shallower nodes
   // than parent, or could be to deeper nodes than parent.  
   // Future: ensure primary parent is always shallowest?
   for (var item in data.nodes) {
-    const node = data.nodes[item];
+    var node = data.nodes[item];
 
-    // Establish 2ndary (multihomed) to other parents
-    if (node['rdfs:subClassOf']) 
+    // Establish 2ndary (multihomed) to OTHER parents (why ptr=1)
+    if (node['rdfs:subClassOf']) {
       for (var ptr = 1; ptr < node['rdfs:subClassOf'].length; ptr ++) {
-        const parent = top.dataLookup[node['rdfs:subClassOf'][ptr]];
-        if (parent)
+        const other_child = node['rdfs:subClassOf'][ptr];
+        const parent = top.dataLookup[other_child];
+        if (parent) {
           // Not sure why creating a node here causes layout to go wonky.
           //make_node(data.nodes, parent_id, 'Unknown label')
           //
           // "other: true" Signals that this needs to be handled by final pass in
           // depth_iterate() 
-          set_link(data.links, parent.id, node.id, '', '#FFA500', node.radius, true );
+          set_link(data.links, parent, node, node.radius, '', '#FFA500', true);
+        }
       }
+    }
   }
-
 
   if (RENDER_DEPTH != 50) {
     // Chop link content off by depth that user specified.
@@ -734,9 +678,76 @@ function init_ontofetch_data(rawData) {
     data.links = data.links.filter(l => top.dataLookup[l.source] && top.dataLookup[l.target]); 
   }
 
-  data.nodes = preposition_nodes(data.nodes)
-  top.builtData = data
+  data.nodes = preposition_nodes(data.nodes);
+
   return data
+}
+
+function getOntologyColor(node) {
+  var prefix = get_term_prefix(node.id);
+  //console.log(node)
+  if (prefix in prefix_color_mapping){
+    return colors[prefix_color_mapping[prefix].color];
+  }
+
+  console.log ('Missing color for ontology prefix ' + prefix + ' in ' + node.id);
+  return 'red'
+}
+
+/*
+  Redraw legend according to top.BUILT_DATA.nodes
+*/
+function set_legend() {
+
+  var legend = {};
+
+  for (var item in top.BUILT_DATA.nodes) {
+    var node = data.nodes[item];
+    var prefix = get_term_prefix(node.id);
+    // Stores a count of each prefix
+    legend[prefix] = prefix in legend ? legend[prefix]+1 : 1;
+
+    // NODES BY PREFIX VS NODES BY GROUP
+    // This node only counts in parent's category
+    if (legend[node.group_id])
+      legend[node.group_id] += 1;
+    else
+      legend[node.group_id] = 1;
+  };
+
+  // Render legend for coloring by ontology or ULO
+  $("#node_legend, #edge_legend").empty();
+
+  if (RENDER_ULO_EDGE) {
+    $("#edge_legend").append('ULO colouring<br/>')
+  }
+  else {
+    $("#node_legend").append('Node colouring<br/>');
+  }
+
+  var legend_sorted = Object.keys(legend).sort();
+  for (var ptr in legend_sorted) {
+    var group = top.dataLookup[group_id];
+    var prefix = legend_sorted[ptr];
+    var color = prefix_color_mapping[prefix] ? prefix_color_mapping[prefix].color : null;
+
+    $("#node_legend").append(
+      `<div class="legend_color" style="background-color:${color}">${legend[prefix]}</div>
+      <div class="legend_item">${prefix}</div>
+      <br/>`
+    );
+
+
+    if (group && legend[group_id] > 0) {
+      var layout_group = top.layout[parent.group_id];
+      var color = top.colors[top.layout[group_id].color];
+      $("#edge_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[group_id]}</div>
+        <div class="legend_item">${group.label}</div>
+        <br/>`
+      );
+    }
+
+  }
 }
 
 
@@ -752,27 +763,35 @@ function set_node_label(node) {
       node.short_label = node.short_label.split('*',1)[0] + ' ...'
   }
   else {
-    node.label = node.id
-    //node['rdfs:label'] = node.id
-    node.short_label = node.id
+    node.label = node.id;
+    node.short_label = node.id;
   }
 }
 
+/* Creates a new link in given links array
+@param source node
+@param target node
+@param radius integer
+@param label string [of node, not used]
+@parap color: string Highlight color of link
+*/
+function set_link(links, source, target, radius, label='', color=null, other=false) {
 
-function set_link(links, source_id, target_id, label = '', color, width, other=false) {
+  // Issue: after this is rendered, seems to switch source,target to objects?
   var link = { 
-    source: source_id, 
-    target: target_id, 
+    source: source.id, 
+    target: target.id, 
     label: label,
-    color: color, // Hex or string
-    width: width,
+    highlight_color: color, // Hex or string
+    width: radius,
     other: other
-  }
-  links.push(link)
-  top.dataLookup[source_id].children.push(target_id)
-  top.linkLookup[source_id + '-' + target_id] = link
+  };
 
-  return link
+  links.push(link);
+  top.dataLookup[source.id].children.push(target.id);
+  top.linkLookup[source.id + '-' + target.id] = link;
+
+  return link;
 }
 
 function get_node_radius(node, fancyLayout) {
@@ -854,33 +873,42 @@ function render_node(node) {
   }
 
 
-  // HACK for background sized to text; using 2nd sprite as it always faces camera.
-  var spriteMap = new THREE.TextureLoader().load( "img/whitebox.png" );
-  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0x808080 , opacity : 0.5} );
-
-
+  // HACK for background sized to text; using 2nd semitransparent grey sprite
+  // as it always faces camera. However, latest 3d-force graph is causing
+  // flicker for scale-reduced label and background sprite
+  
   if (RENDER_LABELS) {
 
     // The text layer
-    var depth_factor = node.depth > 4 ? 2 : 10 - node.depth*2 // 0->2; 1->1.75, 2-> 1.5, 3-> 1.25, 4-> 1.
+    // factor function: 0->2; 1->1.75, 2-> 1.5, 3-> 1.25, 4-> 1.
+    var depth_factor = node.depth > 4 ? 2 : 10 - node.depth*2;
+    // See https://github.com/vasturiano/three-spritetext for more options
     var sprite = new SpriteText(node.short_label);
-    sprite.color = "#FAEBD7"//node.color;
+    var z_offset = nodeRadius + depth_factor*2;
+
+    sprite.color = top.SPRITE_FONT_COLOR;
     sprite.textHeight = 8 * depth_factor;
-    sprite.fontSize = 20 // scale takes care of root stuff?
-    sprite.position.set( 0, fancyLayout ? 5 : 0, nodeRadius + depth_factor*2 ); //vertical offset.
+    // resolution of text, up to 90 (= slow)
+    sprite.fontSize = 20; 
 
-    // Background layer
+    sprite.position.set( 0, fancyLayout ? 5 : 0, z_offset); //vertical offset.
+
+    // Semi-transparent background layer for fancyLayout
     if (fancyLayout) {
-      var height = sprite._canvas.height * depth_factor/2
-      var width = sprite._canvas.width * depth_factor
-
-      const sprite2 = new THREE.Sprite( spriteMaterial );
-      // z index proportional to node globe radius.; -1 to move it behind label
-      sprite2.position.set( 0, 5, nodeRadius + depth_factor * 2 ); 
-      sprite2.scale.set(width/2, height , 1); // was height = 10
+      const sprite2 = new THREE.Sprite( SPRITE_MATERIAL );
+      // z index proportional to node globe radius.; -5 to move it behind label
+      sprite2.position.set( 0, 5, z_offset - 5 );
+      var height = sprite._canvas.height * depth_factor/2;
+      var width = sprite._canvas.width * depth_factor;
+      sprite2.scale.set(width/2, height , 1);
       group.add( sprite2 );
     }
-    group.add( sprite ); // Draw label "on top" of sprite? 
+    else {
+      sprite.backgroundColor = 'gray';
+      sprite.padding = 5;
+    }
+
+    group.add( sprite );
   }
 
   return group;
@@ -888,7 +916,7 @@ function render_node(node) {
 }
 
 function get_term_prefix(entity_id) {
-  return entity_id ? entity_id.split(':')[0].split('#')[0] : null
+  return entity_id ? entity_id.split(':')[0].split('#')[0] : null;
 }
 
 function lookup_url(term_id, label) {
@@ -907,7 +935,7 @@ function lookup_url(term_id, label) {
   else {
   // A prefix was recognized
     ols_lookup_URL = `https://www.ebi.ac.uk/ols/ontologies/${prefix}/terms?iri=`
-    term_url = top.rawData['@context'][prefix]
+    term_url = top.RAW_DATA['@context'][prefix]
     if (!term_url) {
       term_url = ONTOLOGY_LOOKUP_URL
     }
@@ -933,7 +961,7 @@ function get_term_id_urls(parent_list) {
           parent_label = parent['rdfs:label']
         else
           parent_label = parent_id
-        parent_uris.push(`<span class="focus" onclick="node_focus(top.dataLookup['${parent_id}'])">${parent_label}</span>`)
+        parent_uris.push(`<span class="focus" onclick="setNodeReport(top.dataLookup['${parent_id}'])">${parent_label}</span>`)
       }
       // alternate parents may not be in current node graph
       /* else {
@@ -944,20 +972,22 @@ function get_term_id_urls(parent_list) {
   return parent_uris.length ? parent_uris.join(', ') : null
 }
 
-
-function node_focus(node = {}) {
-  /*
-    Render details about node in sidebar, and position camera to look at
-    node from same vertical level.
-  */ 
+/*
+  Render details about node in sidebar, and position camera to look at
+  node from same vertical level.
+  An empty node parameter causes sidebar information to be cleared out.
+*/ 
+function setNodeReport(node = {}) {
 
   parents = get_term_id_urls(node['rdfs:subClassOf'])
 
   // Label includes term id and links to 
-  if (node['rdfs:label'])
+  if (node['rdfs:label']) {
     label = node['rdfs:label'] + (node['owl:deprecated'] ? ' <span class="deprecated">deprecated</span>' : '') + '<span class="label_id"> (' + node.id + ' ' +lookup_url(node.id, 'OntoBee' ) + ') </span>'
-  else
-    label = null
+  }
+  else {
+    label = null;
+  }
   // <img src="img/link_out_20.png" border="0" width="16">
   $("#parents").html(parents || '<span class="placeholder">parent(s)</span>');
   $("#label").html(label || '<span class="placeholder">label</span>');
@@ -969,12 +999,12 @@ function node_focus(node = {}) {
   if (node.ui_label)
     $("#ui_label").show().html(node.ui_label);
   else
-    $("#ui_label").hide()
+    $("#ui_label").hide();
 
   if (node.ui_definition)
     $("#ui_definition").show().html(node.ui_definition);
   else
-    $("#ui_definition").hide()
+    $("#ui_definition").hide();
 
   var select_child = $("#select_child")
   select_child.empty()
@@ -1011,8 +1041,8 @@ function node_focus(node = {}) {
       }
     }
 
-    Graph.cameraPosition(
-      {x: node.x+500, y: node.y, z: node.z+50}, // new position  + CAMERA_DISTANCE/2 
+    top.GRAPH.cameraPosition(
+      {x: node.x, y: node.y - 500, z: node.z+50}, // new position  + CAMERA_DISTANCE/2 
       node, // lookAt ({ x, y, z })  
       4000  // 4 second transition duration
     )
@@ -1020,10 +1050,3 @@ function node_focus(node = {}) {
   }
 }
 
-
-function set_directional_particles(){
-  // UNUSED: NOT using force graph's directional particles right now
-  // Too much overhead for particles on larger graphs 
-  Graph.linkDirectionalParticles( (data.nodes.length > 4000 || RENDER_QUICKER) ? 0 : GRAPH_PARTICLES)
-
-}

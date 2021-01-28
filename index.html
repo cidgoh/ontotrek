@@ -184,18 +184,11 @@
                 <div class="grid-x grid-padding-x">
 
                   <div class="large-12 medium-12 cell">
-                    <i class="fi-info blue" data-tooltip tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and Basic Formal Ontology terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select BFO domain to have edges colored by occurent, continuant, process, etc."></i>
+                    <i class="fi-info blue" data-tooltip tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and Basic Formal Ontology terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select Upper Level Ontology (ULO) branch to have edges colored by occurent, continuant, process, etc."></i>
                     <label>Color edges by</label>
                     <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">Term source</label> &nbsp; &nbsp; 
-                    <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">BFO branch</label>
+                    <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">ULO branch</label>
                   </div>
-                  <!--
-                  <div class="large-6 medium-6 cell">
-                    <label>Color nodes by</label>
-                    <input type="radio" name="node_coloring" value="Red" id="node_coloring_onto"><label for="node_coloring_onto">ontology</label><br/>
-                    <input type="radio" name="node_coloring" value="Blue" id="node_coloring_bfo"><label for="node_coloring_bfo">BFO domain</label>
-                  </div>
-                  -->
                 </div>
               </div>
 
@@ -234,7 +227,17 @@
                   <span class="show-for-sr">render wireframe</span>
                 </label>
               </div>
-              <label for="render_quicker"> Show a wireframe view (skinny edges, no label backgrounds) for all but upper level edges. This speeds rendering.</label>
+              <label for="render_quicker"> Show a wireframe view (skinny edges, no label backgrounds) for all but ULO.</label>
+              <br clear="both"/>
+
+
+              <div class="switch float-left">
+                <input class="switch-input" id="render_slices" type="checkbox" name="render_slices">
+                <label class="switch-paddle" for="render_slices">
+                  <span class="show-for-sr">render slices</span>
+                </label>
+              </div>
+              <label for="render_slices"> Ontology branches rendered as vertical slice(s).</label>
               <br clear="both"/>
 
               <select id="render_dimensions" class="float-left">
@@ -277,27 +280,15 @@
                 <option value="50">50 - shallow</option>
               </select>
               <label for="render_layer_depth" class="middle">depth of each layer</label>
-
-
-              <div class="switch float-left">
-                <input class="switch-input" id="render_slices" type="checkbox" name="render_slices">
-                <label class="switch-paddle" for="render_slices">
-                  <span class="show-for-sr">render slices</span>
-                </label>
-              </div>
-              <label for="render_slices"> Ontology branches rendered as vertical slice(s). Nice in ULO context.</label>
               <br clear="both"/>
               
-
             </div>
-
-
 
             <!-- **************************** LEGEND ************************ -->
             <div class="tabs-panel" id="panel_legend">
               <div class="grid-x grid-padding-x">
-                  <div id="edge_legend">Select an ontology to view it; a legend of node and edge colors will be displayed here</div>
-                  <div id="node_legend"></div>
+                <div id="edge_legend">Select an ontology to view it; a legend of node and edge colors will be displayed here</div>
+                <div id="node_legend"></div>
               </div>
             </div>
 
@@ -361,12 +352,9 @@
     <!-- <script src="js/jquery-3.3.1.slim.min.js"></script> -->
     <!-- customized version of chosen.js that looks for synonyms too -->
     <script src="js/chosen/chosen.jquery.min.js"></script>
-    <!-- <script src="js/bundle.js"></script> -->
-  
-    <script src="https://unpkg.com/3d-force-graph"></script>
-    <script src="https://unpkg.com/three"></script>
-    <script src="https://unpkg.com/three-spritetext"></script>
-
+    <script src="js/bundle.js"></script>
+    <!-- Fetched from: script src="//unpkg.com/3d-force-graph"></script -->    
+    <script src="js/3d-force-graph.min.js"></script>
     <script src="js/lookup_tables.js"></script>
     <script src="js/development.js"></script>
     <script src="js/owl.js"></script>
