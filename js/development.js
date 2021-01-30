@@ -136,24 +136,32 @@ function init() {
     // CAREFUL! THIS ITERATES AND SEEMS TO CHANGE NODE source / target
     // from id to object.
     .linkColor(function(link) {
+      var target = link.target;
+
       if (link.highlight_color)
         return link.highlight_color;
 
-      if (top.RENDER_ULO_EDGE == true) {
+      // only happens on post-first-render, so link.target established as object
+      if (top.RENDER_ULO_EDGE === true) {
 
         var group = top.dataLookup[link.target.group_id];
-
         if (group && group.color) {
           return group.color;
         };
       }
 
-      // used for highlighting ULO when not rendering by ULO branch color
-      if (link.target.prefix == 'BFO') {
-        return getOntologyColor(top.dataLookup[link.target.id]);
+      //link.target itself is actually string id on first pass.
+      if (!link.target.prefix) {
+        // convert to object
+        target = top.dataLookup[link.target];
       }
 
-      return link.target.color;
+      // used for ULO as ontology color when not rendering by ULO branch color
+      if (target.prefix == 'BFO') {
+        return getOntologyColor(top.dataLookup[target.id]);
+      }
+
+      return target.color;
     })
 
     .linkResolution(3) // 3 sided, i.e. triangular beam

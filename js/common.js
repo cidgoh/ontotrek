@@ -29,6 +29,11 @@ Node.js NPM Management:
 
   > browserify index.js -o bundle.js
 
+  Now the catch is the latest 3d-force-graph isn't browserifying due to some
+  ES5 / 6 browserify issue.
+
+  So retrieve a copy of 3d-force-graph.min.js directly from /unpkg.com/3d-force-graph
+
 _____________________________
 Development notes:
 
@@ -141,9 +146,11 @@ function init_interface() {
   // upper level ontology edge coloring
   $("input[name='ulo_edge_coloring']").on('click', function(item) {
     RENDER_ULO_EDGE = (this.value == 'true');
+    $('#ulo_legend').toggle(RENDER_ULO_EDGE);
+    $('#ontology_legend').toggle(!RENDER_ULO_EDGE);
+
     if (top.GRAPH) {
       top.GRAPH.refresh();
-      console.log(RENDER_ULO_EDGE)
     }
   })
 
@@ -617,7 +624,7 @@ function init_ontofetch_data(rawData) {
     node.radius = Math.pow(2, 7-node.depth); // # of levels
 
     // Any node which has a layout record including custom color, gets group_id = itself.
-    if (top.layout[node.id]) {
+    if (top.layout[node.id] && top.layout[node.id].color) {
       node.group_id = node.id;
 
       // Color by layout overrides all
@@ -631,11 +638,10 @@ function init_ontofetch_data(rawData) {
     if (node.parent_id) {
       const parent = top.dataLookup[node.parent_id];
       if (parent) {
-        set_link(data.links, parent, node, node.radius);
-
         if (!node.group_id  && parent.group_id) {
           node.group_id = parent.group_id;
         }
+        set_link(data.links, parent, node, node.radius);
       }
     }
 
@@ -647,29 +653,7 @@ function init_ontofetch_data(rawData) {
   }
 
 
-  // Experimental: show 2ndary parents in ORANGE
-  // 3rd pass does secondary parent LINKS which could be to shallower nodes
-  // than parent, or could be to deeper nodes than parent.  
-  // Future: ensure primary parent is always shallowest?
-  for (var item in data.nodes) {
-    var node = data.nodes[item];
-
-    // Establish 2ndary (multihomed) to OTHER parents (why ptr=1)
-    if (node['rdfs:subClassOf']) {
-      for (var ptr = 1; ptr < node['rdfs:subClassOf'].length; ptr ++) {
-        const other_child = node['rdfs:subClassOf'][ptr];
-        const parent = top.dataLookup[other_child];
-        if (parent) {
-          // Not sure why creating a node here causes layout to go wonky.
-          //make_node(data.nodes, parent_id, 'Unknown label')
-          //
-          // "other: true" Signals that this needs to be handled by final pass in
-          // depth_iterate() 
-          set_link(data.links, parent, node, node.radius, '', '#FFA500', true);
-        }
-      }
-    }
-  }
+ 
 
   if (RENDER_DEPTH != 50) {
     // Chop link content off by depth that user specified.
@@ -678,6 +662,8 @@ function init_ontofetch_data(rawData) {
   }
 
   data.nodes = preposition_nodes(data.nodes);
+
+  set_legend(data);
 
   return data
 }
@@ -694,59 +680,75 @@ function getOntologyColor(node) {
 }
 
 /*
-  Redraw legend according to top.BUILT_DATA.nodes
+  Redraw legends according to given data.nodes
+  One legend prepared for count by ontology term prefix
+  Other legend prepared for count by ULO group a term falls under 
 */
-function set_legend() {
+function set_legend(data) {
 
-  var legend = {};
+  var ontology = {};
+  var ulo_branch = {};
 
-  for (var item in top.BUILT_DATA.nodes) {
-    var node = data.nodes[item];
-    var prefix = get_term_prefix(node.id);
-    // Stores a count of each prefix
-    legend[prefix] = prefix in legend ? legend[prefix]+1 : 1;
+  for (var ptr in data.nodes) {
+    const node = data.nodes[ptr];
+    const prefix = get_term_prefix(node.id);
+    
+    if (!node['owl:deprecated']) { 
 
-    // NODES BY PREFIX VS NODES BY GROUP
-    // This node only counts in parent's category
-    if (legend[node.group_id])
-      legend[node.group_id] += 1;
-    else
-      legend[node.group_id] = 1;
-  };
+      // Stores a count of each prefix
+      if (prefix in ontology) 
+        ontology[prefix].count += 1;
+      else {
+        ontology[prefix] = {
+          count: 1, 
+          label: prefix, 
+          color: prefix_color_mapping[prefix] ? prefix_color_mapping[prefix].color : null
+        };
+      }
+      // Figure out what to sort on
 
-  // Render legend for coloring by ontology or ULO
-  $("#node_legend, #edge_legend").empty();
-
-  if (RENDER_ULO_EDGE) {
-    $("#edge_legend").append('ULO colouring<br/>')
+      // Store a count of ULO branch underlying nodes
+      if (node.group_id in ulo_branch) 
+        ulo_branch[node.group_id].count += 1;
+      else {
+        const group = top.dataLookup[node.group_id];
+        if (group) {
+          const layout_group = top.layout[group.group_id];
+          ulo_branch[group.group_id] = {
+            count: 1,
+            label: group['rdfs:label'],
+            prefix: get_term_prefix(group.id),
+            color: top.colors[layout_group.color],
+            ulo: true
+          }
+        }
+      }
+    }
   }
-  else {
-    $("#node_legend").append('Node colouring<br/>');
-  }
+  set_legend_section('#ulo_legend', ulo_branch);
+  set_legend_section('#ontology_legend', ontology);
+}
 
-  var legend_sorted = Object.keys(legend).sort();
-  for (var ptr in legend_sorted) {
-    var group = top.dataLookup[group_id];
-    var prefix = legend_sorted[ptr];
-    var color = prefix_color_mapping[prefix] ? prefix_color_mapping[prefix].color : null;
+// Render legend for coloring by ontology or ULO
+function set_legend_section(dom_id, legend_dict) {
 
-    $("#node_legend").append(
-      `<div class="legend_color" style="background-color:${color}">${legend[prefix]}</div>
-      <div class="legend_item">${prefix}</div>
-      <br/>`
-    );
+  $(dom_id).empty();
 
-
-    if (group && legend[group_id] > 0) {
-      var layout_group = top.layout[parent.group_id];
-      var color = top.colors[top.layout[group_id].color];
-      $("#edge_legend").append(`<div class="legend_color" style="background-color:${color}">${legend[group_id]}</div>
-        <div class="legend_item">${group.label}</div>
+  for (var key of Object.keys(legend_dict).sort()) {
+    item = legend_dict[key];
+    // Don't show ULO category if only 1 item, or if there is a custom layout color for it
+    if (!item.ulo || (item.count >1 || item.prefix && top.layout[key].color)) {
+      $(dom_id).append(
+        `<div class="legend_color" style="background-color:${item.color}">${item.count}</div>
+        <div class="legend_item">${item.label}</div>
         <br/>`
       );
     }
-
   }
+
+  if ($(dom_id).children('div').length)
+      $(dom_id).prepend('<div class="legend_header">' + (dom_id == '#ulo_legend' ? 'ULO Branch Legend': 'Ontology Legend') + '<div/>');
+
 }
 
 
