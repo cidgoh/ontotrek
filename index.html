@@ -186,7 +186,7 @@
                   <div class="large-12 medium-12 cell">
                     <i class="fi-info blue" data-tooltip tabindex="2" title="Color coding is done according to lookup tables for ontology prefixes and Basic Formal Ontology terms as defined in js/lookup_tables.js; Select ontology to have edges colored by ontology of child node; select Upper Level Ontology (ULO) branch to have edges colored by occurent, continuant, process, etc."></i>
                     <label>Color edges by</label>
-                    <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">Term source</label> &nbsp; &nbsp; 
+                    <input type="radio" name="ulo_edge_coloring" value="false" id="edge_coloring_onto" checked="checked"><label for="edge_coloring_onto">Term ontology</label> &nbsp; &nbsp; 
                     <input type="radio" name="ulo_edge_coloring" value="true" id="edge_coloring_bfo"><label for="edge_coloring_bfo">ULO branch</label>
                   </div>
                 </div>
@@ -287,8 +287,8 @@
             <!-- **************************** LEGEND ************************ -->
             <div class="tabs-panel" id="panel_legend">
               <div class="grid-x grid-padding-x">
-                <div id="edge_legend">Select an ontology to view it; a legend of node and edge colors will be displayed here</div>
-                <div id="node_legend"></div>
+                <div id="ontology_legend">Select an ontology to view it; a legend of component ontologies and upper level ontology branches, and the counts of nodes belonging to them, will be displayed here</div>
+                <div id="ulo_legend"></div>
               </div>
             </div>
 
