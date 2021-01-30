@@ -52,6 +52,18 @@ select.float-left {
 	padding-right:1.2rem;
 }
 
+/************* LEGEND **********/
+
+#ulo_legend, #ontology_legend {	width:100%;}
+#ulo_legend {display:none;} /* initial state */
+
+
+.legend_header {
+	background-color:#def2f8;
+	width:100%;
+	padding:5px;
+}
+
 .legend_item {
 	display: inline-block;
 	min-width:90px;
@@ -66,5 +78,5 @@ select.float-left {
     border-radius: 3px;
     padding: 3px 10px 3px 10px;
     margin: 3px;}
-    
+
 #trace_content {font-size:.8rem;}
