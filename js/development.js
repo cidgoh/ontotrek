@@ -55,12 +55,117 @@ const SYNONYM_FIELD = ["synonyms",
   "oboInOwl:hasBroadSynonym", 
   "oboInOwl:hasNarrowSynonym", 
   "oboInOwl:hasRelatedSynonym"
-];
+]
 
-// Lookup table from node_id to Graph node
-dataLookup = {};
-// Lookup table from "[link source_id]-[link target_id]" to Graph link
-linkLookup = {};
+function save(blob, filename) {
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+
+function saveString(text, filename) {
+
+  save(new Blob([text], { type: 'text/plain' }), filename);
+
+}
+
+
+function load_graph(rawData) {
+  $(document.body).css({'cursor' : 'wait'});
+
+  top.Graph = ForceGraph3D({controlType: 'trackball'})(document.getElementById('3d-graph'))
+
+  // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
+  .forceEngine('d3')
+  .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
+  //.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
+  .width(GRAPH_DOM_EL.width())
+  .warmupTicks(0)
+  //.cooldownTime(GRAPH_COOLDOWN_TIME)
+  .cooldownTicks(GRAPH_COOLDOWN_TICKS)
+  .backgroundColor(GRAPH_BACKGROUND_COLOR)
+
+  // Getter/setter for the simulation intensity decay parameter, only 
+  // applicable if using the d3 simulation engine.  
+  .d3AlphaDecay(GRAPH_ALPHA_DECAY) // default 0.0228
+  
+  // Getter/setter for the nodes' velocity decay that simulates the medium
+  // resistance, only applicable if using the d3 simulation engine.
+  .d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
+
+  // IS THERE A WAY TO FORCE CAMERA TO only pan, and rotate on x,y but not Z ?
+  .cameraPosition({x:0, y:0, z: 3000 },{x:0, y:0, z: 0 })
+  //.linkWidth(link => link === highlightLink ? 4 : 1)
+  .linkWidth(function(link) {
+    // 
+    return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
+  })
+  // It would be great if we could make it dashed instead
+  .linkColor(function(link) {
+    return link.highlight ? link.highlight : link.color
+  })
+
+  .linkResolution(3) // 3 sided, i.e. triangular beam
+  .linkOpacity(1)
+
+  //.nodeAutoColorBy('color')
+  // Note d.target is an object!
+  /*.linkAutoColorBy(d => d.target.color})*/
+
+  // Text shown on mouseover.  WAS node.label
+  .nodeLabel(node => `<div>${node['rdfs:label']}<br/><span class="tooltip-id">${node.id}</span></div>`) 
+
+  //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
+  //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
+  //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
+  
+  // Not doing anything...
+  .nodeRelSize(node => node.highlight ? 18 : 4 ) // 4 is default
+  .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
+  .onLinkClick(link => {node_focus(link.target)})
+  .onNodeClick(node => node_focus(node))
+  .nodeThreeObject(node => render_node(node))
+
+  top.rawData = rawData
+  node_focus()
+
+  // Usual case for GEEM ontofetch.py ontology term specification table:
+  data = init_ontofetch_data(rawData)
+  init_search(data) 
+
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/agro_nodes.json", false);
+  request.send(null)
+  var nodes = JSON.parse(request.responseText);
+  
+  var request = new XMLHttpRequest();
+  request.open("GET", "../data/trees/agro_links.json", false);
+  request.send(null)
+  var links = JSON.parse(request.responseText);
+
+  $("#status").html(top.builtData.nodes.length + " terms");
+
+  // Chop the data into two parts so first pulls most upper level categories into position.
+  //var tempQ = top.RENDER_QUICKER
+  //var tempL = top.RENDER_LABELS
+  top.RENDER_QUICKER = false
+  top.RENDER_LABELS = true
+
+  top.Graph
+    //.linkDirectionalParticles(0)
+    .d3Force('center', null)
+    .d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
+
+  Graph.graphData({nodes:nodes, links:links})
+
+  $(document.body).css({'cursor' : 'default'});
+
+}
 
 /*
   Main method for loading a new data file and rendering a graph of it.
