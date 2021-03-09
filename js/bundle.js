@@ -1619,28 +1619,6 @@ module.exports = _default;
 		if (magFilter === void 0) {
 			magFilter = LinearFilter;
 		}
-	}
-	return -1;
-};
-var $slice = callBound('String.prototype.slice');
-var toStrTags = {};
-var gOPD = require('es-abstract/helpers/getOwnPropertyDescriptor');
-var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
-if (hasToStringTag && gOPD && getPrototypeOf) {
-	forEach(typedArrays, function (typedArray) {
-		var arr = new global[typedArray]();
-		if (!(Symbol.toStringTag in arr)) {
-			throw new EvalError('this engine has support for Symbol.toStringTag, but ' + typedArray + ' does not have the property! Please report this.');
-		}
-		var proto = getPrototypeOf(arr);
-		var descriptor = gOPD(proto, Symbol.toStringTag);
-		if (!descriptor) {
-			var superProto = getPrototypeOf(proto);
-			descriptor = gOPD(superProto, Symbol.toStringTag);
-		}
-		toStrTags[typedArray] = descriptor.get;
-	});
-}
 
 		if (minFilter === void 0) {
 			minFilter = LinearMipmapLinearFilter;
@@ -2872,12 +2850,7 @@ if (hasToStringTag && gOPD && getPrototypeOf) {
 					z = this._z,
 					w = this._w; // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
 
-if (debugUtil && debugUtil.debuglog) {
-  debug = debugUtil.debuglog('stream');
-} else {
-  debug = function debug() {};
-}
-/*</replacement>*/
+			var cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
 
 			if (cosHalfTheta < 0) {
 				this._w = -qb._w;
@@ -2897,8 +2870,7 @@ if (debugUtil && debugUtil.debuglog) {
 				return this;
 			}
 
-  if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (Array.isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
-}
+			var sqrSinHalfTheta = 1.0 - cosHalfTheta * cosHalfTheta;
 
 			if (sqrSinHalfTheta <= Number.EPSILON) {
 				var s = 1 - t;
@@ -8667,7 +8639,6 @@ if (debugUtil && debugUtil.debuglog) {
 				_box$2.getCenter(center); // second, try to find a boundingSphere with a radius smaller than the
 				// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
 
-			return low + Math.floor( Math.random() * ( high - low + 1 ) );
 
 				var maxRadiusSq = 0;
 
@@ -15805,9 +15776,7 @@ if (debugUtil && debugUtil.debuglog) {
 				if (lineWidthAvailable) gl.lineWidth(width);
 				currentLineWidth = width;
 			}
-		},
-		useQuaternion: {
-			get: function () {
+		}
 
 		function setPolygonOffset(polygonOffset, factor, units) {
 			if (polygonOffset) {
@@ -15831,8 +15800,6 @@ if (debugUtil && debugUtil.debuglog) {
 			}
 		} // texture
 
-			}
-		}
 
 		function activeTexture(webglSlot) {
 			if (webglSlot === undefined) webglSlot = 33984 + maxTextures - 1;
@@ -16095,10 +16062,6 @@ if (debugUtil && debugUtil.debuglog) {
 			return 9729;
 		} //
 
-			}
-		},
-		shadowDarkness: {
-			set: function () {
 
 		function onTextureDispose(event) {
 			var texture = event.target;
@@ -17451,8 +17414,6 @@ if (debugUtil && debugUtil.debuglog) {
 			return cameraVR;
 		}; // Animation Loop
 
-// Utility Functions
-// ---------------------
 
 		var onAnimationFrameCallback = null;
 
