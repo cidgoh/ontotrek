@@ -167,18 +167,6 @@ function load_graph(rawData) {
 
 }
 
-function do_graph(rawData) {
-  /*
-  Main function for loading a new data file and rendering a graph of it.
-
-  */
-  $(document.body).css({'cursor' : 'wait'});
-
-// Lookup table from node_id to Graph node
-dataLookup = {};
-// Lookup table from "[link source_id]-[link target_id]" to Graph link
-linkLookup = {};
-
 /*
   Main method for loading a new data file and rendering a graph of it.
 
@@ -541,4 +529,3 @@ Number.prototype.within = function(a, b) {
     }, 2000)
   }
   */
-}
