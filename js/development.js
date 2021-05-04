@@ -75,96 +75,135 @@ function saveString(text, filename) {
 }
 
 
-function load_graph(rawData) {
-  $(document.body).css({'cursor' : 'wait'});
+// function load_graph(rawData) {
+//   $(document.body).css({'cursor' : 'wait'});
 
-  top.Graph = ForceGraph3D({controlType: 'trackball'})(document.getElementById('3d-graph'))
+//   top.Graph = ForceGraph3D({controlType: 'trackball'})(document.getElementById('3d-graph'))
 
-  // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
-  .forceEngine('d3')
-  .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
-  //.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
-  .width(GRAPH_DOM_EL.width())
-  .warmupTicks(0)
-  //.cooldownTime(GRAPH_COOLDOWN_TIME)
-  .cooldownTicks(GRAPH_COOLDOWN_TICKS)
-  .backgroundColor(GRAPH_BACKGROUND_COLOR)
+//   // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
+//   .forceEngine('d3')
+//   .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
+//   //.d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
+//   .width(GRAPH_DOM_EL.width())
+//   .warmupTicks(0)
+//   //.cooldownTime(GRAPH_COOLDOWN_TIME)
+//   .cooldownTicks(GRAPH_COOLDOWN_TICKS)
+//   .backgroundColor(GRAPH_BACKGROUND_COLOR)
 
-  // Getter/setter for the simulation intensity decay parameter, only 
-  // applicable if using the d3 simulation engine.  
-  .d3AlphaDecay(GRAPH_ALPHA_DECAY) // default 0.0228
+//   // Getter/setter for the simulation intensity decay parameter, only 
+//   // applicable if using the d3 simulation engine.  
+//   .d3AlphaDecay(GRAPH_ALPHA_DECAY) // default 0.0228
   
-  // Getter/setter for the nodes' velocity decay that simulates the medium
-  // resistance, only applicable if using the d3 simulation engine.
-  .d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
+//   // Getter/setter for the nodes' velocity decay that simulates the medium
+//   // resistance, only applicable if using the d3 simulation engine.
+//   .d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
 
-  // IS THERE A WAY TO FORCE CAMERA TO only pan, and rotate on x,y but not Z ?
-  .cameraPosition({x:0, y:0, z: 3000 },{x:0, y:0, z: 0 })
-  //.linkWidth(link => link === highlightLink ? 4 : 1)
-  .linkWidth(function(link) {
-    // 
-    return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
-  })
-  // It would be great if we could make it dashed instead
-  .linkColor(function(link) {
-    return link.highlight ? link.highlight : link.color
-  })
+//   // IS THERE A WAY TO FORCE CAMERA TO only pan, and rotate on x,y but not Z ?
+//   .cameraPosition({x:0, y:0, z: 3000 },{x:0, y:0, z: 0 })
+//   //.linkWidth(link => link === highlightLink ? 4 : 1)
+//   .linkWidth(function(link) {
+//     // 
+//     return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
+//   })
+//   // It would be great if we could make it dashed instead
+//   .linkColor(function(link) {
+//     return link.highlight ? link.highlight : link.color
+//   })
 
-  .linkResolution(3) // 3 sided, i.e. triangular beam
-  .linkOpacity(1)
+//   .linkResolution(3) // 3 sided, i.e. triangular beam
+//   .linkOpacity(1)
 
-  //.nodeAutoColorBy('color')
-  // Note d.target is an object!
-  /*.linkAutoColorBy(d => d.target.color})*/
+//   //.nodeAutoColorBy('color')
+//   // Note d.target is an object!
+//   /*.linkAutoColorBy(d => d.target.color})*/
 
-  // Text shown on mouseover.  WAS node.label
-  .nodeLabel(node => `<div>${node['rdfs:label']}<br/><span class="tooltip-id">${node.id}</span></div>`) 
+//   // Text shown on mouseover.  WAS node.label
+//   .nodeLabel(node => `<div>${node['rdfs:label']}<br/><span class="tooltip-id">${node.id}</span></div>`) 
 
-  //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
-  //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
-  //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
+//   //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
+//   //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
+//   //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
   
-  // Not doing anything...
-  .nodeRelSize(node => node.highlight ? 18 : 4 ) // 4 is default
-  .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
-  .onLinkClick(link => {node_focus(link.target)})
-  .onNodeClick(node => node_focus(node))
-  .nodeThreeObject(node => render_node(node))
+//   // Not doing anything...
+//   .nodeRelSize(node => node.highlight ? 18 : 4 ) // 4 is default
+//   .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
+//   .onLinkClick(link => {node_focus(link.target)})
+//   .onNodeClick(node => node_focus(node))
+//   .nodeThreeObject(node => render_node(node))
 
-  top.rawData = rawData
-  node_focus()
+//   top.rawData = rawData
+//   node_focus()
 
-  // Usual case for GEEM ontofetch.py ontology term specification table:
-  data = init_ontofetch_data(rawData)
-  init_search(data) 
+//   // Usual case for GEEM ontofetch.py ontology term specification table:
+//   data = init_ontofetch_data(rawData)
+//   init_search(data) 
 
-  var request = new XMLHttpRequest();
-  request.open("GET", "../data/trees/agro_nodes.json", false);
-  request.send(null)
-  var nodes = JSON.parse(request.responseText);
+//   var request = new XMLHttpRequest();
+//   request.open("GET", "../data/trees/agro_nodes.json", false);
+//   request.send(null)
+//   var nodes = JSON.parse(request.responseText);
   
-  var request = new XMLHttpRequest();
-  request.open("GET", "../data/trees/agro_links.json", false);
-  request.send(null)
-  var links = JSON.parse(request.responseText);
+//   var request = new XMLHttpRequest();
+//   request.open("GET", "../data/trees/agro_links.json", false);
+//   request.send(null)
+//   var links = JSON.parse(request.responseText);
 
-  $("#status").html(top.builtData.nodes.length + " terms");
+//   $("#status").html(top.builtData.nodes.length + " terms");
 
-  // Chop the data into two parts so first pulls most upper level categories into position.
-  //var tempQ = top.RENDER_QUICKER
-  //var tempL = top.RENDER_LABELS
-  top.RENDER_QUICKER = false
-  top.RENDER_LABELS = true
+//   // Chop the data into two parts so first pulls most upper level categories into position.
+//   //var tempQ = top.RENDER_QUICKER
+//   //var tempL = top.RENDER_LABELS
+//   top.RENDER_QUICKER = false
+//   top.RENDER_LABELS = true
 
-  top.Graph
-    //.linkDirectionalParticles(0)
-    .d3Force('center', null)
-    .d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
+//   top.Graph
+//     //.linkDirectionalParticles(0)
+//     .d3Force('center', null)
+//     .d3Force('charge').strength(GRAPH_CHARGE_STRENGTH)
 
-  Graph.graphData({nodes:nodes, links:links})
+//   Graph.graphData({nodes:nodes, links:links})
 
-  $(document.body).css({'cursor' : 'default'});
+//   $(document.body).css({'cursor' : 'default'});
 
+// }
+
+function load_graph() {
+
+  if (top.RAW_DATA) {
+    // Rendering of all but last pass skips labels and fancy polygons.
+    top.RENDER_QUICKER = true;
+    top.RENDER_LABELS = true;
+
+    $(document.body).css({'cursor': 'wait'});
+
+    setNodeReport(); // Clear out sidebar info
+
+    var request = new XMLHttpRequest();
+    request.open("GET", "../data/trees/nodes.json", false);
+    request.send(null)
+    var nodes = JSON.parse(request.responseText);
+    
+    var request = new XMLHttpRequest();
+    request.open("GET", "../data/trees/links.json", false);
+    request.send(null)
+    var links = JSON.parse(request.responseText);
+
+    // top.RAW_DATA.term = nodes
+
+    top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA);
+    // top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
+    // top.ITERATE = top.MAX_DEPTH;
+    init_search(top.BUILT_DATA);
+
+    top.GRAPH = init(load=true, nodes=nodes, links=links);
+    // top.GRAPH.graphData({nodes:nodes, links:links});
+    // top.GRAPH.refresh();
+
+    top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
+
+
+    $(document.body).css({'cursor' : 'default'});
+  }
 }
 
 /*
@@ -176,7 +215,7 @@ function load_graph(rawData) {
 
     // Rendering of all but last pass skips labels and fancy polygons.
     top.RENDER_QUICKER = true;
-    top.RENDER_LABELS = false;
+    top.RENDER_LABELS = true;
     top.NEW_NODES = []; // global so depth_iterate can see it
     top.ITERATE = 1;
 
@@ -213,11 +252,107 @@ function load_graph(rawData) {
 };
 
 
-function init() {
+function init(load=false, nodes=null, links=null) {
 
   // controlType is  'fly', 'orbit' or 'trackball' 
 
-  return ForceGraph3D({controlType: 'trackball'})(GRAPH_DOM_EL[0])
+  if (load) {
+    return ForceGraph3D({controlType: 'trackball'})(GRAPH_DOM_EL[0])
+
+    .graphData({nodes: nodes, links: links})
+
+    // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
+    .forceEngine('d3')
+    .enableNodeDrag(false) // Stops frozen nodes from getting moved around by user
+    // .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
+    .width(GRAPH_DOM_EL.width())
+    .warmupTicks(0)
+    //.cooldownTime(GRAPH_COOLDOWN_TIME)
+    .cooldownTicks(0)
+    .backgroundColor(GRAPH_BACKGROUND_COLOR)
+
+    // Getter/setter for the simulation intensity decay parameter, only 
+    // applicable if using the d3 simulation engine.  
+    .d3AlphaDecay(GRAPH_ALPHA_DECAY) // default 0.0228
+    
+    // Getter/setter for the nodes' velocity decay that simulates the medium
+    // resistance, only applicable if using the d3 simulation engine.
+    // .d3VelocityDecay(GRAPH_VELOCITY_DECAY)  // default 0.4
+
+    // IS THERE A WAY TO FORCE CAMERA TO only pan, and rotate on x,y but not Z ?
+    .cameraPosition({x:0, y:-4000, z: 2000 }, {x:0, y:0, z: 0 })
+    //.linkWidth(link => link === highlightLink ? 4 : 1)
+    .linkWidth(function(link) {
+      // 
+      return link.highlight ? GRAPH_LINK_HIGHLIGHT_RADIUS : link.width > GRAPH_LINK_WIDTH ? link.width : GRAPH_LINK_WIDTH
+    })
+
+    // Note d.target is an object!
+    /*.linkAutoColorBy(d => d.target.color})*/
+    // It would be great if we could make it dashed instead
+    // First mark a link by its highlight if any;
+    // then by group's color if top.RENDER_ULO_EDGE;
+    // then by color.
+
+    // PROBLEM: sometimes target is node, sometimes string.
+    // CAREFUL! THIS ITERATES AND SEEMS TO CHANGE NODE source / target
+    // from id to object.
+    .linkColor(function(link) {
+      var target = link.target;
+
+      if (link.highlight_color)
+        return link.highlight_color;
+
+      // only happens on post-first-render, so link.target established as object
+      if (top.RENDER_ULO_EDGE === true) {
+
+        var group = top.dataLookup[link.target.group_id];
+        if (group && group.color) {
+          return group.color;
+        };
+      }
+
+      //link.target itself is actually string id on first pass.
+      if (!link.target.prefix) {
+        // convert to object
+        target = top.dataLookup[link.target];
+      }
+
+      // used for ULO as ontology color when not rendering by ULO branch color
+      if (target.prefix == 'BFO') {
+        return getOntologyColor(top.dataLookup[target.id]);
+      }
+
+      return target.color;
+    })
+
+    .linkResolution(3) // 3 sided, i.e. triangular beam
+    .linkOpacity(1)
+
+    // Text shown on mouseover.  WAS node.label
+    .nodeLabel(node => `<div>${node['rdfs:label']}<br/><span class="tooltip-id">${node.id}</span></div>`) 
+
+    //.nodeAutoColorBy('color')
+    //.nodeColor(node => node.highlight ? 'color) // Note: this triggers refresh on each animation cycle
+    //.nodeColor(node => highlightNodes.indexOf(node) === -1 ? 'rgba(0,255,255,0.6)' : 'rgb(255,0,0,1)')
+    //.nodeColor(node => node.highlight ? '#F00' : node.color ) 
+    
+    // Not doing anything...
+    .nodeRelSize(node => node.highlight ? 18 : 4 ) // 4 is default
+    .onNodeHover(node => GRAPH_DOM_EL[0].style.cursor = node ? 'pointer' : null)
+    .onLinkClick(link => {setNodeReport(link.target)})
+    .onNodeClick(node => setNodeReport(node))
+    .nodeThreeObject(node => render_node(node))
+
+    // Do this only for 3d iterated version
+    // Running on each iteration?
+    .onEngineStop(stuff => {
+      depth_iterate();
+    })
+  }
+
+  else {
+    return ForceGraph3D({controlType: 'trackball'})(GRAPH_DOM_EL[0])
 
     // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
     .forceEngine('d3')
@@ -327,12 +462,9 @@ function depth_iterate() {
 
   */
   if (top.ITERATE > top.EXIT_DEPTH) {
-    Graph.pauseAnimation()
-    top.NEW_NODES = []
-
-
-    // WHERE SHOULD THIS GO????
-    top.GRAPH = null
+    if (top.GRAPH) {
+      top.GRAPH.pauseAnimation();
+    }
     return
   }
 
