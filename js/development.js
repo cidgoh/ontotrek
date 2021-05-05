@@ -57,24 +57,6 @@ const SYNONYM_FIELD = ["synonyms",
   "oboInOwl:hasRelatedSynonym"
 ]
 
-function save(blob, filename) {
-  var link = document.createElement('a');
-  link.style.display = 'none';
-  document.body.appendChild(link);
-
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
-}
-
-
-function saveString(text, filename) {
-
-  save(new Blob([text], { type: 'text/plain' }), filename);
-
-}
-
-
 // function load_graph(rawData) {
 //   $(document.body).css({'cursor' : 'wait'});
 
@@ -615,13 +597,6 @@ function depth_iterate_exit() {
     nodes: nodes.concat(newNodes),
     links: links.concat(newLinks)
   });
-  // console.log(JSON.stringify(Graph.scene()))
-  // exportGLTF(Graph.scene())
-
-  // console.log(nodes)
-  // console.log(JSON.stringify(nodes))
-  // saveString(JSON.stringify(nodes), 'nodes.json')
-  // saveString(JSON.stringify(links), 'links.json')
 
   // Ensures no more iterations
   top.ITERATE = top.EXIT_DEPTH+1;
