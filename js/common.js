@@ -123,7 +123,14 @@ function init_interface() {
   $("#ontology")
     .on('change', function(item){
       if (this.value > '') {
-          load_data(this.value, do_graph);
+        const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
+        const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
+        if (nodes_url && links_url) {
+          load_data(this.value, load_graph)
+        }
+        else {
+          load_data(this.value, do_graph)
+        }
       }
     })
 

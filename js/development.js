@@ -160,13 +160,16 @@ function load_graph() {
 
     setNodeReport(); // Clear out sidebar info
 
+    const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
+    const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
+
     var request = new XMLHttpRequest();
-    request.open("GET", "../data/trees/nodes.json", false);
+    request.open("GET", nodes_url, false);
     request.send(null)
     var nodes = JSON.parse(request.responseText);
     
     var request = new XMLHttpRequest();
-    request.open("GET", "../data/trees/links.json", false);
+    request.open("GET", links_url, false);
     request.send(null)
     var links = JSON.parse(request.responseText);
 
@@ -209,26 +212,11 @@ function load_graph() {
       top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
       top.NEW_NODES = []; // global so depth_iterate can see it
 
-      if (true) {
-        top.ITERATE = 1;
-        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS) // initial setting
-        Graph.graphData({nodes:[],links:[]})
-      }
-      else {
-        Graph.cooldownTicks(GRAPH_COOLDOWN_TICKS*10) // initial setting
-        Graph.graphData({nodes:data.nodes,links:data.links})
-      }
-  }
-  
-  /*
-  // Navigate to root BFO node if there is one. Slight delay to enable
-  // engine to create reference points.  Ideally event for this.
-  if('BFO:0000001' in top.dataLookup) {
-    setTimeout(function(){
-      node_focus(top.dataLookup['BFO:0000001']) 
-    }, 2000)
-  }
+    top.GRAPH = init(load=false);
 
+    $("#download_button").css({'visibility': 'visible'})
+    $("#rerender_button").css({'visibility': 'visible'})
+  }
 };
 
 
@@ -426,8 +414,6 @@ function init(load=false, nodes=null, links=null) {
     .onEngineStop(stuff => {
       depth_iterate();
     })
-
-  return graph;
 
 }
 
