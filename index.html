@@ -127,10 +127,18 @@
                     <button id="ontology_url_button" class="button" style="padding:.7rem .4rem;">Load</button>
                   </div>
                 </div>
-              
                 
-                <div id="status" ><span class="placeholder">&nbsp;</span></div>
+                <div id="status"><span class="placeholder">&nbsp;</span></div>
+
+                <div class="large-2 medium-2">
+                  <button id="download_button" class="button" style="visibility: hidden;">Download JSONs of nodes and links</button>
+                </div>
+
+                <div class="large-2 medium-2">
+                  <button id="rerender_button" class="button" style="visibility: hidden;">Re-render ontology</button>
+                </div>
               </div>
+            </div>
 
               <div class="callout primary">
 
@@ -360,6 +368,7 @@
     <script src="js/owl.js"></script>
     <script src="js/common.js"></script>
     <script src="js/rdflib.min.js"></script>
+    <script src="https://unpkg.com/three/examples/js/exporters/GLTFExporter.js"></script>
 
   </body>
 </html>
