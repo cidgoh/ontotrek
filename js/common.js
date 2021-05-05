@@ -99,6 +99,24 @@ if (auto_load) {
     $("#ontology").trigger('change')
 }
 
+// Saves an object as a JSON
+function save(blob, filename) {
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// Helper function to save nodes/links as JSON
+function saveString(text, filename) {
+
+  save(new Blob([text], { type: 'text/plain' }), filename);
+
+}
+
 
 function init_interface() {
   // Selection list of all node labels allows user to zoom in on one
@@ -117,6 +135,13 @@ function init_interface() {
     if (url > '') {
       load_data(url, do_graph)
     }
+  })
+
+  // Allows the user to download JSONs for the nodes and links of the ontology
+  $("#download_button").on('click', function(item){
+    const { nodes, links } = top.GRAPH.graphData();
+    saveString(JSON.stringify(nodes), 'nodes.json')
+    saveString(JSON.stringify(links), 'links.json')
   })
 
   // Selection list of all node labels allows user to zoom in on one
