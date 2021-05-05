@@ -111,9 +111,18 @@ function init_interface() {
 
   $("#ontology").chosen({placeholder_text_single: 'Select an item ...'})
 
+  // Allows user to re-render the ontology instead of loading up a snapshot
+  $("#rerender_button").on('click', function(item){
+    const url = $("#ontology").val()
+    if (url > '') {
+      load_data(url, do_graph)
+    }
+  })
+
   // Selection list of all node labels allows user to zoom in on one
   $("#label_search").on('change', function(item){
     if (this.value != '')
+      console.log(this.value)
       setNodeReport(top.dataLookup[this.value])
   })
 
