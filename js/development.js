@@ -160,13 +160,16 @@ function load_graph() {
 
     setNodeReport(); // Clear out sidebar info
 
+    const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
+    const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
+
     var request = new XMLHttpRequest();
-    request.open("GET", "../data/trees/nodes.json", false);
+    request.open("GET", nodes_url, false);
     request.send(null)
     var nodes = JSON.parse(request.responseText);
     
     var request = new XMLHttpRequest();
-    request.open("GET", "../data/trees/links.json", false);
+    request.open("GET", links_url, false);
     request.send(null)
     var links = JSON.parse(request.responseText);
 
@@ -212,8 +215,10 @@ function do_graph() {
     init_search(top.BUILT_DATA);
 
     top.GRAPH = init(load=false);
-  }
 
+    $("#download_button").css({'visibility': 'visible'})
+    $("#rerender_button").css({'visibility': 'visible'})
+  }
 };
 
 
