@@ -191,18 +191,16 @@ function load_graph() {
     // top.RAW_DATA.term = nodes
 
     top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA);
-    // top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
-    // top.ITERATE = top.MAX_DEPTH;
+    top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
     init_search(top.BUILT_DATA);
 
     top.GRAPH = init(load=true, nodes=nodes, links=links);
-    // top.GRAPH.graphData({nodes:nodes, links:links});
-    // top.GRAPH.refresh();
-
+    
     top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
 
-
     $(document.body).css({'cursor' : 'default'});
+    $("#download_button").css({'visibility': 'visible'})
+    $("#rerender_button").css({'visibility': 'visible'})
   }
 }
 
@@ -249,7 +247,7 @@ function init(load=false, nodes=null, links=null) {
     // Using dfault D3 engine so we can pin nodes via { id: 0, fx: 0, fy: 0, fz: 0 }
     .forceEngine('d3')
     .enableNodeDrag(false) // Stops frozen nodes from getting moved around by user
-    // .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
+    .d3Force('center', null)  // Enables us to add nodes without shifting centre of mass or having a centre attractor
     .width(GRAPH_DOM_EL.width())
     .warmupTicks(0)
     //.cooldownTime(GRAPH_COOLDOWN_TIME)
