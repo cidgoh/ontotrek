@@ -125,7 +125,8 @@ function init_interface() {
       if (this.value > '') {
         const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
         const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
-        if (nodes_url && links_url) {
+        const metadata_url = $("select#ontology option").filter(':selected')[0].dataset.metadata
+        if (metadata_url && nodes_url && links_url) {
           load_data(this.value, load_graph)
         }
         else {
@@ -149,6 +150,7 @@ function init_interface() {
     const { nodes, links } = top.GRAPH.graphData();
     saveString(JSON.stringify(nodes), 'nodes.json')
     saveString(JSON.stringify(links), 'links.json')
+    saveString(JSON.stringify(top.RAW_DATA), 'metadata.json')
   })
 
   // Selection list of all node labels allows user to zoom in on one
@@ -156,6 +158,55 @@ function init_interface() {
     if (this.value != '')
       console.log(this.value)
       setNodeReport(top.dataLookup[this.value])
+  })
+
+  $("#upload_nodes").on('change', function(event) {
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      top.NODES_JSON = JSON.parse(event.target.result);
+    }
+
+    reader.readAsText(event.target.files[0]);
+  })
+
+  $("#upload_links").on('change', function(event) {
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      top.LINKS_JSON = JSON.parse(event.target.result);
+    }
+
+    reader.readAsText(event.target.files[0]);
+  })
+
+  $("#upload_metadata").on('change', function(event) {
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      top.METADATA_JSON = JSON.parse(event.target.result);
+    }
+
+    reader.readAsText(event.target.files[0]);
+  })
+
+  // Uploads JSON files for the nodes/links/metadata
+  $("#upload_json_button").on('click', function(item){
+    const nodes_url = $("#upload_nodes").val()
+    const links_url = $("#upload_links").val()
+    const metadata_url = $("#upload_metadata").val()
+
+    if (nodes_url > '' && links_url > '' && metadata_url > '') {
+      try {
+        load_uploaded_graph()
+      }
+      catch (err) {
+        alert("Something is wrong with the JSON files, maybe check that the correct files were uploaded")
+        data = null;
+      }
+    } else {
+      alert('Upload all three JSON files (nodes, links and metadata)')
+    }
   })
 
   //$("#ontology_url").on('change', function(item) {
