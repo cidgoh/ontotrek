@@ -162,20 +162,24 @@ function load_graph() {
 
     const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
     const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
+    const metadata_url = $("select#ontology option").filter(':selected')[0].dataset.metadata
 
     var request = new XMLHttpRequest();
     request.open("GET", nodes_url, false);
-    request.send(null)
+    request.send(null);
     var nodes = JSON.parse(request.responseText);
     
     var request = new XMLHttpRequest();
     request.open("GET", links_url, false);
-    request.send(null)
+    request.send(null);
     var links = JSON.parse(request.responseText);
 
-    // top.RAW_DATA.term = nodes
+    var request = new XMLHttpRequest();
+    request.open("GET", metadata_url, false);
+    request.send(null);
+    var metadata = JSON.parse(request.responseText)
 
-    top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA);
+    top.BUILT_DATA = init_ontofetch_data(metadata);
     top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
     init_search(top.BUILT_DATA);
 
@@ -187,6 +191,28 @@ function load_graph() {
     $("#download_button").css({'visibility': 'visible'})
     $("#rerender_button").css({'visibility': 'visible'})
   }
+}
+
+function load_uploaded_graph() {
+
+  // Rendering of all but last pass skips labels and fancy polygons.
+  top.RENDER_QUICKER = true;
+  top.RENDER_LABELS = true;
+
+  $(document.body).css({'cursor': 'wait'});
+
+  setNodeReport(); // Clear out sidebar info
+
+  top.BUILT_DATA = init_ontofetch_data(top.METADATA_JSON);
+  top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
+  init_search(top.BUILT_DATA);
+
+  top.GRAPH = init(load=true, nodes=top.NODES_JSON, links=top.LINKS_JSON);
+  
+  top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
+
+  $(document.body).css({'cursor' : 'default'});
+  $("#download_button").css({'visibility': 'visible'})
 }
 
 /*
