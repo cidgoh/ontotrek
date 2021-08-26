@@ -165,8 +165,6 @@ function load_graph() {
     setNodeReport(); // Clear out sidebar info
 
     const cache_url = $("select#ontology option").filter(':selected')[0].dataset.cache
-    // const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
-    // const metadata_url = $("select#ontology option").filter(':selected')[0].dataset.metadata
 
     var request = new XMLHttpRequest();
     request.open('GET', cache_url, false);
@@ -212,7 +210,8 @@ function load_uploaded_graph() {
 /*
   Main method for loading a new data file and rendering a graph of it.
 
-  //Graph.linkDirectionalParticles(0)
+*/
+function do_graph() {
 
   if (top.RAW_DATA) {
 
@@ -224,13 +223,14 @@ function load_uploaded_graph() {
 
     $(document.body).css({'cursor' : 'wait'});
 
-  console.log(top.dataLookup)
+    setNodeReport(); // Clear out sidebar info
 
-  // Incrementally adds graph nodes in batches until maximum depth reached
-  if (data.nodes.length) {
-
-      top.MAX_DEPTH = top.builtData.nodes[top.builtData.nodes.length-1].depth;
-      top.NEW_NODES = []; // global so depth_iterate can see it
+    // Usual case for GEEM ontofetch.py ontology term specification table:
+    // This creates top.BUILT_DATA
+    top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA);
+    $("#status").html(top.BUILT_DATA.nodes.length + " terms");
+    top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
+    init_search(top.BUILT_DATA);
 
     top.GRAPH = init(load=false);
 
@@ -379,7 +379,6 @@ function init(load=false, nodes=null, links=null) {
     // CAREFUL! THIS ITERATES AND SEEMS TO CHANGE NODE source / target
     // from id to object.
     .linkColor(function(link) {
-      if (link.target) {
       var target = link.target;
 
       if (link.highlight_color)
@@ -398,8 +397,6 @@ function init(load=false, nodes=null, links=null) {
       if (!link.target.prefix) {
         // convert to object
         target = top.dataLookup[link.target];
-        // Somehow link target isn't in ontology space? Deprecated?
-        if (!target) return '#FFF'; 
       }
 
       // used for ULO as ontology color when not rendering by ULO branch color
@@ -408,7 +405,6 @@ function init(load=false, nodes=null, links=null) {
       }
 
       return target.color;
-      }
     })
 
     .linkResolution(3) // 3 sided, i.e. triangular beam
@@ -435,6 +431,7 @@ function init(load=false, nodes=null, links=null) {
       depth_iterate();
     })
 
+  }
 }
 
 
