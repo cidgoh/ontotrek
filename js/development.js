@@ -149,6 +149,10 @@ const SYNONYM_FIELD = ["synonyms",
 
 // }
 
+function getJSON(path) {
+  return fetch(path).then(response => response.text());
+}
+
 function load_graph() {
 
   if (top.RAW_DATA) {
@@ -160,30 +164,20 @@ function load_graph() {
 
     setNodeReport(); // Clear out sidebar info
 
-    const nodes_url = $("select#ontology option").filter(':selected')[0].dataset.nodes
-    const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
-    const metadata_url = $("select#ontology option").filter(':selected')[0].dataset.metadata
+    const cache_url = $("select#ontology option").filter(':selected')[0].dataset.cache
+    // const links_url = $("select#ontology option").filter(':selected')[0].dataset.links
+    // const metadata_url = $("select#ontology option").filter(':selected')[0].dataset.metadata
 
     var request = new XMLHttpRequest();
-    request.open("GET", nodes_url, false);
+    request.open('GET', cache_url, false);
     request.send(null);
-    var nodes = JSON.parse(request.responseText);
-    
-    var request = new XMLHttpRequest();
-    request.open("GET", links_url, false);
-    request.send(null);
-    var links = JSON.parse(request.responseText);
+    var snapshot = JSON.parse(request.responseText);
 
-    var request = new XMLHttpRequest();
-    request.open("GET", metadata_url, false);
-    request.send(null);
-    var metadata = JSON.parse(request.responseText)
-
-    top.BUILT_DATA = init_ontofetch_data(metadata);
+    top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA, cache=snapshot['nodes']);
     top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
     init_search(top.BUILT_DATA);
 
-    top.GRAPH = init(load=true, nodes=nodes, links=links);
+    top.GRAPH = init(load=true, nodes=top.BUILT_DATA.nodes, links=top.BUILT_DATA.links);
     
     top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
 
