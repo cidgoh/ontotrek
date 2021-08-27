@@ -136,6 +136,7 @@ function init() {
     // CAREFUL! THIS ITERATES AND SEEMS TO CHANGE NODE source / target
     // from id to object.
     .linkColor(function(link) {
+      if (link.target) {
       var target = link.target;
 
       if (link.highlight_color)
@@ -154,6 +155,8 @@ function init() {
       if (!link.target.prefix) {
         // convert to object
         target = top.dataLookup[link.target];
+        // Somehow link target isn't in ontology space? Deprecated?
+        if (!target) return '#FFF'; 
       }
 
       // used for ULO as ontology color when not rendering by ULO branch color
@@ -162,6 +165,7 @@ function init() {
       }
 
       return target.color;
+      }
     })
 
     .linkResolution(3) // 3 sided, i.e. triangular beam
