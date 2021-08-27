@@ -151,6 +151,13 @@ function init_interface() {
   $("#download_button").on('click', function(item){
     const { nodes, links } = top.GRAPH.graphData();
     const nodes_out = nodes.map(({id, x, y, z}) => ({id, x, y, z}));
+
+    for (i = 0; i < nodes_out.length; i++) {
+      nodes_out[i].x = parseInt(nodes_out[i].x, 10);
+      nodes_out[i].y = parseInt(nodes_out[i].y, 10);
+      nodes_out[i].z = parseInt(nodes_out[i].z, 10);
+    }
+
     const out_obj = {
       'nodes': nodes_out,
       // 'meta': top.RAW_DATA
@@ -639,17 +646,20 @@ function init_ontofetch_data(rawData, cache=null) {
   // 1st pass does all the nodes.
   for (var item in rawData.term) {
     var node = rawData.term[item];
-
     
     if (!node['owl:deprecated'] || RENDER_DEPRECATED) {
-      if (cache != null) {
-        var cached_node = cache.filter(obj => {
-          return obj.id == item
-        })[0];
-        
-        node.x = cached_node.x;
-        node.y = cached_node.y;
-        node.z = cached_node.z;
+      try {
+        if (cache != null) {
+          var cached_node = cache.filter(obj => {
+            return obj.id == item
+          })[0];
+          
+          node.x = cached_node.x;
+          node.y = cached_node.y;
+          node.z = cached_node.z;
+        }
+      } catch {
+        console.log("Warning: A node is undefined");
       }
 
       node.children = [];
