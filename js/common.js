@@ -99,22 +99,108 @@ if (auto_load) {
     $("#ontology").trigger('change')
 }
 
+// Saves an object as a JSON
+function save(blob, filename) {
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// Helper function to save nodes/links as JSON
+function saveString(text, filename) {
+
+  save(new Blob([text], { type: 'text/plain' }), filename);
+
+}
+
 
 function init_interface() {
   // Selection list of all node labels allows user to zoom in on one
   $("#ontology")
     .on('change', function(item){
       if (this.value > '') {
+        const cache_url = $("select#ontology option").filter(':selected')[0].dataset.cache;
+
+        var request = new XMLHttpRequest();
+        request.open('GET', cache_url, false);
+        request.send();
+        if (request.status == 404) {
           load_data(this.value, do_graph);
+        }
+        else {
+          load_data(this.value, load_graph);
+        }
       }
     })
 
   $("#ontology").chosen({placeholder_text_single: 'Select an item ...'})
 
+  // Allows user to re-render the ontology instead of loading up a snapshot
+  $("#rerender_button").on('click', function(item){
+    const url = $("#ontology").val()
+    if (url > '') {
+      load_data(url, do_graph)
+    }
+  })
+
+  // Allows the user to download JSONs for the nodes and links of the ontology
+  $("#download_button").on('click', function(item){
+    const { nodes, links } = top.GRAPH.graphData();
+    const nodes_out = nodes.map(({id, x, y, z}) => ({id, x, y, z}));
+
+    for (i = 0; i < nodes_out.length; i++) {
+      nodes_out[i].x = parseInt(nodes_out[i].x, 10);
+      nodes_out[i].y = parseInt(nodes_out[i].y, 10);
+      nodes_out[i].z = parseInt(nodes_out[i].z, 10);
+    }
+
+    const out_obj = {
+      'nodes': nodes_out,
+      // 'meta': top.RAW_DATA
+    };
+    saveString(JSON.stringify(out_obj), 'cache.json');
+  })
+
   // Selection list of all node labels allows user to zoom in on one
   $("#label_search").on('change', function(item){
     if (this.value != '')
+      console.log(this.value)
       setNodeReport(top.dataLookup[this.value])
+  })
+
+  $("#upload_cache").on('change', function(event) {
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      top.NODES_JSON = JSON.parse(event.target.result);
+    }
+
+    reader.readAsText(event.target.files[0]);
+  })
+
+  // Uploads JSON cache file
+  $("#upload_json_button").on('click', function(item){
+    const cache_url = $("#upload_cache").val();
+    const onto_url = $("#ontology_url").val();
+    const url_ok = RE_URL.exec(onto_url);
+
+    if (!url_ok) {
+      alert(`The ontology URL: "${onto_url}" is not valid`);
+    }
+
+    if (cache_url > '' && url_ok) {
+      try {
+        load_uploaded_graph();
+      }
+      catch (err) {
+        alert("Something is wrong with either the URL or the cache file. Ensure that the URL is pointing directly to an owl rdf/xml file and that the cache file corresponds to the correct ontology.");
+        data = null;
+      }
+    }
   })
 
   //$("#ontology_url").on('change', function(item) {
@@ -537,7 +623,7 @@ function init_search(data) {
 }
 
 
-function init_ontofetch_data(rawData) {
+function init_ontofetch_data(rawData, cache=null) {
   /*
   This is a 2 pass algorithm.
   
@@ -560,7 +646,22 @@ function init_ontofetch_data(rawData) {
   // 1st pass does all the nodes.
   for (var item in rawData.term) {
     var node = rawData.term[item];
+    
     if (!node['owl:deprecated'] || RENDER_DEPRECATED) {
+      try {
+        if (cache != null) {
+          var cached_node = cache.filter(obj => {
+            return obj.id == item
+          })[0];
+          
+          node.x = cached_node.x;
+          node.y = cached_node.y;
+          node.z = cached_node.z;
+        }
+      } catch {
+        console.log("Warning: A node is undefined");
+      }
+
       node.children = [];
       node.color =    null;
       node.depth =    0;
@@ -569,7 +670,7 @@ function init_ontofetch_data(rawData) {
       set_node_label(node);
       data.nodes.push(node);
       top.dataLookup[node.id] = node;
-
+      
       var ancestors = [node];
       var focus = node;
       while (focus.parent_id) {
@@ -584,7 +685,7 @@ function init_ontofetch_data(rawData) {
         }
         
         focus = rawData.term[focus.parent_id];
-
+        
         if (focus.depth) { // already calculated depth.
           break;
         }
@@ -603,26 +704,26 @@ function init_ontofetch_data(rawData) {
         ancestor.depth = focus.depth + ptr + 1;
       }
     }
-
+    
   }
-
+  
   // To support the idea that graph can work on top-level nodes first
   data.nodes.sort(function(a,b) { return (a.depth - b.depth) })
-
+  
   // If custom render depth chosen, chop nodes deeper than that. 
   if (RENDER_DEPTH != 50) {
     data.nodes = data.nodes.filter(n => (n.depth <= RENDER_DEPTH)) ; 
   }
-
+  
   // Establish lookup table for all nodes
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
-
+  
   // 2nd pass does LINKS organized by depth, i.e. allowing inheritance of properties:
   for (var item in data.nodes) {
     var node = data.nodes[item];
     // Size node according to proximity to depth 0.
     node.radius = Math.pow(2, 7-node.depth); // # of levels
-
+    
     // Any node which has a layout record including custom color, gets group_id = itself.
     if (top.layout[node.id] && top.layout[node.id].color) {
       node.group_id = node.id;
@@ -1024,6 +1125,7 @@ function setNodeReport(node = {}) {
   // Aim viewport camera at node from z dimension
   // Unfortunately camera animations cause it to loose its "UP" position.  
   // Solution?
+  console.log(node)
   if (node.x) {
 
     // Color assigned here but rendered color isn't actually affected until 

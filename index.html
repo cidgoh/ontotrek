@@ -81,37 +81,37 @@
                     <select id="ontology" style="margin-bottom:10px">
                       <option value="">Select an ontology to view ...</option>
 
-                      <option value="data/bfo.owl">BFO: Basic Formal Ontology</option><!-- https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl -->
+                      <option value="data/bfo.owl" data-cache="data/trees/bfo.json">BFO: Basic Formal Ontology</option><!-- https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl -->
 
-                      <option value="data/dolche-inferred.owl">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option><!-- http://genepio.org/ontotrek/data/dolche-inferred.owl -->
+                      <option value="data/dolche-inferred.owl" data-cache="data/trees/dolce.json">DOLCE-Lite: Descriptive Ontology for Linguistic and Cognitive Engineering</option><!-- http://genepio.org/ontotrek/data/dolche-inferred.owl -->
 
-                      <option value="data/gfo.owl">GFO: General Formal Ontology</option><!-- http://www.onto-med.de/ontologies/gfo.owl -->
+                      <option value="data/gfo.owl" data-cache="data/trees/gfo.json">GFO: General Formal Ontology</option><!-- http://www.onto-med.de/ontologies/gfo.owl -->
 
                       <option disabled="disabled">__________________________________________</option>
 
-                      <option value="data/agro.owl">AGRO: Agronomy Ontology</option>
+                      <option value="data/agro.owl" data-cache="data/trees/agro.json">AGRO: Agronomy Ontology</option>
                       <option value="//raw.githubusercontent.com/AgriculturalSemantics/agro/master/agro.owl">AGRO via URL</option>
-                      <option value="data/aro.owl">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
+                      <option value="data/aro.owl" data-cache="data/trees/aro.json">ARO: Antibiotic Resistance Ontology (4K nodes)</option>
                       <option value="//raw.githubusercontent.com/CLO-ontology/CLO/master/src/ontology/clo_merged.owl">CLO: Cell Line Ontology (needs filtering! 40K)</option> 
-                      <option value="data/cmo.owl">CMO: Clinical Measurements Ontology</option>  
-                      <option value="https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/doid.owl">DOID: Human Disease Ontology</option>
+                      <option value="data/cmo.owl" data-cache="data/trees/cmo.json">CMO: Clinical Measurements Ontology</option>  
+                      <option value="https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/doid.owl" data-cache="data/trees/doid.json">DOID: Human Disease Ontology</option>
 
-                      <option value="https://raw.githubusercontent.com/evidenceontology/evidenceontology/master/eco.owl">ECO: Evidence & Conclusion Ontology</option>  
-                      <option value="//raw.githubusercontent.com/EcologicalSemantics/ecocore/master/ecocore.owl">ECOCORE: Ontology of Core Ecological Entities</option>  
+                      <option value="https://raw.githubusercontent.com/evidenceontology/evidenceontology/master/eco.owl" data-cache="data/trees/eco.json">ECO: Evidence & Conclusion Ontology</option>  
+                      <option value="//raw.githubusercontent.com/EcologicalSemantics/ecocore/master/ecocore.owl" data-cache="data/trees/ecocore.json">ECOCORE: Ontology of Core Ecological Entities</option>  
                       <option value="//raw.githubusercontent.com/FoodOntology/foodon/master/src/ontology/foodon-merged.owl">FOODON: Food Ontology (needs filtering! 28K)</option> 
-                      <option value="data/foodon-products.json">FOODON product branch (11K)</option> 
-                      <option value="data/genepio-merged.owl">GENEPIO: Genomic Epidemiology Ontology</option> 
+                      <option value="data/foodon-products.json" data-cache="data/trees/foodon-products.json">FOODON product branch (11K)</option> 
+                      <option value="data/genepio-merged.owl" data-cache="data/trees/genepio.json">GENEPIO: Genomic Epidemiology Ontology</option> 
 
-                      <option value="//raw.githubusercontent.com/EBISPOT/ancestro/master/hancestro.owl">HANCESTRO: Human Ancestry Ontology</option>
+                      <option value="//raw.githubusercontent.com/EBISPOT/ancestro/master/hancestro.owl" data-cache="data/trees/hancestro.json">HANCESTRO: Human Ancestry Ontology</option>
                       <option value="//raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.owl">HP: Human Phenotype Ontology (needs filtering! 40k)</option>
-                      <option value="https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/emapa.owl">EMAPA: Ontologies for mouse anatomy and development</option>                    
-                      <option value="//raw.githubusercontent.com/infectious-disease-ontology/infectious-disease-ontology/2017-11-03/ido.owl">IDO: Infectious Disease Ontology</option>
-                      <option value="//raw.githubusercontent.com/obi-ontology/obi/v2019-08-06/obi.owl">OBI: Ontology for Biomedical Investigations</option>
-                      <option value="//raw.githubusercontent.com/biobanking/ontology/20190620/obib.owl">OBIB: Ontology for Biobanking</option>           
+                      <option value="https://raw.githubusercontent.com/obophenotype/mouse-anatomy-ontology/master/emapa.owl" data-cache="data/trees/emapa.json">EMAPA: Ontologies for mouse anatomy and development</option>                    
+                      <option value="//raw.githubusercontent.com/infectious-disease-ontology/infectious-disease-ontology/2017-11-03/ido.owl" data-cache="data/trees/ido.json">IDO: Infectious Disease Ontology</option>
+                      <option value="//raw.githubusercontent.com/obi-ontology/obi/v2019-08-06/obi.owl" data-cache="data/trees/obi.json">OBI: Ontology for Biomedical Investigations</option>
+                      <option value="//raw.githubusercontent.com/biobanking/ontology/20190620/obib.owl" data-cache="data/trees/obib.json">OBIB: Ontology for Biobanking</option>           
                       <option value="//raw.githubusercontent.com/pato-ontology/pato/master/pato.owl">PATO: Phenotype and Trait Ontology</option>          
-                      <option value="//raw.githubusercontent.com/PopulationAndCommunityOntology/pco/master/pco.owl">PCO: Population and Community Ontology</option>   
-                      <option value="//raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl">PO: Plant Ontology (anatomical branch)</option> 
-                      <option value="data/zfa.owl">ZFA: Zebrafish anatomy and development ontology</option> 
+                      <option value="//raw.githubusercontent.com/PopulationAndCommunityOntology/pco/master/pco.owl" data-cache="data/trees/pco.json">PCO: Population and Community Ontology</option>   
+                      <option value="//raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl" data-cache="data/trees/po.json">PO: Plant Ontology (anatomical branch)</option> 
+                      <option value="data/zfa.owl" data-cache="data/trees/zfa.json">ZFA: Zebrafish anatomy and development ontology</option> 
 
                     </select>
                   </div>
@@ -127,9 +127,22 @@
                     <button id="ontology_url_button" class="button" style="padding:.7rem .4rem;">Load</button>
                   </div>
                 </div>
-              
                 
-                <div id="status" ><span class="placeholder">&nbsp;</span></div>
+                <div class="large-2 medium-2">
+                  <label for="upload_cache">Upload a JSON cache file (must also include ontology URL)</label>
+                  <input type="file" id="upload_cache" accept=".json">
+                  <button id="upload_json_button" class="button">Upload JSON files</button>
+                </div>
+
+                <div id="status"><span class="placeholder">&nbsp;</span></div>
+
+                <div class="large-2 medium-2">
+                  <button id="download_button" class="button" style="visibility: hidden;">Download snapshot JSON</button>
+                </div>
+
+                <div class="large-2 medium-2">
+                  <button id="rerender_button" class="button" style="visibility: hidden;">Re-render ontology</button>
+                </div>
               </div>
 
               <div class="callout primary">
@@ -360,6 +373,7 @@
     <script src="js/owl.js"></script>
     <script src="js/common.js"></script>
     <script src="js/rdflib.min.js"></script>
+    <script src="https://unpkg.com/three/examples/js/exporters/GLTFExporter.js"></script>
 
   </body>
 </html>
