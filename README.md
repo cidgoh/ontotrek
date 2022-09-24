@@ -6,7 +6,7 @@ OntoTrek is an ontology terminology viewer that takes advantage of 3D graph rend
 
 See it in action at **[http://genepio.org/ontotrek](http://genepio.org/ontotrek)**.
 
-OntoTrek is under development at Hsiao Labs which is associated with the University of British Columbia Department of Pathology and Laboratory Medicine, and with the PHSA Public Health Laboratory at the British Columbia Centre For Disease Control. Contact [Damion Dooley](mailto:damion.dooley@bccdc.ca) for more information on this project.
+OntoTrek has been developed by the Centre for Infectious Disease Genomics and One Health (CIDGOH) at Simon Fraser University with funding from USDA [NACA 58-8040-8-014-F] and Genome Canada [Project 286GET] to Dr. William Hsiao. Contact Damion Dooley for more information on this project. Contact [Damion Dooley](mailto:damion_dooley@sfu.ca) for more information on this project.
 
 <hr />
 
