@@ -308,8 +308,10 @@
             <!-- **************************** TRACE ************************ -->
             <div class="tabs-panel" id="panel_trace">
 
-              <p>Experimental tool: Enter Markdown formatted links of form [link label](URL) [relation type] [link label](URL) here to see them highlighted in current ontology:
-              <textarea rows="4" id="trace_content" placeholder="enter robot markup here"># This is a fictional example pertaining to the ECOCORE ontology (it is also viewable in BFO ontology):
+              <p>Experimental: To visualize a disjoint axiom-related unsatisfiability error in a given ontology that you have encountered, copy the reasoning explanation as a set of Markdown formatted statements of form [link label](URL) [relation type] [link label](URL) here, and press "Trace" to see them drawn and highlighted in current ontology. To highlight a common problem, a <font color="red">red link</font> indicates a "Disjoint" axiom between two classes, and an <font color="orange">orange link</font> indicates a subClassOf relation between classes. At least one edge of a highlighted loop is incorrect.
+
+              <p>Below is a fictional example pertaining to the AGRO ontology (it is also viewable in BFO ontology):</p>
+              <textarea rows="4" id="trace_content" placeholder="enter robot markup here">
 ## [ecozone](http://purl.obolibrary.org/obo/ENVO_01000280) EquivalentTo [Nothing](http://www.w3.org/2002/07/owl#Nothing) ##
 
   - [ecozone](http://purl.obolibrary.org/obo/ENVO_01000280) SubClassOf [site](http://purl.obolibrary.org/obo/BFO_0000029)
@@ -321,12 +323,10 @@
               </textarea>
               <button type="button" class="success button" id="trace_button">Trace</button>
 
-              <p>To visualize a disjoint axiom-related unsatisfiability error about a particular term in a given ontology that you have encountered, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command directly on that ontology to get the error explanation report. 
+              <p>To generate a Markup file that explains a reasoning error in an ontology, install the command line <a href="https://robot.obolibrary.org/" target="_blank">robot tool</a> and run the following robot command. If more than one explanation arises, then choose one to visualize. 
               <div class="callout secondary">
                 &gt; robot explain --input [YOUR ONTOLOGY FILE] --reasoner HermiT --axiom "'[PUT PROBLEM TERM'S rdfs:label HERE]' EquivalentTo owl:Nothing" --explanation output.md
               </div>
-              <p>Select the pertinent ontology, wait for it to be fully rendered, then enter the resulting explanation report text above, press Trace, and the conflicting relations will be highlighted.</p>
-
             </div>
 
 
