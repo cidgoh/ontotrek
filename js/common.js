@@ -168,7 +168,6 @@ function init_interface() {
   // Selection list of all node labels allows user to zoom in on one
   $("#label_search").on('change', function(item){
     if (this.value != '')
-      console.log(this.value)
       setNodeReport(top.dataLookup[this.value])
   })
 
@@ -197,7 +196,7 @@ function init_interface() {
         load_uploaded_graph();
       }
       catch (err) {
-        alert("Something is wrong with either the URL or the cache file. Ensure that the URL is pointing directly to an owl rdf/xml file and that the cache file corresponds to the correct ontology.");
+        alert("Something is wrong with either the URL or the cache file. Ensure that the URL is pointing directly to an owl rdf/xml file and that the cache file corresponds to the correct ontology. " + err.message);
         data = null;
       }
     }
@@ -565,7 +564,7 @@ function load_data(URL, callback) {
           }
         }
         catch(err) {
-          alert(err.message);
+          alert("Error:" + err.message);
           data = null;
         }
 

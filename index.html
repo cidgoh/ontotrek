@@ -73,13 +73,13 @@
             <div class="tabs-panel is-active" id="panel_search">
               <div class="callout primary">
 
-                <a href="https://www.nature.com/articles/npre.2009.3574.1" target="_blank"><i class="fi-info blue" data-tooltip tabindex="1" title="The listed ontologies are mainly from http://obofoundry.org. Many illustrate the interleaved reuse of OBOFoundry ontology terms (MIEROT principle)."></i></a>
-                
-                <div class="grid-x grid-padding-x" style="margin-bottom:10px">
-                  <div class="large-12 medium-12">
+                <div class="grid-x grid-padding-x" style="margin-bottom:10px;padding:5px;background-color:silver">
 
-                    <select id="ontology" style="margin-bottom:10px">
-                      <option value="">Select an ontology to view ...</option>
+                  A) Select a cached ontology to view &nbsp;
+                  <i class="fi-info blue" data-tooltip tabindex="1" title="The listed ontologies are mainly from OBO Foundry (http://obofoundry.org). Many illustrate the interleaved reuse of OBOFoundry ontology terms."></i>
+  
+                  <select id="ontology" style="margin-bottom:10px">
+                      <option value="">Select an ontology ...</option>
 
                       <option value="data/bfo.owl" data-cache="data/trees/bfo.json">BFO: Basic Formal Ontology</option><!-- https://raw.githubusercontent.com/BFO-ontology/BFO/master/releases/2.0/bfo.owl -->
 
@@ -112,37 +112,46 @@
                       <option value="//raw.githubusercontent.com/PopulationAndCommunityOntology/pco/master/pco.owl" data-cache="data/trees/pco.json">PCO: Population and Community Ontology</option>   
                       <option value="//raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl" data-cache="data/trees/po.json">PO: Plant Ontology (anatomical branch)</option> 
                       <option value="data/zfa.owl" data-cache="data/trees/zfa.json">ZFA: Zebrafish anatomy and development ontology</option> 
+                  </select>
 
-                    </select>
-                  </div>
                 </div>
                
-                <i class="fi-info blue" data-tooltip tabindex="1" title="Or provide your own ontology URL.  The ontology should be formatted as an OWL rdf/xml file. Currently all terms which are owl:subClassOf owl:Thing are retrieved.  If subclasses are inferred in your ontology, you will need to create an explicit version of it by using a reasoner and saving the output to an OWL file."></i>
+                <div class="grid-x grid-padding-x" style="margin-bottom:10px;padding:5px;background-color:silver">
 
-                <div class="grid-x grid-padding-x">
+                  B) Or enter a URL to an online ontology &nbsp;
+                  <i class="fi-info blue" data-tooltip tabindex="1" title="Provide your own ontology URL.  The ontology should be formatted as an OWL rdf/xml file. Currently all terms which are owl:subClassOf owl:Thing are retrieved.  If subclasses are inferred in your ontology, you will need to create an explicit version of it by using a reasoner and saving the output to an OWL file."></i>
+
                   <div class="large-10 medium-10">
-                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Or enter an ontology URL" value="">
+                     <input type="text" id="ontology_url" name="ontology_url" placeholder="Ontology URL" value="">
                   </div>
                   <div class="large-2 medium-2">
                     <button id="ontology_url_button" class="button" style="padding:.7rem .4rem;">Load</button>
                   </div>
+
+                  <!--
+                  <label for="upload_cache">
+                    If this ontology has a cache file, upload it here first:<br/>
+                  </label>
+                  <input type="file" id="upload_cache" accept=".json" placeholder="Cache file">
+                  <button id="upload_json_button" class="button">Upload</button>
+                  -->
+
                 </div>
                 
                 <div class="large-2 medium-2">
-                  <label for="upload_cache">Upload a JSON cache file (must also include ontology URL)</label>
-                  <input type="file" id="upload_cache" accept=".json">
-                  <button id="upload_json_button" class="button">Upload JSON files</button>
+                 
                 </div>
 
                 <div id="status"><span class="placeholder">&nbsp;</span></div>
 
                 <div class="large-2 medium-2">
-                  <button id="download_button" class="button" style="visibility: hidden;">Download snapshot JSON</button>
+                  <button id="rerender_button" class="button" style="visibility: hidden;">Re-render ontology</button>
                 </div>
 
                 <div class="large-2 medium-2">
-                  <button id="rerender_button" class="button" style="visibility: hidden;">Re-render ontology</button>
+                  <button id="download_button" class="button" style="visibility: hidden;">Download cache snapshot</button>
                 </div>
+
               </div>
 
               <div class="callout primary">
@@ -240,7 +249,7 @@
                   <span class="show-for-sr">render wireframe</span>
                 </label>
               </div>
-              <label for="render_quicker"> Show a wireframe view (skinny edges) for all but ULO.</label>
+              <label for="render_quicker"> Show a wireframe view (skinny edges) for all but ULO</label>
               <br clear="both"/>
 
 
@@ -250,7 +259,7 @@
                   <span class="show-for-sr">render slices</span>
                 </label>
               </div>
-              <label for="render_slices"> Ontology branches rendered as vertical slice(s).</label>
+              <label for="render_slices"> Underlying ontology branches rendered as vertical slice(s)</label>
               <br clear="both"/>
 
               <select id="render_dimensions" class="float-left">
@@ -285,7 +294,7 @@
                 <option value="10">10</option>
                 <option value="15">15</option>
               </select>
-              <label for="depth_control" class="middle">Render from top down to this node depth.</label>
+              <label for="depth_control" class="middle">Render from top down to this node depth</label>
 
               <select id="render_layer_depth" class="float-left" style="width:130px">
                 <option value="200">200 - tall</option>

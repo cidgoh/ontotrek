@@ -194,8 +194,9 @@ function load_uploaded_graph() {
   $(document.body).css({'cursor': 'wait'});
 
   setNodeReport(); // Clear out sidebar info
-
+alert(top.METADATA_JSON)
   top.BUILT_DATA = init_ontofetch_data(top.METADATA_JSON);
+
   top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
   init_search(top.BUILT_DATA);
 
@@ -612,7 +613,7 @@ function depth_iterate_exit() {
   const { nodes, links } = top.GRAPH.graphData();
 
   const new_length = nodes.length + newNodes.length
-  $("#status").html('Rendering ' + new_length + ' of ' + top.BUILT_DATA.nodes.length + " terms, depth >= " + top.ITERATE);
+  $("#status").html('Rendering ' + new_length + ' of ' + top.BUILT_DATA.nodes.length + " terms, depth >= " + (top.ITERATE || 1));
 
   //top.GRAPH.cooldownTicks(new_length)  // GRAPH_COOLDOWN_TICKS * 3
 
