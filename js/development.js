@@ -194,7 +194,8 @@ function load_uploaded_graph() {
   $(document.body).css({'cursor': 'wait'});
 
   setNodeReport(); // Clear out sidebar info
-alert(top.METADATA_JSON)
+
+  // ISSUE: top.METADATA_JSON is never adjusted???!??!
   top.BUILT_DATA = init_ontofetch_data(top.METADATA_JSON);
 
   top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
@@ -505,12 +506,13 @@ function depth_iterate() {
         /* can't set node.x, y on new nodes. */
       }
 
-      // Issue: link with otherparent getting added by target depth BUT other parent not in nodes yet.
+      // RENDER_OTHER_PARENTS ISSUE: Old note: "link with otherparent getting added by target depth BUT other parent not in nodes yet". Caused by new OWL format functionality?  For RENDER_OTHER_PARENTS to work, we need to check that .links includes "l.other = true" for any node's link pointing to node["rdfs:subClassOf"] that isn't in node.parent_id.
       var newLinks = top.BUILT_DATA.links.filter(
         l => top.dataLookup[l.target] 
         && top.dataLookup[l.target].depth == top.ITERATE
         && l.other === false
         );
+
 
       const { nodes, links } = top.GRAPH.graphData();
 

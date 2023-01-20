@@ -265,11 +265,13 @@ function init_interface() {
     top.GRAPH.refresh();
   })
 
+  /* With new OWL format this functionality broke.
   $("#render_other_parents").on('change', function(item) {
     RENDER_OTHER_PARENTS = this.checked;
     do_graph();
     // FUTURE: Just toggle visibility via WEBGL
   })
+  */
 
   $("#render_dimensions").on('change', function(item) {
     GRAPH_DIMENSIONS = parseInt(this.value)
@@ -525,9 +527,9 @@ function load_data(URL, callback) {
       if (this.status == 200) {
         try {
           if (json_file_type) {
+            // CONVERSION JSON data to work with new OWL format
             var data = JSON.parse(this.responseText)
 
-            // CONVERSION JSON data to work with new OWL format
             Object.keys(data.specifications).forEach(function(id) {
               var node = data.specifications[id]
               node['rdfs:subClassOf'] = [node.parent_id]
@@ -1130,7 +1132,6 @@ function setNodeReport(node = {}) {
   // Aim viewport camera at node from z dimension
   // Unfortunately camera animations cause it to loose its "UP" position.  
   // Solution?
-  console.log(node)
   if (node.x) {
 
     // Color assigned here but rendered color isn't actually affected until 
