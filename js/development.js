@@ -169,13 +169,14 @@ function load_graph() {
     var request = new XMLHttpRequest();
     request.open('GET', cache_url, false);
     request.send(null);
-    var snapshot = JSON.parse(request.responseText);
+    let snapshot = JSON.parse(request.responseText);
 
     top.BUILT_DATA = init_ontofetch_data(top.RAW_DATA, cache=snapshot['nodes']);
     top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
     init_search(top.BUILT_DATA);
-
-    top.GRAPH = init(load=true, nodes=top.BUILT_DATA.nodes, links=top.BUILT_DATA.links);
+    let nodes=top.BUILT_DATA.nodes;
+    let links=top.BUILT_DATA.links;
+    top.GRAPH = init(load=true, nodes, links);
     
     top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
 
@@ -200,8 +201,9 @@ function load_uploaded_graph() {
 
   top.MAX_DEPTH = top.BUILT_DATA.nodes[top.BUILT_DATA.nodes.length-1].depth;
   init_search(top.BUILT_DATA);
-
-  top.GRAPH = init(load=true, nodes=top.NODES_JSON, links=top.LINKS_JSON);
+  let nodes=top.NODES_JSON;
+  let links=top.LINKS_JSON
+  top.GRAPH = init(load=true, nodes, links);
   
   top.dataLookup = Object.fromEntries(nodes.map(e => [e.id, e]))
 
@@ -244,9 +246,16 @@ function do_graph() {
 
 function init(load=false, nodes=null, links=null) {
 
+  if (top.GRAPH) {
+    // See bottom of https://github.com/vasturiano/3d-force-graph/issues/302
+    // See bottom of https://github.com/vasturiano/3d-force-graph/issues/433
+    top.GRAPH._destructor()
+  }
+
   // controlType is  'fly', 'orbit' or 'trackball' 
 
   if (load) {
+
     return ForceGraph3D({controlType: 'trackball'})(GRAPH_DOM_EL[0])
 
     .graphData({nodes: nodes, links: links})

@@ -141,10 +141,7 @@ function init_interface() {
 
   // Allows user to re-render the ontology instead of loading up a snapshot
   $("#rerender_button").on('click', function(item){
-    const url = $("#ontology").val()
-    if (url > '') {
-      load_data(url, do_graph)
-    }
+    do_graph();
   })
 
   // Allows the user to download JSONs for the nodes and links of the ontology
@@ -645,19 +642,19 @@ function init_ontofetch_data(rawData, cache=null) {
   top.dataLookup = {};
   top.linkLookup = {};
 
-  var data = {'nodes':[], 'links':[]};
+  let data = {'nodes':[], 'links':[]};
 
   if (!rawData)
     return data;
 
   // 1st pass does all the nodes.
   for (var item in rawData.term) {
-    var node = rawData.term[item];
+    let node = rawData.term[item];
     
     if (!node['owl:deprecated'] || RENDER_DEPRECATED) {
       try {
         if (cache != null) {
-          var cached_node = cache.filter(obj => {
+          let cached_node = cache.filter(obj => {
             return obj.id == item
           })[0];
           
@@ -678,8 +675,8 @@ function init_ontofetch_data(rawData, cache=null) {
       data.nodes.push(node);
       top.dataLookup[node.id] = node;
       
-      var ancestors = [node];
-      var focus = node;
+      let ancestors = [node];
+      let focus = node;
       while (focus.parent_id) {
         if (focus.id == focus.parent_id) {
           console.log('ERROR: ontology term has itself as parent:' + focus.id)
@@ -707,7 +704,7 @@ function init_ontofetch_data(rawData, cache=null) {
       // Bizarrely, ptr is a string if using "(ptr in ancestors)" !
       for (var ptr = 0; ptr < ancestors.length; ptr ++) {
         // Don't use ancestor = ancestors.pop(); seems to intefere with data.nodes ???
-        var ancestor = ancestors[ancestors.length - ptr - 1];
+        let ancestor = ancestors[ancestors.length - ptr - 1];
         ancestor.depth = focus.depth + ptr + 1;
       }
     }
@@ -726,8 +723,8 @@ function init_ontofetch_data(rawData, cache=null) {
   data.nodes.forEach((n, idx) => {top.dataLookup[n.id] = n }); 
   
   // 2nd pass does LINKS organized by depth, i.e. allowing inheritance of properties:
-  for (var item in data.nodes) {
-    var node = data.nodes[item];
+  for (let item in data.nodes) {
+    let node = data.nodes[item];
     // Size node according to proximity to depth 0.
     node.radius = Math.pow(2, 7-node.depth); // # of levels
     
@@ -736,7 +733,7 @@ function init_ontofetch_data(rawData, cache=null) {
       node.group_id = node.id;
 
       // Color by layout overrides all
-      var layout_group = top.layout[node.id];
+      let layout_group = top.layout[node.id];
       if (layout_group.color) {
         node.color = top.colors[layout_group.color];
       }
